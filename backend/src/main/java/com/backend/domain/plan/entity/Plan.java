@@ -1,5 +1,6 @@
 package com.backend.domain.plan.entity;
 
+import com.backend.domain.member.entity.Member;
 import com.backend.domain.plan.dto.PlanCreateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,6 +16,11 @@ public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(name="Member")
+    @JoinColumn(name="id")
+    private Member member;
 
     @Column(nullable = false)
     private LocalDateTime createDate;
@@ -43,7 +49,8 @@ public class Plan {
         this.content = content;
     }
 
-    public Plan(PlanCreateRequestDto planCreateRequestDto) {
+    public Plan(PlanCreateRequestDto planCreateRequestDto, Member member) {
+        this.member = member;
         this.createDate = LocalDateTime.now();
         this.modifyDate = LocalDateTime.now();
         this.startDate = planCreateRequestDto.startDate();

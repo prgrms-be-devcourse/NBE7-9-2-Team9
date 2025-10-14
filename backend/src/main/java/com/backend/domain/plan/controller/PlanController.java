@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/plan")
@@ -29,8 +31,17 @@ public class PlanController {
     public ResponseEntity<ApiResponse<PlanResponseDto>> create(
             @Valid @RequestBody PlanCreateRequestDto planCreateRequestDto
             ) {
-        Plan plan = planService.CreatePlan(planCreateRequestDto);
+
+        // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
+        String dummyMemberID = "dummy";
+
+        Plan plan = planService.CreatePlan(planCreateRequestDto, dummyMemberID);
         PlanResponseDto planResponseDto = new PlanResponseDto(plan);
         return new ResponseEntity<>(ApiResponse.success(planResponseDto), HttpStatus.OK);
+    }
+
+    @GetMaping("/list")
+    public ResponseEntity<ApiResponse<List<PlanResponseDto>>> getList(){
+
     }
 }
