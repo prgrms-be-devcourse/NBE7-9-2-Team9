@@ -14,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,8 +37,14 @@ public class PlanController {
         return new ResponseEntity<>(ApiResponse.success(planResponseDto), HttpStatus.OK);
     }
 
-    @GetMaping("/list")
+    @GetMapping("/list")
     public ResponseEntity<ApiResponse<List<PlanResponseDto>>> getList(){
+        //TODO 페이징 처리 적용하기, 일단은 전체 목록 조회
+        //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
+        String dummyMemberID = "dummy";
+
+        List<PlanResponseDto> plans = planService.getPlanList(dummyMemberID);
+        return new ResponseEntity<>(ApiResponse.success(plans), HttpStatus.OK);
 
     }
 }
