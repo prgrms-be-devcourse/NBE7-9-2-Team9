@@ -1,5 +1,6 @@
 package com.backend.domain.category.service;
 
+import com.backend.domain.category.dto.CategoryDto;
 import com.backend.domain.category.entity.Category;
 import com.backend.domain.category.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,10 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public List<CategoryDto> findAll() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(CategoryDto::from)
+                .toList();
     }
 }
