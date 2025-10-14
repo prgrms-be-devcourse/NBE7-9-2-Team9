@@ -20,17 +20,17 @@ public class Category {
     @Column(nullable = false, unique = true, length = 50)
     private String name;   // "RESTAURANT", "LODGING", "NIGHTSPOT"
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
 
     @PrePersist
     public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
+        this.updatedDate = LocalDateTime.now();
     }
 
     @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    public void onModify() {
+        this.updatedDate = LocalDateTime.now();
     }
 }
