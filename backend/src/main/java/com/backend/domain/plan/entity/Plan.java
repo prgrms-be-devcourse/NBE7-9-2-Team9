@@ -2,12 +2,14 @@ package com.backend.domain.plan.entity;
 
 import com.backend.domain.plan.dto.PlanCreateRequestDto;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Plan {
     @Id
