@@ -1,4 +1,4 @@
-package com.backend.external.seoul.dto;
+package com.backend.external.seoul.nightspot.dto.dto;
 
 // 1️⃣ 개별 row
 public record NightSpotRow(

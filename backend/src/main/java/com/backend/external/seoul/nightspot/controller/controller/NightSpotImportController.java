@@ -1,7 +1,7 @@
 // NightSpotImportController.java
-package com.backend.external.seoul.controller;
+package com.backend.external.seoul.nightspot.controller.controller;
 
-import com.backend.external.seoul.service.NightSpotImportService;
+import com.backend.external.seoul.nightspot.service.service.NightSpotImportService;
 import com.backend.global.reponse.ApiResponse;
 import com.backend.global.reponse.ResponseCode;
 import lombok.RequiredArgsConstructor;

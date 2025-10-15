@@ -1,4 +1,4 @@
-package com.backend.external.seoul.dto;
+package com.backend.external.seoul.nightspot.dto.dto;
 
 import java.util.List;
 

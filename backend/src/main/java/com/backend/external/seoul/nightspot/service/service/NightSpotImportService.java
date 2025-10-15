@@ -1,13 +1,13 @@
 // NightSpotImportService.java
-package com.backend.external.seoul.service;
+package com.backend.external.seoul.nightspot.service.service;
 
 import com.backend.domain.category.entity.Category;
 import com.backend.domain.category.repository.CategoryRepository;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.place.repository.PlaceRepository;
-import com.backend.external.seoul.dto.NightSpotResponse;
-import com.backend.external.seoul.dto.NightSpotRoot;
-import com.backend.external.seoul.dto.NightSpotRow;
+import com.backend.external.seoul.nightspot.dto.dto.NightSpotResponse;
+import com.backend.external.seoul.nightspot.dto.dto.NightSpotRoot;
+import com.backend.external.seoul.nightspot.dto.dto.NightSpotRow;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
