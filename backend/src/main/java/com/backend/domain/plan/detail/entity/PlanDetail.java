@@ -17,11 +17,9 @@ public class PlanDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinTable(name="plan")
     @ManyToOne(fetch = FetchType.LAZY)
     private Plan plan;
 
-    @JoinTable(name = "place")
     @ManyToOne(fetch = FetchType.LAZY)
     private Place place;
 
