@@ -15,6 +15,7 @@ public enum ErrorCode {
 
     MEMBER_NOT_FOUND("M006", HttpStatus.NOT_FOUND,"존재하지 않는 회원입니다."),
     INVALID_PASSWORD("M007", HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다."),
+    ALREADY_DELETED_MEMBER("M008", HttpStatus.BAD_REQUEST, "이미 탈퇴된 회원입니다."),
 
     //계획
     NOT_FOUND_PLAN("D001",HttpStatus.NOT_FOUND,"계획이 없습니다."),
