@@ -15,10 +15,12 @@ public enum ErrorCode {
 
     MEMBER_NOT_FOUND("M006", HttpStatus.NOT_FOUND,"존재하지 않는 회원입니다."),
     INVALID_PASSWORD("M007", HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다."),
+    ALREADY_DELETED_MEMBER("M008", HttpStatus.BAD_REQUEST, "이미 탈퇴된 회원입니다."),
 
     //계획
     NOT_FOUND_PLAN("D001",HttpStatus.NOT_FOUND,"계획이 없습니다."),
     NOT_VALID_DATE("D002",HttpStatus.BAD_REQUEST,"입력된 날짜가 유효하지 않습니다."),
+    NOT_SAME_MEMBER("D003",HttpStatus.FORBIDDEN,"본인이 작성한 계획만 수정이 가능합니다."),
 
     //여행지
     NOT_FOUND_PLACE("P001",HttpStatus.NOT_FOUND,"여행지를 찾을 수 없습니다."),
