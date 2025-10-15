@@ -5,6 +5,7 @@ import com.backend.domain.place.service.PlaceService;
 import com.backend.global.reponse.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +23,12 @@ public class PlaceController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<ResponsePlaceDto>>> getAllPlace() {
         List<ResponsePlaceDto> data = placeService.findAllPlace();
+        return ResponseEntity.ok(ApiResponse.success(data));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ResponsePlaceDto>> getPlace(@PathVariable Long id) {
+        ResponsePlaceDto data = placeService.findOnePlace(id);
         return ResponseEntity.ok(ApiResponse.success(data));
     }
 
