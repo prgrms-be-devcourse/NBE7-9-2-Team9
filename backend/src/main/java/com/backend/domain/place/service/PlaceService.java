@@ -1,20 +1,27 @@
 package com.backend.domain.place.service;
 
+import com.backend.domain.category.entity.Category;
+import com.backend.domain.category.repository.CategoryRepository;
+import com.backend.domain.place.dto.RequestPlaceDto;
 import com.backend.domain.place.dto.ResponsePlaceDto;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.place.repository.PlaceRepository;
 import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
+import lombok.Builder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Builder
 public class PlaceService {
 
     private PlaceRepository placeRepository;
+    private CategoryRepository categoryRepository;
 
-    public PlaceService(PlaceRepository placeRepository) {
+    public PlaceService(PlaceRepository placeRepository, CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
         this.placeRepository = placeRepository;
     }
 
@@ -30,5 +37,20 @@ public class PlaceService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
 
         return ResponsePlaceDto.from(place);
+    }
+
+    public void save(RequestPlaceDto dto) {
+        Category category = categoryRepository.findById(dto.categoryId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
+
+        Place place = Place.builder()
+                .placeName(dto.placeName())
+                .address(dto.address())
+                .gu(dto.gu())
+                .category(category)
+                .description(dto.description())
+                .build();
+
+        placeRepository.save(place);
     }
 }
