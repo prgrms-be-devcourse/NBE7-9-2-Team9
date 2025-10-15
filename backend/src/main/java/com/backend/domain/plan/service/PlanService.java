@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,22 +25,24 @@ public class PlanService {
     // TODO 회원 서비스 기반 처리 하기, JWT에서 멤버 ID 식별자 사용하면 더 편할것 같은데 보안상의 문제는 없는지?
 
     public Plan CreatePlan(PlanCreateRequestDto planCreateRequestDto,String memberId) {
+
+        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
+        if(optionalMember.isEmpty()){
+            throw new BusinessException(ErrorCode.NOT_FOUND_MEMBER);
+        }
+
         if(planCreateRequestDto.startDate().isAfter(planCreateRequestDto.endDate())){
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
 
-        // TODO Member 클래스 객체 가져오는거 실제로 적용하기
-        Member member = new Member(1L,null,null,null,null,null);
-//        Member member= memberRepository.findByMemberId(memberId);
-        Plan plan = new Plan(planCreateRequestDto, member);
+        Plan plan = new Plan(planCreateRequestDto,optionalMember.get());
         return planRepository.save(plan);
     }
 
 
-    public List<Plan> getPlanList(String memberID) {
-//        Member member = memberRepository.findByMemberId(memberID);
-//        List<Plan> plans = planRepository.get
-
-        return null;
+    public List<PlanResponseDto> getPlanList(String memberID) {
+         List<Plan> plans= planRepository.getPlansByMember_MemberId(memberID);
+        List<PlanResponseDto> planResponseDtos = plans.stream().map(PlanResponseDto::new).toList();
+        return planResponseDtos;
     }
 }

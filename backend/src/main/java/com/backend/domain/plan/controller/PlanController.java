@@ -38,12 +38,12 @@ public class PlanController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<List<Plan>>> getList(){
+    public ResponseEntity<ApiResponse<List<PlanResponseDto>>> getList(){
         //TODO 페이징 처리 적용하기, 일단은 전체 목록 조회
         //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
         String dummyMemberID = "dummy";
 
-        List<Plan> plans = planService.getPlanList(dummyMemberID);
+        List<PlanResponseDto> plans = planService.getPlanList(dummyMemberID);
         return new ResponseEntity<>(ApiResponse.success(plans), HttpStatus.OK);
 
     }
