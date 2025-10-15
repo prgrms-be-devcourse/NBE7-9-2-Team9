@@ -42,4 +42,10 @@ public class MemberController {
         MemberResponse response = memberService.updateMember(memberId, request);
         return ApiResponse.success(response, "회원정보가 수정되었습니다");
     }
+
+    @DeleteMapping("/{memberId}")
+    public ApiResponse<MemberResponse> deleteMember(@PathVariable String memberId) {
+        MemberResponse response = memberService.deleteMember(memberId);
+        return ApiResponse.success(response, "회원 탈퇴가 완료되었습니다.");
+    }
 }

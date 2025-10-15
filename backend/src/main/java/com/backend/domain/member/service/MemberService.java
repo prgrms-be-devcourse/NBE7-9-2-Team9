@@ -69,6 +69,19 @@ public class MemberService {
         return MemberResponse.from(member);
     }
 
+    @Transactional
+    public MemberResponse deleteMember(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (member.isDeleted()) {
+            throw new BusinessException(ErrorCode.ALREADY_DELETED_MEMBER);
+        }
+
+        member.delete();
+        return MemberResponse.from(member);
+    }
+
 
     private void validateDuplicate(MemberSignupRequest request) {
 
