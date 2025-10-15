@@ -16,16 +16,26 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
 
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                );
+                        /*.requestMatchers(
+                                "/api/members/signup",
+                                "/api/members/login",
+                                "/h2-console/**"
+                        ).permitAll()
 
+                        // TODO: 관리자 전용 API (추후 적용)
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        */
+
+                        .anyRequest().permitAll()
+                )
+
+                // H2 콘솔 접근 허용
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
         return http.build();
     }
 
