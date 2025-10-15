@@ -47,6 +47,11 @@ public class PlaceController {
         return ResponseEntity.ok(ApiResponse.success(updated, "여행지가 성공적으로 수정되었습니다."));
     }
 
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deletePlace(@PathVariable Long id) {
+        placeService.delete(id);
+        return ResponseEntity
+                .ok(ApiResponse.success(null, "여행지가 삭제되었습니다."));
+    }
 
 }

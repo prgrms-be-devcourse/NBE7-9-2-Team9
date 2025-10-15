@@ -70,4 +70,12 @@ public class PlaceService {
         return ResponsePlaceDto.from(place);
     }
 
+    @Transactional
+    public void delete(Long id) {
+        Place place = placeRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
+
+        placeRepository.delete(place);
+    }
+
 }
