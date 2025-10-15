@@ -35,9 +35,18 @@ public class PlaceController {
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPlace(@RequestBody RequestPlaceDto dto) {
         placeService.save(dto);
-        return ResponseEntity
-                .status(ResponseCode.CREATED.getStatus())
-                .body(ApiResponse.success());
+        return ResponseEntity.ok(ApiResponse.success(null,"여행지가 성공적으로 생성되었습니다."));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ResponsePlaceDto>> updatePlace(
+            @PathVariable Long id,
+            @RequestBody RequestPlaceDto dto
+    ) {
+        ResponsePlaceDto updated = placeService.update(id, dto);
+        return ResponseEntity.ok(ApiResponse.success(updated, "여행지가 성공적으로 수정되었습니다."));
+    }
+
+
 
 }

@@ -8,6 +8,7 @@ import com.backend.domain.place.entity.Place;
 import com.backend.domain.place.repository.PlaceRepository;
 import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import org.springframework.stereotype.Service;
 
@@ -53,4 +54,20 @@ public class PlaceService {
 
         placeRepository.save(place);
     }
+
+    @Transactional
+    public ResponsePlaceDto update(Long id, RequestPlaceDto dto) {
+        Place place = placeRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
+
+        place.update(
+                dto.placeName(),
+                dto.address(),
+                dto.gu(),
+                dto.description()
+        );
+
+        return ResponsePlaceDto.from(place);
+    }
+
 }

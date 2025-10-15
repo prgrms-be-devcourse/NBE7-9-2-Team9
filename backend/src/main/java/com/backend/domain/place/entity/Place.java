@@ -36,4 +36,10 @@ public class Place {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
+    public void update(String placeName, String address, String gu, String description) {
+        this.placeName = placeName;
+        this.address = address;
+        this.gu = gu;
+        this.description = description;
+    }
 }
