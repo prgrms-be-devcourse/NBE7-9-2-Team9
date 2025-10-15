@@ -36,10 +36,10 @@ public class PlanService {
     }
 
 
-    public List<PlanResponseDto> getPlanList(String memberID) {
+    public List<Plan> getPlanList(String memberID) {
 //        Member member = memberRepository.findByMemberId(memberID);
-        List<PlanResponseDto> plans = planRepository.getPlanList(memberID);
+//        List<Plan> plans = planRepository.get
 
-        return plans;
+        return null;
     }
 }

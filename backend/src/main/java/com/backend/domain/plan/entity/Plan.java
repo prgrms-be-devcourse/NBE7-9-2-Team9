@@ -18,8 +18,6 @@ public class Plan {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name="Member")
-    @JoinColumn(name="id")
     private Member member;
 
     @Column(nullable = false)
@@ -40,6 +38,15 @@ public class Plan {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    public Plan(Member member,LocalDateTime startDate, LocalDateTime endDate, String title, String content) {
+        this.member = member;
+        this.createDate = LocalDateTime.now();
+        this.modifyDate = LocalDateTime.now();
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.title = title;
+        this.content = content;
+    }
     public Plan(LocalDateTime startDate, LocalDateTime endDate, String title, String content) {
         this.createDate = LocalDateTime.now();
         this.modifyDate = LocalDateTime.now();
