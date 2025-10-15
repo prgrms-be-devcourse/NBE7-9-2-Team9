@@ -11,6 +11,8 @@ import lombok.*;
 @Table(name = "member")
 public class Member {
 
+    //TODO: name
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; //(식별자)

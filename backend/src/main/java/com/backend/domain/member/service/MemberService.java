@@ -1,5 +1,6 @@
 package com.backend.domain.member.service;
 
+import com.backend.domain.member.dto.request.MemberLoginRequest;
 import com.backend.domain.member.dto.request.MemberSignupRequest;
 import com.backend.domain.member.dto.response.MemberResponse;
 import com.backend.domain.member.entity.Member;
@@ -9,6 +10,7 @@ import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 // import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class MemberService {
     //private final PasswordEncoder passwordEncoder;
 
     //TODO: 반환값 id OR member 객체
+    @Transactional
     public MemberResponse signup(MemberSignupRequest request) {
         validateDuplicate(request);
 
@@ -26,12 +29,25 @@ public class MemberService {
         // String encodedPassword = passwordEncoder.encode(request.password());
         String encodedPassword = request.password();
 
-
         Member member = request.toEntity(encodedPassword);
         memberRepository.save(member);
 
         return MemberResponse.from(member);
     }
+
+    @Transactional
+    public MemberResponse login(MemberLoginRequest request) {
+
+        Member member = memberRepository.findByMemberId(request.memberId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (!member.getPassword().equals(request.password())) {
+            throw new BusinessException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        return MemberResponse.from(member);
+    }
+
 
     private void validateDuplicate(MemberSignupRequest request) {
 
