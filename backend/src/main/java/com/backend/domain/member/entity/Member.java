@@ -40,4 +40,8 @@ public class Member {
     public void updateNickname(String newNickname) {
         this.nickname = newNickname;
     }
+
+    public void updateEmail(String newEmail) {
+        this.email = newEmail;
+    }
 }
