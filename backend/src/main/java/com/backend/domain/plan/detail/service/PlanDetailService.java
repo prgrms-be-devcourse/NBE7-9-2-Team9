@@ -4,17 +4,19 @@ import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.plan.detail.dto.PlanDetailRequestBody;
+import com.backend.domain.plan.detail.dto.PlanDetailResponseBody;
+import com.backend.domain.plan.detail.dto.PlanDetailsElementBody;
 import com.backend.domain.plan.detail.entity.PlanDetail;
 import com.backend.domain.plan.detail.repository.PlanDetailRepository;
 import com.backend.domain.plan.entity.Plan;
-import com.backend.domain.plan.repository.PlanRepository;
 import com.backend.domain.plan.service.PlanService;
 import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,7 +36,7 @@ public class PlanDetailService {
         }
 
         Member member = optionalMember.get();
-        Plan plan = new Plan(member,null,null,null,null);
+        Plan plan = new Plan(requestBody.planId(), member);
         Place place = new Place();
         place.setId(requestBody.placeId());
 
@@ -44,5 +46,35 @@ public class PlanDetailService {
     }
 
 
+    public PlanDetailResponseBody getPlanDetailById(Long planDetailId,String memberId) {
+        //TODO 추후 초대된 사용자들만 조회 될 수 있게 하기.
+        Optional<PlanDetail> optionalPlanDetail = planDetailRepository.getPlanDetailById(planDetailId);
+        if (!optionalPlanDetail.isPresent()) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_DETAIL_PLAN);
+        }
+        PlanDetail planDetail = optionalPlanDetail.get();
 
+        return new PlanDetailResponseBody(planDetail);
+    }
+
+    @Transactional
+    public List<PlanDetailsElementBody> getPlanDetailsByPlanId(long planId, String memberId) {
+        List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlan_Id(planId);
+        List<PlanDetailsElementBody> planDetailList = planDetails.stream()
+                .map(
+                        (PlanDetail p) ->
+                                new PlanDetailsElementBody(
+                                        p.getId(),
+                                        p.getPlace().getId(),
+                                        p.getPlace().getPlaceName(),
+                                        p.getStartTime(),
+                                        p.getEndTime(),
+                                        p.getTitle(),
+                                        p.getContent()
+                                )
+                )
+                .toList();
+
+        return planDetailList;
+    }
 }
