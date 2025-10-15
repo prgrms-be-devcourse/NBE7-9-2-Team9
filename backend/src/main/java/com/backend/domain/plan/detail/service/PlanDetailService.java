@@ -30,7 +30,7 @@ public class PlanDetailService {
         //TODO 아래 부분 수정하기
         Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
         if (!optionalMember.isPresent()) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_MEMBER);
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         Member member = optionalMember.get();

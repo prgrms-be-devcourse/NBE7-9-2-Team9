@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDateTime;
 
-public record PlanCreateRequestDto(
+public record PlanCreateRequestBody(
         @NotNull
         String title,
         @NotNull
@@ -23,7 +23,7 @@ public record PlanCreateRequestDto(
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         LocalDateTime endDate
 ) {
-    public PlanCreateRequestDto(String title, String content, LocalDateTime startDate, LocalDateTime endDate) {
+    public PlanCreateRequestBody(String title, String content, LocalDateTime startDate, LocalDateTime endDate) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
