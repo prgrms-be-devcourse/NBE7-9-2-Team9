@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import CategoryListPage from "./pages/CategoryListPage";
+import PlaceListPage from "./pages/PlaceListPage";
 import "./AdminApp.css";
 
 const AdminApp = () => {
@@ -9,10 +10,7 @@ const AdminApp = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/admin" replace />} />
         <Route path="/" element={<CategoryListPage />} />
-        <Route
-          path="/places/:categoryId"
-          element={<div>여행지 목록 페이지 (추후 구현)</div>}
-        />
+        <Route path="/places/:categoryId" element={<PlaceListPage />} />
       </Routes>
     </div>
   );
