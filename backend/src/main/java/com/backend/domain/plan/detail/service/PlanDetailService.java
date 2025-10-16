@@ -40,9 +40,7 @@ public class PlanDetailService {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
-        if(planDetailRepository.existsOverlapping(requestBody.planId(),requestBody.startTime(),requestBody.endTime())) {
-            throw new BusinessException(ErrorCode.CONFLICT_TIME);
-        }
+        checkAvailableTime(requestBody);
 
         Member member = optionalMember.get();
         Plan plan = planService.getPlanById(requestBody.planId());
@@ -57,7 +55,6 @@ public class PlanDetailService {
 
 
     public PlanDetailsElementBody getPlanDetailById(Long planDetailId,String memberId) {
-        //TODO 추후 초대된 사용자들만 조회 될 수 있게 하기.
 
 
         Optional<PlanDetail> optionalPlanDetail = planDetailRepository.getPlanDetailById(planDetailId);
@@ -67,6 +64,7 @@ public class PlanDetailService {
 
 
         PlanDetail planDetail = optionalPlanDetail.get();
+        isAvailableMember(planDetail.getPlan().getId(),memberRepository.findByMemberId(memberId).get());
 
         return new PlanDetailsElementBody(planDetail);
     }
@@ -97,11 +95,23 @@ public class PlanDetailService {
         Plan plan = planService.getPlanById(planId);
         List<PlanMember> planMembers = planMemberRepository.getPlanMembersByPlan(plan);
 
-        PlanMember planMember = planMembers.stream().findFirst().orElseThrow(() -> new BusinessException(ErrorCode.NOT_ALLOWED_MEMBER));
+        PlanMember planMember = planMembers.stream()
+                .filter(
+                        target -> target.getMember().getId().equals(member.getId())
+                )
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ALLOWED_MEMBER));
 
         if(!planMember.isConfirmed()) throw new BusinessException(ErrorCode.NOT_ACCEPTED_MEMBER);
 
         return true;
+    }
+
+    private void checkAvailableTime(PlanDetailRequestBody planDetailRequestBody) {
+        if(planDetailRepository.existsOverlapping(planDetailRequestBody.planId(),planDetailRequestBody.startTime(),planDetailRequestBody.endTime())) {
+            throw new BusinessException(ErrorCode.CONFLICT_TIME);
+        }
+
     }
 
 
