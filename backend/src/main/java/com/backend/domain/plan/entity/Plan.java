@@ -1,12 +1,12 @@
 package com.backend.domain.plan.entity;
 
 import com.backend.domain.member.entity.Member;
-import com.backend.domain.plan.dto.PlanCreateRequestDto;
+import com.backend.domain.plan.dto.PlanCreateRequestBody;
+import com.backend.domain.plan.dto.PlanUpdateRequestBody;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -56,19 +56,22 @@ public class Plan {
         this.content = content;
     }
 
-    public Plan(PlanCreateRequestDto planCreateRequestDto, Member member) {
+    public Plan(PlanCreateRequestBody planCreateRequestBody, Member member) {
         this.member = member;
         this.createDate = LocalDateTime.now();
         this.modifyDate = LocalDateTime.now();
-        this.startDate = planCreateRequestDto.startDate();
-        this.endDate = planCreateRequestDto.endDate();
-        this.title = planCreateRequestDto.title();
-        this.content = planCreateRequestDto.content();
+        this.startDate = planCreateRequestBody.startDate();
+        this.endDate = planCreateRequestBody.endDate();
+        this.title = planCreateRequestBody.title();
+        this.content = planCreateRequestBody.content();
     }
 
-    public Plan modifyPlan(String title, String content){
-        this.title = title;
-        this.content = content;
+    public Plan updatePlan(PlanUpdateRequestBody planUpdateRequestBody, Member member) {
+        this.member = member;
+        this.title = planUpdateRequestBody.title();
+        this.content = planUpdateRequestBody.content();
+        this.startDate = planUpdateRequestBody.startDate();
+        this.endDate = planUpdateRequestBody.endDate();
         this.modifyDate = LocalDateTime.now();
         return this;
     }

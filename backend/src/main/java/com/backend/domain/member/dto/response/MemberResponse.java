@@ -15,7 +15,7 @@ public record MemberResponse(
                 member.getId(),
                 member.getMemberId(),
                 member.getEmail(),
-                member.getEmail(),
+                member.getNickname(),
                 member.getRole()
         );
     }

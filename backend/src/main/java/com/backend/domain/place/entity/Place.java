@@ -2,9 +2,7 @@ package com.backend.domain.place.entity;
 
 import com.backend.domain.category.entity.Category;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Place {
 
     @Id
@@ -36,14 +36,10 @@ public class Place {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
-    @PrePersist
-    public void onCreate() {
-        this.createdDate = LocalDateTime.now();
-        this.updatedDate = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onModify() {
-        this.updatedDate = LocalDateTime.now();
+    public void update(String placeName, String address, String gu, String description) {
+        this.placeName = placeName;
+        this.address = address;
+        this.gu = gu;
+        this.description = description;
     }
 }

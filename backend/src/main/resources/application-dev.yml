@@ -4,3 +4,8 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+seoul:
+  api:
+    key: 6f4a495a43706a7338334b7843536e
+    base-url: http://openapi.seoul.go.kr:8088

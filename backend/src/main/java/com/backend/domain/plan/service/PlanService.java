@@ -2,9 +2,9 @@ package com.backend.domain.plan.service;
 
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
-import com.backend.domain.plan.controller.PlanController;
-import com.backend.domain.plan.dto.PlanCreateRequestDto;
-import com.backend.domain.plan.dto.PlanResponseDto;
+import com.backend.domain.plan.dto.PlanCreateRequestBody;
+import com.backend.domain.plan.dto.PlanResponseBody;
+import com.backend.domain.plan.dto.PlanUpdateRequestBody;
 import com.backend.domain.plan.entity.Plan;
 import com.backend.domain.plan.repository.PlanRepository;
 import com.backend.global.exception.BusinessException;
@@ -12,9 +12,8 @@ import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,23 +22,78 @@ public class PlanService {
     private final MemberRepository memberRepository; // 회원 정보 넣기 위한 임시 회원 레포지토리
     // TODO 회원 서비스 기반 처리 하기, JWT에서 멤버 ID 식별자 사용하면 더 편할것 같은데 보안상의 문제는 없는지?
 
-    public Plan CreatePlan(PlanCreateRequestDto planCreateRequestDto,String memberId) {
-        if(planCreateRequestDto.startDate().isAfter(planCreateRequestDto.endDate())){
-            throw new BusinessException(ErrorCode.NOT_VALID_DATE);
+    public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, String memberId) {
+
+        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
+        if(optionalMember.isEmpty()){
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
-        // TODO Member 클래스 객체 가져오는거 실제로 적용하기
-        Member member = new Member(1L,null,null,null,null,null);
-//        Member member= memberRepository.findByMemberId(memberId);
-        Plan plan = new Plan(planCreateRequestDto, member);
+        Plan plan = new Plan(planCreateRequestBody,optionalMember.get());
+        isValidPlan(plan);
+
         return planRepository.save(plan);
     }
 
 
-    public List<Plan> getPlanList(String memberID) {
-//        Member member = memberRepository.findByMemberId(memberID);
-//        List<Plan> plans = planRepository.get
+    public List<PlanResponseBody> getPlanList(String memberID) {
+         List<Plan> plans= planRepository.getPlansByMember_MemberId(memberID);
+        List<PlanResponseBody> planResponseBodies = plans.stream().map(PlanResponseBody::new).toList();
+        return planResponseBodies;
+    }
 
-        return null;
+    public PlanResponseBody updatePlan(long planId, PlanUpdateRequestBody planUpdateRequestBody, String memberId) {
+        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
+        Optional<Plan> optionalPlan = planRepository.findById(planId);
+
+        if(optionalMember.isEmpty()){
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        if(optionalPlan.isEmpty()){
+            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
+        }
+
+        Member member = optionalMember.get();
+        Plan plan = optionalPlan.get();
+
+        if(plan.getMember().getId() != member.getId()){
+            throw new BusinessException(ErrorCode.NOT_SAME_MEMBER);
+        }
+
+        isValidPlan(plan);
+
+        plan.updatePlan(planUpdateRequestBody,member);
+        planRepository.save(plan);
+        return new PlanResponseBody(plan);
+    }
+
+    private void isValidPlan(Plan plan){
+        if(plan.getStartDate().isAfter(plan.getEndDate())){
+            throw new BusinessException(ErrorCode.NOT_VALID_DATE);
+        }
+    }
+
+    public PlanResponseBody getPlanById(long planId) {
+        Optional<Plan> optionalPlan = planRepository.findById(planId);
+        if(optionalPlan.isEmpty()){
+            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
+        }
+        return new PlanResponseBody(optionalPlan.get());
+    }
+
+    public void deletePlanById(long planId, String memberId) {
+        Optional<Plan> optionalPlan = planRepository.findById(planId);
+        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
+        if(optionalPlan.isEmpty()){
+            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
+        }
+
+        if(optionalMember.isEmpty()){
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        Plan plan = optionalPlan.get();
+        planRepository.deleteById(planId);
+
     }
 }
