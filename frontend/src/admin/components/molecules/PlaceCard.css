@@ -1,0 +1,82 @@
+.place-card {
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+}
+
+.place-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.place-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.place-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  flex: 1;
+}
+
+.place-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.place-info {
+  margin-bottom: 16px;
+}
+
+.place-info > div {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.place-info strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.place-address,
+.place-gu {
+  display: flex;
+  align-items: center;
+}
+
+.place-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-count {
+  color: #6b7280;
+  font-weight: normal;
+}
+
+.place-description {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.place-description strong {
+  color: #1f2937;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.place-description p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.5;
+  font-size: 14px;
+}
