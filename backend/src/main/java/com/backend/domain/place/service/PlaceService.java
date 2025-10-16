@@ -13,6 +13,7 @@ import lombok.Builder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Builder
@@ -26,11 +27,11 @@ public class PlaceService {
         this.placeRepository = placeRepository;
     }
 
-    public List<ResponsePlaceDto> findAllPlace() {
-        return placeRepository.findAll()
+    public List<ResponsePlaceDto> findPlacesByCategoryId(int categoryId) {
+        return placeRepository.findByCategoryId(categoryId)
                 .stream()
                 .map(ResponsePlaceDto::from)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public ResponsePlaceDto findOnePlace(Long id) {
