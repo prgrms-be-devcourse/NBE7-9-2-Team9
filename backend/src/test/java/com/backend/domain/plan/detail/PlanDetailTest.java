@@ -7,6 +7,7 @@ import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
 import com.backend.domain.member.service.MemberService;
 import com.backend.domain.place.entity.Place;
+import com.backend.domain.place.repository.PlaceRepository;
 import com.backend.domain.plan.detail.controller.PlanDetailController;
 import com.backend.domain.plan.detail.service.PlanDetailService;
 import com.backend.domain.plan.entity.Plan;
@@ -53,16 +54,11 @@ public class PlanDetailTest {
     @Autowired
     private PlanRepository planRepository;
 
-//    @Autowired
-//    private PlaceRepository placeRepository;
+    @Autowired
+    private PlaceRepository placeRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    @BeforeEach
-    void prepareData() throws InterruptedException {
-
-    }
 
     @Test
     @DisplayName("계획 세부 저장 테스트")
@@ -74,9 +70,9 @@ public class PlanDetailTest {
         Place place = new Place();
         place.setPlaceName("test");
         place.setCategory(category);
-//        placeRepository.save(place);
+        placeRepository.save(place);
 
-//        Place place2 = placeRepository.findById(1L).orElseThrow();
+        Place place2 = placeRepository.findById(1L).orElseThrow();
 
         MemberSignupRequest ms = new MemberSignupRequest(
                 "dummy",

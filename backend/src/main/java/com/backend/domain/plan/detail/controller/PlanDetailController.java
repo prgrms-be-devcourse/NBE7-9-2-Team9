@@ -37,17 +37,17 @@ public class PlanDetailController {
     }
 
     @GetMapping("/{planDetailId}")
-    public ResponseEntity<ApiResponse<PlanDetailResponseBody>> getPlanDetail(
+    public ResponseEntity<ApiResponse<PlanDetailsElementBody>> getPlanDetail(
             @PathVariable long planDetailId
     ){
         //TODO 추후 초대된 사용자들만 조회 될 수 있게 하기.
         String memberId = "dummy";
 
-        PlanDetailResponseBody planDetailResponseBody = planDetailService.getPlanDetailById(planDetailId, memberId);
+        PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberId);
 
         return new ResponseEntity<>(
                 ApiResponse.success(
-                        planDetailResponseBody
+                        planDetailsElementBody
                 ),
                 HttpStatus.OK
         );
@@ -67,4 +67,22 @@ public class PlanDetailController {
                 HttpStatus.OK
         );
     }
+
+    @PatchMapping("/{planDetailId}/update")
+    public ResponseEntity<ApiResponse<PlanDetailResponseBody>> updatePlanDetail(
+            @PathVariable long planDetailId,
+            @RequestBody PlanDetailRequestBody planDetailRequestBody
+    ) {
+        String memberId = "dummy";
+
+        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody,memberId);
+        return new ResponseEntity<>(
+                ApiResponse.success(
+                        planDetailResponseBody
+                ),
+                HttpStatus.OK
+        );
+    }
+
+
 }

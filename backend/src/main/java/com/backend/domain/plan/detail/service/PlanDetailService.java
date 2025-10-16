@@ -46,15 +46,17 @@ public class PlanDetailService {
     }
 
 
-    public PlanDetailResponseBody getPlanDetailById(Long planDetailId,String memberId) {
+    public PlanDetailsElementBody getPlanDetailById(Long planDetailId,String memberId) {
         //TODO 추후 초대된 사용자들만 조회 될 수 있게 하기.
         Optional<PlanDetail> optionalPlanDetail = planDetailRepository.getPlanDetailById(planDetailId);
         if (!optionalPlanDetail.isPresent()) {
             throw new BusinessException(ErrorCode.NOT_FOUND_DETAIL_PLAN);
         }
+
+
         PlanDetail planDetail = optionalPlanDetail.get();
 
-        return new PlanDetailResponseBody(planDetail);
+        return new PlanDetailsElementBody(planDetail);
     }
 
     @Transactional
@@ -63,18 +65,17 @@ public class PlanDetailService {
         List<PlanDetailsElementBody> planDetailList = planDetails.stream()
                 .map(
                         (PlanDetail p) ->
-                                new PlanDetailsElementBody(
-                                        p.getId(),
-                                        p.getPlace().getId(),
-                                        p.getPlace().getPlaceName(),
-                                        p.getStartTime(),
-                                        p.getEndTime(),
-                                        p.getTitle(),
-                                        p.getContent()
-                                )
+                                new PlanDetailsElementBody(p)
                 )
                 .toList();
 
         return planDetailList;
     }
+
+    public PlanDetailResponseBody updatePlanDetail(PlanDetailRequestBody planDetailRequestBody,String memberId) {
+
+        return null;
+    }
+
+
 }

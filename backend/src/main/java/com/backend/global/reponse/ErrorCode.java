@@ -21,9 +21,13 @@ public enum ErrorCode {
     NOT_FOUND_PLAN("D001",HttpStatus.NOT_FOUND,"계획이 없습니다."),
     NOT_VALID_DATE("D002",HttpStatus.BAD_REQUEST,"입력된 날짜가 유효하지 않습니다."),
     NOT_SAME_MEMBER("D003",HttpStatus.FORBIDDEN,"본인이 작성한 계획만 수정이 가능합니다."),
+    NOT_MY_PLAN("D004",HttpStatus.FORBIDDEN,"내가 만든 계획이 아닙니다."),
 
     //계획 상세
     NOT_FOUND_DETAIL_PLAN("D101",HttpStatus.NOT_FOUND,"상세 계획을 찾을 수 없습니다"),
+
+    //회원 초대
+    NOT_FOUND_INVITE("I001",HttpStatus.NOT_FOUND,"초대 내역을 찾을 수 없습니다."),
 
     //여행지
     NOT_FOUND_PLACE("P001",HttpStatus.NOT_FOUND,"여행지를 찾을 수 없습니다."),
