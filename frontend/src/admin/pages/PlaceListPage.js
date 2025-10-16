@@ -29,46 +29,10 @@ const PlaceListPage = () => {
   const fetchPlaces = async () => {
     try {
       setLoading(true);
-      // 임시 데이터 (백엔드 API 연결 전까지)
-      const mockPlaces = [
-        {
-          id: 1,
-          placeName: "경복궁",
-          address: "서울특별시 종로구 사직로 161",
-          gu: "종로구",
-          description:
-            "조선왕조의 대표적인 궁궐로, 대한민국의 대표적인 역사 문화재입니다.",
-          ratingAvg: 4.5,
-          ratingCount: 1234,
-          category: { id: 1, name: "관광지" },
-        },
-        {
-          id: 2,
-          placeName: "명동",
-          address: "서울특별시 중구 명동",
-          gu: "중구",
-          description: "서울의 대표적인 상업지구이자 관광지입니다.",
-          ratingAvg: 4.2,
-          ratingCount: 856,
-          category: { id: 1, name: "관광지" },
-        },
-        {
-          id: 3,
-          placeName: "롯데월드타워",
-          address: "서울특별시 송파구 올림픽로 300",
-          gu: "송파구",
-          description:
-            "서울의 랜드마크인 롯데월드타워와 롯데월드가 있는 복합문화공간입니다.",
-          ratingAvg: 4.3,
-          ratingCount: 2156,
-          category: { id: 1, name: "관광지" },
-        },
-      ];
+      const response = await getPlacesByCategory(categoryId);
 
-      // 카테고리별 필터링 (임시로 카테고리 1번만)
-      const filteredPlaces = categoryId === "1" ? mockPlaces : [];
-
-      setPlaces(filteredPlaces);
+      // 백엔드 응답 데이터를 그대로 사용
+      setPlaces(response.data || []);
       setError(null);
     } catch (err) {
       setError("여행지 목록을 불러오는데 실패했습니다.");
