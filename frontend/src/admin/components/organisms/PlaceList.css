@@ -1,0 +1,56 @@
+.place-list {
+  width: 100%;
+}
+
+.place-list-header {
+  margin-bottom: 24px;
+}
+
+.place-list-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.place-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.loading,
+.error,
+.empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.loading {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 16px;
+}
+
+.empty {
+  color: #6b7280;
+}
+
+.empty h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 8px 0;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 14px;
+}

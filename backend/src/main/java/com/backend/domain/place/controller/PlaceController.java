@@ -20,9 +20,9 @@ public class PlaceController {
         this.placeService = placeService;
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<ResponsePlaceDto>>> getAllPlace() {
-        List<ResponsePlaceDto> data = placeService.findAllPlace();
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<ApiResponse<List<ResponsePlaceDto>>> getPlacesByCategoryId(@PathVariable int categoryId) {
+        List<ResponsePlaceDto> data = placeService.findPlacesByCategoryId(categoryId);
         return ResponseEntity.ok(ApiResponse.success(data));
     }
 
