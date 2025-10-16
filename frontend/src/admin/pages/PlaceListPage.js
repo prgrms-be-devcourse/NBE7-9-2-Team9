@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import PlaceList from "../components/organisms/PlaceList";
 import Button from "../components/atoms/Button";
 import { getPlacesByCategory } from "../services/categoryService";
+import { deletePlace } from "../services/placeService";
 import "./PlaceListPage.css";
 
 const PlaceListPage = () => {
@@ -82,19 +83,26 @@ const PlaceListPage = () => {
   };
 
   const handleAddPlace = () => {
-    // 추후 구현
-    console.log("여행지 등록");
+    navigate(`/admin/places/${categoryId}/new`);
   };
 
   const handleEditPlace = (place) => {
-    // 추후 구현
-    console.log("여행지 수정:", place);
+    navigate(`/admin/places/${categoryId}/edit`, {
+      state: { place },
+    });
   };
 
-  const handleDeletePlace = (place) => {
-    // 추후 구현
+  const handleDeletePlace = async (place) => {
     if (window.confirm(`"${place.placeName}"을(를) 정말 삭제하시겠습니까?`)) {
-      console.log("여행지 삭제:", place);
+      try {
+        await deletePlace(place.id);
+        alert("여행지가 삭제되었습니다.");
+        // 목록 새로고침
+        fetchPlaces();
+      } catch (error) {
+        console.error("여행지 삭제 실패:", error);
+        alert("여행지 삭제에 실패했습니다.");
+      }
     }
   };
 
