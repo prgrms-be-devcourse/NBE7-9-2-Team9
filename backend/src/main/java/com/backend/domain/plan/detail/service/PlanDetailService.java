@@ -9,6 +9,9 @@ import com.backend.domain.plan.detail.dto.PlanDetailsElementBody;
 import com.backend.domain.plan.detail.entity.PlanDetail;
 import com.backend.domain.plan.detail.repository.PlanDetailRepository;
 import com.backend.domain.plan.entity.Plan;
+import com.backend.domain.plan.entity.PlanMember;
+import com.backend.domain.plan.repository.PlanMemberRepository;
+import com.backend.domain.plan.repository.PlanRepository;
 import com.backend.domain.plan.service.PlanService;
 import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
@@ -26,6 +29,8 @@ public class PlanDetailService {
     private final PlanDetailRepository planDetailRepository;
     //TODO 각자 서비스 객체가 만들어지면 레포지토리 말고 서비스에서 해당 객체를 가져오기? 아니 아이디만 있으면 되잖아?
     private final MemberRepository memberRepository;
+    private final PlanRepository planRepository;
+    private final PlanMemberRepository planMemberRepository;
 
 
     public PlanDetail addPlanDetail(PlanDetailRequestBody requestBody,String memberId) {
@@ -35,8 +40,13 @@ public class PlanDetailService {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
+        if(planDetailRepository.existsOverlapping(requestBody.planId(),requestBody.startTime(),requestBody.endTime())) {
+            throw new BusinessException(ErrorCode.CONFLICT_TIME);
+        }
+
         Member member = optionalMember.get();
-        Plan plan = new Plan(requestBody.planId(), member);
+        Plan plan = planService.getPlanById(requestBody.planId());
+
         Place place = new Place();
         place.setId(requestBody.placeId());
 
@@ -48,6 +58,8 @@ public class PlanDetailService {
 
     public PlanDetailsElementBody getPlanDetailById(Long planDetailId,String memberId) {
         //TODO 추후 초대된 사용자들만 조회 될 수 있게 하기.
+
+
         Optional<PlanDetail> optionalPlanDetail = planDetailRepository.getPlanDetailById(planDetailId);
         if (!optionalPlanDetail.isPresent()) {
             throw new BusinessException(ErrorCode.NOT_FOUND_DETAIL_PLAN);
@@ -61,7 +73,11 @@ public class PlanDetailService {
 
     @Transactional
     public List<PlanDetailsElementBody> getPlanDetailsByPlanId(long planId, String memberId) {
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        isAvailableMember(planId,member);
+
         List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlan_Id(planId);
+
         List<PlanDetailsElementBody> planDetailList = planDetails.stream()
                 .map(
                         (PlanDetail p) ->
@@ -75,6 +91,17 @@ public class PlanDetailService {
     public PlanDetailResponseBody updatePlanDetail(PlanDetailRequestBody planDetailRequestBody,String memberId) {
 
         return null;
+    }
+
+    private boolean isAvailableMember(long planId, Member member) {
+        Plan plan = planService.getPlanById(planId);
+        List<PlanMember> planMembers = planMemberRepository.getPlanMembersByPlan(plan);
+
+        PlanMember planMember = planMembers.stream().findFirst().orElseThrow(() -> new BusinessException(ErrorCode.NOT_ALLOWED_MEMBER));
+
+        if(!planMember.isConfirmed()) throw new BusinessException(ErrorCode.NOT_ACCEPTED_MEMBER);
+
+        return true;
     }
 
 

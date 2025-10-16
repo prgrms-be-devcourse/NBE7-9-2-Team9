@@ -61,7 +61,7 @@ public class PlanController {
     public ResponseEntity<ApiResponse<PlanResponseBody>> getPlan(
             @PathVariable long planId
     ) {
-        PlanResponseBody planResponseBody = planService.getPlanById(planId);
+        PlanResponseBody planResponseBody = planService.getPlanResponseBodyById(planId);
         return new ResponseEntity<>(ApiResponse.success(planResponseBody), HttpStatus.OK);
     }
 

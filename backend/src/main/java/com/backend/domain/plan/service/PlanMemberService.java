@@ -28,7 +28,6 @@ public class PlanMemberService {
     private final PlanRepository planRepository;
 
     public PlanMemberResponseBody invitePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
-        // TODO 회원 초대시 중복되는 문제 해결할 것 -> 해결됨, DB 유니크 제약 위반시 오류 메세지 통일규격 맞추기
         PlanMember planMember = isValidInvite(requestBody, memberId);
 
         try{
@@ -115,5 +114,13 @@ public class PlanMemberService {
         );
 
         return planMember;
+    }
+
+    public boolean isAvailablePlanMember(long planId, Member member) {
+        boolean isAvailable = false;
+
+
+
+        return isAvailable;
     }
 }
