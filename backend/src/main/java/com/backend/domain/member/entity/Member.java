@@ -17,7 +17,7 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id; //(식별자)
+    private Long id; // (식별자)
 
     @Column(nullable = false, unique = true, length = 30)
     private String memberId; // 로그인용 아이디

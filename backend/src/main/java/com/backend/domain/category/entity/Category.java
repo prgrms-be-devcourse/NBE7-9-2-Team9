@@ -23,14 +23,4 @@ public class Category {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
-    @PrePersist
-    public void onCreate() {
-        this.createdDate = LocalDateTime.now();
-        this.updatedDate = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onModify() {
-        this.updatedDate = LocalDateTime.now();
-    }
 }
