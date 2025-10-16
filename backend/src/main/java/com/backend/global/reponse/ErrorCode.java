@@ -24,6 +24,7 @@ public enum ErrorCode {
 
     //여행지
     NOT_FOUND_PLACE("P001",HttpStatus.NOT_FOUND,"여행지를 찾을 수 없습니다."),
+    NOT_FOUND_CATEGORY("P002",HttpStatus.NOT_FOUND,"카테고리를 찾을 수 없습니다."),
 
     //북마크
     NOT_FOUND_BOOKMARK("P001",HttpStatus.NOT_FOUND,"북마크를 찾을 수 없습니다."),

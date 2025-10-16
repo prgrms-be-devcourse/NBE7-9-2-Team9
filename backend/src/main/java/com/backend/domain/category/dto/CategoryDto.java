@@ -11,15 +11,11 @@ import java.time.LocalDateTime;
 public class CategoryDto {
     private Long id;
     private String name;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
 
     public static CategoryDto from(Category category) {
         return new CategoryDto(
                 category.getId(),
-                category.getName(),
-                category.getCreatedDate(),
-                category.getUpdatedDate()
+                category.getName()
         );
     }
 }
