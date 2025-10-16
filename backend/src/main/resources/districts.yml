@@ -1,0 +1,29 @@
+# 영등포구
+ydp:
+  api:
+    base-url: http://openAPI.ydp.go.kr:8088
+    key: 6f4a495a43706a7338334b7843536e
+    endpoint: YdpModelRestaurantDesignate
+
+# 양천구
+yangcheon:
+  api:
+    base-url: http://openAPI.yangcheon.go.kr:8088
+    key: 6f4a495a43706a7338334b7843536e
+    endpoint: YcModelRestaurantDesignate
+
+# 동대문구
+ddm:
+  api:
+    base-url: http://openAPI.ddm.go.kr:8088
+    key: 6f4a495a43706a7338334b7843536e
+    endpoint: DongdeamoonModelRestaurantDesignate
+
+# 동작구
+dongjak:
+  api:
+    base-url: http://openAPI.dongjak.go.kr:8088
+    key: 6f4a495a43706a7338334b7843536e
+    endpoint: DjModelRestaurantDesignate
+
+# … 필요한 구 계속 추가 …
