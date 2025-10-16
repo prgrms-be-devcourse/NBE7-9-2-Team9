@@ -19,7 +19,13 @@ const CategoryListPage = () => {
       setLoading(true);
       const response = await getCategories();
 
+      // 디버깅을 위한 로그 출력
+      console.log("API 응답:", response);
+      console.log("응답 타입:", typeof response);
+      console.log("응답 구조:", Object.keys(response));
+
       // 백엔드 응답 데이터를 프론트엔드 형태로 변환
+      // api.js에서 이미 response.data를 반환하므로 response.data.data가 실제 데이터
       const categoriesWithIcons = response.data.map((category) => ({
         ...category,
         description: getCategoryDescription(category.name),
@@ -31,7 +37,7 @@ const CategoryListPage = () => {
       setError(null);
     } catch (err) {
       setError("카테고리 목록을 불러오는데 실패했습니다.");
-      console.error(err);
+      console.error("오류 상세:", err);
     } finally {
       setLoading(false);
     }
@@ -40,8 +46,8 @@ const CategoryListPage = () => {
   const getCategoryDescription = (name) => {
     const descriptions = {
       맛집: "레스토랑, 카페, 음식점 등",
-      관광지: "명소, 박물관, 전시관 등",
-      숙소: "호텔, 펜션, 게스트하우스 등",
+      NIGHTSPOT: "나이트클럽, 바, 클럽 등",
+      HOTEL: "호텔, 펜션, 게스트하우스 등",
     };
     return descriptions[name] || "카테고리 설명";
   };
@@ -49,8 +55,8 @@ const CategoryListPage = () => {
   const getCategoryIcon = (name) => {
     const icons = {
       맛집: "🍽️",
-      관광지: "🏛️",
-      숙소: "🏨",
+      NIGHTSPOT: "🌃",
+      HOTEL: "🏨",
     };
     return icons[name] || "📁";
   };
