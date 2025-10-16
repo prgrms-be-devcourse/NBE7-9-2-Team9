@@ -17,32 +17,17 @@ const CategoryListPage = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      // 임시 데이터 (백엔드 API 연결 전까지)
-      const mockCategories = [
-        {
-          id: 1,
-          name: "관광지",
-          description: "명소, 박물관, 전시관 등",
-          icon: "🏛️",
-          placeCount: 12,
-        },
-        {
-          id: 2,
-          name: "맛집",
-          description: "레스토랑, 카페, 음식점 등",
-          icon: "🍽️",
-          placeCount: 8,
-        },
-        {
-          id: 3,
-          name: "숙소",
-          description: "호텔, 펜션, 게스트하우스 등",
-          icon: "🏨",
-          placeCount: 15,
-        },
-      ];
+      const response = await getCategories();
 
-      setCategories(mockCategories);
+      // 백엔드 응답 데이터를 프론트엔드 형태로 변환
+      const categoriesWithIcons = response.data.map((category) => ({
+        ...category,
+        description: getCategoryDescription(category.name),
+        icon: getCategoryIcon(category.name),
+        placeCount: 0, // 추후 실제 카운트로 변경
+      }));
+
+      setCategories(categoriesWithIcons);
       setError(null);
     } catch (err) {
       setError("카테고리 목록을 불러오는데 실패했습니다.");
@@ -50,6 +35,24 @@ const CategoryListPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getCategoryDescription = (name) => {
+    const descriptions = {
+      맛집: "레스토랑, 카페, 음식점 등",
+      관광지: "명소, 박물관, 전시관 등",
+      숙소: "호텔, 펜션, 게스트하우스 등",
+    };
+    return descriptions[name] || "카테고리 설명";
+  };
+
+  const getCategoryIcon = (name) => {
+    const icons = {
+      맛집: "🍽️",
+      관광지: "🏛️",
+      숙소: "🏨",
+    };
+    return icons[name] || "📁";
   };
 
   const handleCategoryClick = (category) => {
