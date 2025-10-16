@@ -19,7 +19,6 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
 
-
                 .authorizeHttpRequests(auth -> auth
                         /*.requestMatchers(
                                 "/api/members/signup",
@@ -37,10 +36,5 @@ public class SecurityConfig {
                 // H2 콘솔 접근 허용
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
