@@ -28,6 +28,7 @@ public enum ErrorCode {
 
     //회원 초대
     NOT_FOUND_INVITE("I001",HttpStatus.NOT_FOUND,"초대 내역을 찾을 수 없습니다."),
+    DUPLICATE_MEMBER_INVITE("I002",HttpStatus.CONFLICT,"이미 초대된 사용자입니다."),
 
     //여행지
     NOT_FOUND_PLACE("P001",HttpStatus.NOT_FOUND,"여행지를 찾을 수 없습니다."),

@@ -13,10 +13,13 @@ import com.backend.domain.plan.repository.PlanRepository;
 import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PlanMemberService {
@@ -25,9 +28,16 @@ public class PlanMemberService {
     private final PlanRepository planRepository;
 
     public PlanMemberResponseBody invitePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
-        // TODO 회원 초대시 중복되는 문제 해결할 것.
+        // TODO 회원 초대시 중복되는 문제 해결할 것 -> 해결됨, DB 유니크 제약 위반시 오류 메세지 통일규격 맞추기
         PlanMember planMember = isValidInvite(requestBody, memberId);
-        planMemberRepository.save(planMember);
+
+        try{
+            planMemberRepository.save(planMember);
+        } catch (DataIntegrityViolationException e){
+            log.error(e.getMessage());
+            throw new BusinessException(ErrorCode.DUPLICATE_MEMBER_INVITE);
+        }
+
         return new PlanMemberResponseBody(planMember);
     }
 

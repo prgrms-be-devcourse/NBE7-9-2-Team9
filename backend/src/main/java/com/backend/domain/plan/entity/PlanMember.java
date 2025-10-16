@@ -11,6 +11,15 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(
+        name = "plan_member", // 테이블 이름
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "UC_MEMBER_PLAN",
+                        columnNames = {"member_id", "plan_id"}
+                )
+        }
+)
 public class PlanMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
