@@ -22,9 +22,9 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategories(){
+    public ApiResponse<List<CategoryDto>> getAllCategories(){
         List<CategoryDto> data = categoryService.findAll();
-        return ResponseEntity.ok(ApiResponse.success(data));
+        return ApiResponse.success(data);
     }
 
 }

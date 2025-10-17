@@ -21,37 +21,36 @@ public class PlaceController {
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<ApiResponse<List<ResponsePlaceDto>>> getPlacesByCategoryId(@PathVariable int categoryId) {
+    public ApiResponse<List<ResponsePlaceDto>> getPlacesByCategoryId(@PathVariable int categoryId) {
         List<ResponsePlaceDto> data = placeService.findPlacesByCategoryId(categoryId);
-        return ResponseEntity.ok(ApiResponse.success(data));
+        return ApiResponse.success(data);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponsePlaceDto>> getPlace(@PathVariable Long id) {
+    public ApiResponse<ResponsePlaceDto> getPlace(@PathVariable Long id) {
         ResponsePlaceDto data = placeService.findOnePlace(id);
-        return ResponseEntity.ok(ApiResponse.success(data));
+        return ApiResponse.success(data);
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createPlace(@RequestBody RequestPlaceDto dto) {
+    public ApiResponse<Void> createPlace(@RequestBody RequestPlaceDto dto) {
         placeService.save(dto);
-        return ResponseEntity.ok(ApiResponse.success(null,"여행지가 성공적으로 생성되었습니다."));
+        return ApiResponse.success(null,"여행지가 성공적으로 생성되었습니다.");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponsePlaceDto>> updatePlace(
+    public ApiResponse<ResponsePlaceDto> updatePlace(
             @PathVariable Long id,
             @RequestBody RequestPlaceDto dto
     ) {
         ResponsePlaceDto updated = placeService.update(id, dto);
-        return ResponseEntity.ok(ApiResponse.success(updated, "여행지가 성공적으로 수정되었습니다."));
+        return ApiResponse.success(updated, "여행지가 성공적으로 수정되었습니다.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deletePlace(@PathVariable Long id) {
+    public ApiResponse<Void> deletePlace(@PathVariable Long id) {
         placeService.delete(id);
-        return ResponseEntity
-                .ok(ApiResponse.success(null, "여행지가 삭제되었습니다."));
+        return ApiResponse.success(null, "여행지가 삭제되었습니다.");
     }
 
 }
