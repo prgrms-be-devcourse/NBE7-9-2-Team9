@@ -35,7 +35,9 @@ public enum ErrorCode {
     NOT_FOUND_CATEGORY("P002",HttpStatus.NOT_FOUND,"카테고리를 찾을 수 없습니다."),
 
     //북마크
-    NOT_FOUND_BOOKMARK("P001",HttpStatus.NOT_FOUND,"북마크를 찾을 수 없습니다."),
+    ALREADY_EXISTS_BOOKMARK("B001", HttpStatus.CONFLICT, "이미 북마크된 장소입니다."),
+    NOT_FOUND_BOOKMARK("B002", HttpStatus.NOT_FOUND, "북마크를 찾을 수 없습니다."),
+    FORBIDDEN_BOOKMARK("B003", HttpStatus.FORBIDDEN, "북마크에 대한 권한이 없습니다()"),
 
     //
     NOT_FOUND_REVIEW("R001",HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없습니다.")
