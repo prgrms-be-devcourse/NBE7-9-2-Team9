@@ -2,6 +2,7 @@ package com.backend.domain.plan.detail.controller;
 
 import com.backend.domain.plan.detail.dto.PlanDetailRequestBody;
 import com.backend.domain.plan.detail.dto.PlanDetailResponseBody;
+import com.backend.domain.plan.detail.dto.PlanDetailsElementBody;
 import com.backend.domain.plan.detail.entity.PlanDetail;
 import com.backend.domain.plan.detail.repository.PlanDetailRepository;
 import com.backend.domain.plan.detail.service.PlanDetailService;
@@ -10,10 +11,9 @@ import com.backend.global.reponse.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/plan/detail")
@@ -35,4 +35,54 @@ public class PlanDetailController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("/{planDetailId}")
+    public ResponseEntity<ApiResponse<PlanDetailsElementBody>> getPlanDetail(
+            @PathVariable long planDetailId
+    ){
+        //TODO 추후 초대된 사용자들만 조회 될 수 있게 하기.
+        String memberId = "dummy";
+
+        PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberId);
+
+        return new ResponseEntity<>(
+                ApiResponse.success(
+                        planDetailsElementBody
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/{planId}/list")
+    public ResponseEntity<ApiResponse<List<PlanDetailsElementBody>>> getAllPlanDetail(
+            @PathVariable long planId
+    ){
+        String memberId = "dummy";
+
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId,memberId);
+        return new ResponseEntity<>(
+                ApiResponse.success(
+                        planDetailsElementBodies
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @PatchMapping("/{planDetailId}/update")
+    public ResponseEntity<ApiResponse<PlanDetailResponseBody>> updatePlanDetail(
+            @PathVariable long planDetailId,
+            @RequestBody PlanDetailRequestBody planDetailRequestBody
+    ) {
+        String memberId = "dummy";
+
+        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody,memberId);
+        return new ResponseEntity<>(
+                ApiResponse.success(
+                        planDetailResponseBody
+                ),
+                HttpStatus.OK
+        );
+    }
+
+
 }
