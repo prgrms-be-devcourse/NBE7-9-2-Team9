@@ -10,21 +10,22 @@ import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Builder
+@RequiredArgsConstructor
 public class PlaceService {
 
-    private PlaceRepository placeRepository;
-    private CategoryRepository categoryRepository;
+    private final PlaceRepository placeRepository;
+    private final CategoryRepository categoryRepository;
 
-    public PlaceService(PlaceRepository placeRepository, CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-        this.placeRepository = placeRepository;
+    public Place findPlaceById(Long id) {
+        return placeRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
     }
 
     public List<ResponsePlaceDto> findPlacesByCategoryId(int categoryId) {
@@ -35,10 +36,7 @@ public class PlaceService {
     }
 
     public ResponsePlaceDto findOnePlace(Long id) {
-        Place place = placeRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
-
-        return ResponsePlaceDto.from(place);
+        return ResponsePlaceDto.from(findPlaceById(id));
     }
 
     public void save(RequestPlaceDto dto) {
@@ -58,9 +56,7 @@ public class PlaceService {
 
     @Transactional
     public ResponsePlaceDto update(Long id, RequestPlaceDto dto) {
-        Place place = placeRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
-
+        Place place = findPlaceById(id);
         place.update(
                 dto.placeName(),
                 dto.address(),
@@ -73,10 +69,7 @@ public class PlaceService {
 
     @Transactional
     public void delete(Long id) {
-        Place place = placeRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
-
-        placeRepository.delete(place);
+        placeRepository.delete(findPlaceById(id));
     }
 
 }

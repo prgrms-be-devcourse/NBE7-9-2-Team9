@@ -1,10 +1,8 @@
 package com.backend.domain.category.controller;
 
-import com.backend.domain.category.dto.CategoryDto;
-import com.backend.domain.category.entity.Category;
+import com.backend.domain.category.dto.ResponseCategoryDto;
 import com.backend.domain.category.service.CategoryService;
 import com.backend.global.reponse.ApiResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +20,9 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategories(){
-        List<CategoryDto> data = categoryService.findAll();
-        return ResponseEntity.ok(ApiResponse.success(data));
+    public ApiResponse<List<ResponseCategoryDto>> getAllCategories(){
+        List<ResponseCategoryDto> data = categoryService.findAll();
+        return ApiResponse.success(data);
     }
 
 }

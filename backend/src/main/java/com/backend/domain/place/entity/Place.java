@@ -54,24 +54,5 @@ public class Place {
         this.description = description;
     }
 
-    // 새 리뷰 반영
-    public void applyNewRating(int rating) {
-        this.ratingSum += rating;
-        this.ratingCount += 1;
-        this.ratingAvg = (double) this.ratingSum / this.ratingCount;
-    }
 
-    // 기존 리뷰 점수 변경 반영
-    public void applyRatingUpdate(int oldRating, int newRating) {
-        this.ratingSum += (newRating - oldRating);
-        // count 변화 없음
-        this.ratingAvg = this.ratingCount == 0 ? 0.0 : (double) this.ratingSum / this.ratingCount;
-    }
-
-    // 리뷰 삭제 반영
-    public void applyRatingRemoval(int rating) {
-        this.ratingSum -= rating;
-        this.ratingCount -= 1;
-        this.ratingAvg = this.ratingCount == 0 ? 0.0 : (double) this.ratingSum / this.ratingCount;
-    }
 }
