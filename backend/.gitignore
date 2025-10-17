@@ -39,3 +39,5 @@ out/
 ### custom ###
 db_dev.mv.db
 db_dev.mv.db.trace.db
+
+SEOUL_API_KEY=6f4a495a43706a7338334b7843536e

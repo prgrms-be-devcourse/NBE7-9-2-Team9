@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PlaceService {
 
-    private PlaceRepository placeRepository;
-    private CategoryRepository categoryRepository;
+    private final PlaceRepository placeRepository;
+    private final CategoryRepository categoryRepository;
 
     public Place findPlaceById(Long id) {
         return placeRepository.findById(id)
