@@ -9,4 +9,6 @@ import java.util.List;
 public interface PlaceRepository extends JpaRepository<Place, Long> {
     boolean existsByPlaceNameAndAddress(String placeName, String address);
     List<Place> findByCategoryId(int categoryId);
+
+    Place getPlaceById(Long id);
 }

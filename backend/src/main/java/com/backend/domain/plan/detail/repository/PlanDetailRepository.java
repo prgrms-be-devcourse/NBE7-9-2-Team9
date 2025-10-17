@@ -19,11 +19,14 @@ SELECT COUNT(pd)>0
 FROM PlanDetail pd
 WHERE pd.plan.id = :planId
 AND NOT (:endTime < pd.startTime OR :startTime > pd.endTime)
+AND (:#{#detailId} IS NULL OR pd.id != :detailId)
 """)
     boolean existsOverlapping(
-            @Param("planId")long PlanId,
+            @Param("planId")long planId,
             @Param("endTime")LocalDateTime startTime,
-            @Param("startTime")LocalDateTime endTime
+            @Param("startTime")LocalDateTime endTime,
+            @Param("detailId")long detailId
     );
+
 
 }

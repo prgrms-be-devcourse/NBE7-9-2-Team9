@@ -21,8 +21,8 @@ WHERE pm.plan.id = :planId
 AND pm.member.id = :memberId
 """)
     boolean existsByMemberInPlanId(
-            @Param("memberID") Integer memberId,
-            @Param("planId")Integer planId
+            @Param("memberId")long memberId,
+            @Param("planId")long planId
     );
 
 }

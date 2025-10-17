@@ -90,7 +90,7 @@ public class PlanController {
     }
 
     @GetMapping("/member/mylist")
-    public ResponseEntity<ApiResponse<List<MyPlanMemberResponseBody>>> getMyPlanMember(){
+    public ResponseEntity<ApiResponse<List<PlanMemberMyResponseBody>>> getMyPlanMember(){
         String memberId = "dummy2";
         return new ResponseEntity<>(
                 ApiResponse.success(

@@ -37,8 +37,7 @@ public class PlanDetailController {
     public ApiResponse<PlanDetailsElementBody> getPlanDetail(
             @PathVariable long planDetailId
     ) {
-        //TODO 추후 초대된 사용자들만 조회 될 수 있게 하기.
-        String memberId = "dummy";
+        String memberId = "dummy3";
 
         PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberId);
 
@@ -67,10 +66,19 @@ public class PlanDetailController {
     ) {
         String memberId = "dummy";
 
-        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberId);
+        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberId, planDetailId);
         return ApiResponse.success(
                 planDetailResponseBody
         );
+    }
+
+    @DeleteMapping("/{planDetailId}/delete")
+    public ApiResponse<PlanDetailResponseBody> deletePlanDetail(
+            @PathVariable long planDetailId
+    ){
+        String memberId = "dummy";
+        planDetailService.deletePlanDetail(planDetailId,memberId);
+        return ApiResponse.success();
     }
 
 

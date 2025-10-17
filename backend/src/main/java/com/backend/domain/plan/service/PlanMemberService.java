@@ -2,7 +2,7 @@ package com.backend.domain.plan.service;
 
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
-import com.backend.domain.plan.dto.MyPlanMemberResponseBody;
+import com.backend.domain.plan.dto.PlanMemberMyResponseBody;
 import com.backend.domain.plan.dto.PlanMemberAddRequestBody;
 import com.backend.domain.plan.dto.PlanMemberAnswerRequestBody;
 import com.backend.domain.plan.dto.PlanMemberResponseBody;
@@ -40,16 +40,16 @@ public class PlanMemberService {
         return new PlanMemberResponseBody(planMember);
     }
 
-    public List<MyPlanMemberResponseBody> myInvitedPlanList(String memberId) {
+    public List<PlanMemberMyResponseBody> myInvitedPlanList(String memberId) {
         Member member = memberRepository.findByMemberId(memberId).orElseThrow(
                 () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
         List<PlanMember> planMemberList = planMemberRepository.getPlanMembersByMember(member);
-        List<MyPlanMemberResponseBody> myPlanMemberList =
+        List<PlanMemberMyResponseBody> myPlanMemberList =
                 planMemberList
                         .stream()
-                        .map(pm -> new MyPlanMemberResponseBody(pm))
+                        .map(pm -> new PlanMemberMyResponseBody(pm))
                         .toList();
         return myPlanMemberList;
     }
@@ -117,10 +117,6 @@ public class PlanMemberService {
     }
 
     public boolean isAvailablePlanMember(long planId, Member member) {
-        boolean isAvailable = false;
-
-
-
-        return isAvailable;
+        return planMemberRepository.existsByMemberInPlanId(member.getId(),planId);
     }
 }
