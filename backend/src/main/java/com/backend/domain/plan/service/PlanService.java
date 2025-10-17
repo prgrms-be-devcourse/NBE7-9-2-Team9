@@ -28,9 +28,9 @@ public class PlanService {
     public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, String memberId) {
         Member member = memberService.findByMemberId(memberId);
         Plan plan = new Plan(planCreateRequestBody,member);
-        isValidPlan(plan);
         Plan savedPlan = planRepository.save(plan);
         planMemberRepository.save(new PlanMember(member,plan).inviteAccept());
+
         return savedPlan;
     }
 
@@ -42,6 +42,7 @@ public class PlanService {
     }
 
     public PlanResponseBody updatePlan(long planId, PlanUpdateRequestBody planUpdateRequestBody, String memberId) {
+
         Member member = memberService.findByMemberId(memberId);
         Optional<Plan> optionalPlan = planRepository.findById(planId);
 
@@ -51,29 +52,34 @@ public class PlanService {
 
         Plan plan = optionalPlan.get();
 
-        if(plan.getMember().getId() != member.getId()){
-            throw new BusinessException(ErrorCode.NOT_SAME_MEMBER);
-        }
+        isSameMember(plan, member);
+        hasValidPlan(plan);
 
-        isValidPlan(plan);
-
-        plan.updatePlan(planUpdateRequestBody,member);
+        plan.updatePlan(planUpdateRequestBody, member);
         planRepository.save(plan);
         return new PlanResponseBody(plan);
     }
 
-    private void isValidPlan(Plan plan){
-        if(plan.getStartDate().isAfter(plan.getEndDate())){
+    public PlanResponseBody getPlanResponseBodyById(long planId) {
+        return new PlanResponseBody(getPlanById(planId));
+    }
+
+    public Plan getPlanById(long planId) {
+        return planRepository.findById(planId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_PLAN)
+        );
+    }
+
+    private void hasValidPlan(Plan plan) {
+        if (plan.getStartDate().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
     }
 
-    public PlanResponseBody getPlanById(long planId) {
-        Optional<Plan> optionalPlan = planRepository.findById(planId);
-        if(optionalPlan.isEmpty()){
-            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
+    private void isSameMember(Plan plan, Member member) {
+        if(member.getId() != plan.getMember().getId()){
+            throw new BusinessException(ErrorCode.NOT_SAME_MEMBER);
         }
-        return new PlanResponseBody(optionalPlan.get());
     }
 
     public void deletePlanById(long planId, String memberId) {

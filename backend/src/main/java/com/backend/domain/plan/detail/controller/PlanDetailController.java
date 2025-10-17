@@ -22,66 +22,63 @@ public class PlanDetailController {
     private final PlanDetailService planDetailService;
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse<PlanDetailResponseBody>> addPlanDetail(
+    public ApiResponse<PlanDetailResponseBody> addPlanDetail(
             @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
         String memberId = "dummy";
         PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberId);
 
-        return new ResponseEntity<>(
-                ApiResponse.success(
-                        new PlanDetailResponseBody(planDetail)
-                ),
-                HttpStatus.OK
+        return ApiResponse.success(
+                new PlanDetailResponseBody(planDetail)
         );
     }
 
     @GetMapping("/{planDetailId}")
-    public ResponseEntity<ApiResponse<PlanDetailsElementBody>> getPlanDetail(
+    public ApiResponse<PlanDetailsElementBody> getPlanDetail(
             @PathVariable long planDetailId
-    ){
-        //TODO 추후 초대된 사용자들만 조회 될 수 있게 하기.
-        String memberId = "dummy";
+    ) {
+        String memberId = "dummy3";
 
         PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberId);
 
-        return new ResponseEntity<>(
-                ApiResponse.success(
-                        planDetailsElementBody
-                ),
-                HttpStatus.OK
+        return ApiResponse.success(
+                planDetailsElementBody
         );
     }
 
     @GetMapping("/{planId}/list")
-    public ResponseEntity<ApiResponse<List<PlanDetailsElementBody>>> getAllPlanDetail(
+    public ApiResponse<List<PlanDetailsElementBody>> getAllPlanDetail(
             @PathVariable long planId
-    ){
+    ) {
         String memberId = "dummy";
 
-        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId,memberId);
-        return new ResponseEntity<>(
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId, memberId);
+        return
                 ApiResponse.success(
                         planDetailsElementBodies
-                ),
-                HttpStatus.OK
-        );
+                );
     }
 
     @PatchMapping("/{planDetailId}/update")
-    public ResponseEntity<ApiResponse<PlanDetailResponseBody>> updatePlanDetail(
+    public ApiResponse<PlanDetailResponseBody> updatePlanDetail(
             @PathVariable long planDetailId,
             @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
         String memberId = "dummy";
 
-        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody,memberId);
-        return new ResponseEntity<>(
-                ApiResponse.success(
-                        planDetailResponseBody
-                ),
-                HttpStatus.OK
+        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberId, planDetailId);
+        return ApiResponse.success(
+                planDetailResponseBody
         );
+    }
+
+    @DeleteMapping("/{planDetailId}/delete")
+    public ApiResponse<PlanDetailResponseBody> deletePlanDetail(
+            @PathVariable long planDetailId
+    ){
+        String memberId = "dummy";
+        planDetailService.deletePlanDetail(planDetailId,memberId);
+        return ApiResponse.success();
     }
 
 

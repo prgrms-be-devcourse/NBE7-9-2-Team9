@@ -61,7 +61,7 @@ public class PlanController {
     public ResponseEntity<ApiResponse<PlanResponseBody>> getPlan(
             @PathVariable long planId
     ) {
-        PlanResponseBody planResponseBody = planService.getPlanById(planId);
+        PlanResponseBody planResponseBody = planService.getPlanResponseBodyById(planId);
         return new ResponseEntity<>(ApiResponse.success(planResponseBody), HttpStatus.OK);
     }
 
@@ -90,7 +90,7 @@ public class PlanController {
     }
 
     @GetMapping("/member/mylist")
-    public ResponseEntity<ApiResponse<List<MyPlanMemberResponseBody>>> getMyPlanMember(){
+    public ResponseEntity<ApiResponse<List<PlanMemberMyResponseBody>>> getMyPlanMember(){
         String memberId = "dummy2";
         return new ResponseEntity<>(
                 ApiResponse.success(
