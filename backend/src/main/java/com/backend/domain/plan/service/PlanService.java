@@ -28,6 +28,8 @@ public class PlanService {
     public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, String memberId) {
         Member member = memberService.findByMemberId(memberId);
         Plan plan = new Plan(planCreateRequestBody,member);
+        hasValidPlan(plan);
+
         Plan savedPlan = planRepository.save(plan);
         planMemberRepository.save(new PlanMember(member,plan).inviteAccept());
 

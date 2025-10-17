@@ -1,7 +1,7 @@
 package com.backend.domain.plan.dto;
 
 public record PlanMemberAddRequestBody(
-        long memberId,
+        String memberId,
         long planId
 ) {
 }
