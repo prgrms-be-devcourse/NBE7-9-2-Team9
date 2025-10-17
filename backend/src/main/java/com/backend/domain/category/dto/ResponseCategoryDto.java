@@ -4,16 +4,14 @@ import com.backend.domain.category.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @AllArgsConstructor
-public class CategoryDto {
+public class ResponseCategoryDto {
     private Long id;
     private String name;
 
-    public static CategoryDto from(Category category) {
-        return new CategoryDto(
+    public static ResponseCategoryDto from(Category category) {
+        return new ResponseCategoryDto(
                 category.getId(),
                 category.getName()
         );
