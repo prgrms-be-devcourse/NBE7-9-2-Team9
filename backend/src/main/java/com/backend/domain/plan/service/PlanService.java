@@ -28,76 +28,72 @@ public class PlanService {
     public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, String memberId) {
 
         Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
-        if(optionalMember.isEmpty()){
+        if (optionalMember.isEmpty()) {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
-        Plan plan = new Plan(planCreateRequestBody,optionalMember.get());
-        isValidPlan(plan);
+        Plan plan = new Plan(planCreateRequestBody, optionalMember.get());
+        hasValidPlan(plan);
         Plan savedPlan = planRepository.save(plan);
-        planMemberRepository.save(new PlanMember(optionalMember.get(),plan).inviteAccept());
+        planMemberRepository.save(new PlanMember(optionalMember.get(), plan).inviteAccept());
         return savedPlan;
     }
 
 
     public List<PlanResponseBody> getPlanList(String memberID) {
-         List<Plan> plans= planRepository.getPlansByMember_MemberId(memberID);
+        List<Plan> plans = planRepository.getPlansByMember_MemberId(memberID);
         List<PlanResponseBody> planResponseBodies = plans.stream().map(PlanResponseBody::new).toList();
         return planResponseBodies;
     }
 
     public PlanResponseBody updatePlan(long planId, PlanUpdateRequestBody planUpdateRequestBody, String memberId) {
         Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
-        Optional<Plan> optionalPlan = planRepository.findById(planId);
-
-        if(optionalMember.isEmpty()){
+        if (optionalMember.isEmpty()) {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-        if(optionalPlan.isEmpty()){
-            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
         }
 
         Member member = optionalMember.get();
-        Plan plan = optionalPlan.get();
+        Plan plan = getPlanById(planId);
 
-        if(plan.getMember().getId() != member.getId()){
-            throw new BusinessException(ErrorCode.NOT_SAME_MEMBER);
-        }
+        isSameMember(plan, member);
+        hasValidPlan(plan);
 
-        isValidPlan(plan);
-
-        plan.updatePlan(planUpdateRequestBody,member);
+        plan.updatePlan(planUpdateRequestBody, member);
         planRepository.save(plan);
         return new PlanResponseBody(plan);
     }
 
-    private void isValidPlan(Plan plan){
-        if(plan.getStartDate().isAfter(plan.getEndDate())){
+    public PlanResponseBody getPlanResponseBodyById(long planId) {
+        return new PlanResponseBody(getPlanById(planId));
+    }
+
+    public Plan getPlanById(long planId) {
+        return planRepository.findById(planId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_PLAN)
+        );
+    }
+
+    public void deletePlanById(long planId, String memberId) {
+        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
+
+        if (optionalMember.isEmpty()) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        Plan plan = getPlanById(planId);
+        isSameMember(plan, optionalMember.get());
+
+        planRepository.deleteById(planId);
+    }
+
+    private void hasValidPlan(Plan plan) {
+        if (plan.getStartDate().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
     }
 
-    public PlanResponseBody getPlanById(long planId) {
-        Optional<Plan> optionalPlan = planRepository.findById(planId);
-        if(optionalPlan.isEmpty()){
-            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
+    private void isSameMember(Plan plan, Member member) {
+        if(member.getId() != plan.getMember().getId()){
+            throw new BusinessException(ErrorCode.NOT_SAME_MEMBER);
         }
-        return new PlanResponseBody(optionalPlan.get());
-    }
-
-    public void deletePlanById(long planId, String memberId) {
-        Optional<Plan> optionalPlan = planRepository.findById(planId);
-        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
-        if(optionalPlan.isEmpty()){
-            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
-        }
-
-        if(optionalMember.isEmpty()){
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-
-        Plan plan = optionalPlan.get();
-        planRepository.deleteById(planId);
-
     }
 }

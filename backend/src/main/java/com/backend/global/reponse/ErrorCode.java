@@ -25,6 +25,9 @@ public enum ErrorCode {
 
     //계획 상세
     NOT_FOUND_DETAIL_PLAN("D101",HttpStatus.NOT_FOUND,"상세 계획을 찾을 수 없습니다"),
+    NOT_ALLOWED_MEMBER("D102",HttpStatus.UNAUTHORIZED,"허용되지 않은 사용자입니다."),
+    NOT_ACCEPTED_MEMBER("D103",HttpStatus.FORBIDDEN,"초대를 승낙해야 사용이 가능합니다."),
+    CONFLICT_TIME("D104",HttpStatus.CONFLICT,"겹치는 시간이 존재합니다. 겹치지 않는 시간으로 작성해 주세요."),
 
     //회원 초대
     NOT_FOUND_INVITE("I001",HttpStatus.NOT_FOUND,"초대 내역을 찾을 수 없습니다."),
