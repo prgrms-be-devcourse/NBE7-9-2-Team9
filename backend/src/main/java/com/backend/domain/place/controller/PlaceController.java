@@ -8,6 +8,7 @@ import com.backend.global.reponse.ApiResponse;
 import com.backend.global.reponse.ResponseCode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/place")
+@RequiredArgsConstructor
 @Validated
 public class PlaceController {
 
     private final PlaceService placeService;
-    public PlaceController(PlaceService placeService) {
-        this.placeService = placeService;
-    }
 
     @GetMapping("/category/{categoryId}")
     public ApiResponse<List<ResponsePlaceDto>> getPlacesByCategoryId(@PathVariable @Min(1) int categoryId) {
