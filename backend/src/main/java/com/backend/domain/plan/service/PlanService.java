@@ -1,7 +1,7 @@
 package com.backend.domain.plan.service;
 
 import com.backend.domain.member.entity.Member;
-import com.backend.domain.member.repository.MemberRepository;
+import com.backend.domain.member.service.MemberService;
 import com.backend.domain.plan.dto.PlanCreateRequestBody;
 import com.backend.domain.plan.dto.PlanResponseBody;
 import com.backend.domain.plan.dto.PlanUpdateRequestBody;
@@ -22,38 +22,37 @@ import java.util.Optional;
 public class PlanService {
     private final PlanRepository planRepository;
     private final PlanMemberRepository planMemberRepository;
-    private final MemberRepository memberRepository; // 회원 정보 넣기 위한 임시 회원 레포지토리
+    private final MemberService memberService;
     // TODO 회원 서비스 기반 처리 하기, JWT에서 멤버 ID 식별자 사용하면 더 편할것 같은데 보안상의 문제는 없는지?
 
     public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, String memberId) {
-
-        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
-        if (optionalMember.isEmpty()) {
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-
-        Plan plan = new Plan(planCreateRequestBody, optionalMember.get());
+        Member member = memberService.findByMemberId(memberId);
+        Plan plan = new Plan(planCreateRequestBody,member);
         hasValidPlan(plan);
+
         Plan savedPlan = planRepository.save(plan);
-        planMemberRepository.save(new PlanMember(optionalMember.get(), plan).inviteAccept());
+        planMemberRepository.save(new PlanMember(member,plan).inviteAccept());
+
         return savedPlan;
     }
 
 
     public List<PlanResponseBody> getPlanList(String memberID) {
-        List<Plan> plans = planRepository.getPlansByMember_MemberId(memberID);
+        List<Plan> plans= planRepository.getPlansByMember_MemberId(memberID);
         List<PlanResponseBody> planResponseBodies = plans.stream().map(PlanResponseBody::new).toList();
         return planResponseBodies;
     }
 
     public PlanResponseBody updatePlan(long planId, PlanUpdateRequestBody planUpdateRequestBody, String memberId) {
-        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
-        if (optionalMember.isEmpty()) {
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+
+        Member member = memberService.findByMemberId(memberId);
+        Optional<Plan> optionalPlan = planRepository.findById(planId);
+
+        if(optionalPlan.isEmpty()){
+            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
         }
 
-        Member member = optionalMember.get();
-        Plan plan = getPlanById(planId);
+        Plan plan = optionalPlan.get();
 
         isSameMember(plan, member);
         hasValidPlan(plan);
@@ -73,18 +72,6 @@ public class PlanService {
         );
     }
 
-    public void deletePlanById(long planId, String memberId) {
-        Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
-
-        if (optionalMember.isEmpty()) {
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-        Plan plan = getPlanById(planId);
-        isSameMember(plan, optionalMember.get());
-
-        planRepository.deleteById(planId);
-    }
-
     private void hasValidPlan(Plan plan) {
         if (plan.getStartDate().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
@@ -95,5 +82,18 @@ public class PlanService {
         if(member.getId() != plan.getMember().getId()){
             throw new BusinessException(ErrorCode.NOT_SAME_MEMBER);
         }
+    }
+
+    public void deletePlanById(long planId, String memberId) {
+        Optional<Plan> optionalPlan = planRepository.findById(planId);
+        Member member = memberService.findByMemberId(memberId);
+
+        if(optionalPlan.isEmpty()){
+            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
+        }
+
+        Plan plan = optionalPlan.get();
+        planRepository.deleteById(planId);
+
     }
 }
