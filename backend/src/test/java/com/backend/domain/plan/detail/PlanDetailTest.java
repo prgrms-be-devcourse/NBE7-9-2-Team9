@@ -39,40 +39,9 @@ public class PlanDetailTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private PlanDetailService planDetailService;
-
-    @Autowired
-    private PlanDetailController planDetailController;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private PlanRepository planRepository;
-
-    @Autowired
-    private PlaceRepository placeRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-
     @Test
     @DisplayName("계획 세부 저장 테스트")
     void t1() throws Exception {
-        Category category = new Category();
-        category.setName("test");
-        categoryRepository.save(category);
-
-        Place place = new Place();
-        place.setPlaceName("test");
-        place.setCategory(category);
-        placeRepository.save(place);
-
-        Place place2 = placeRepository.findById(1L).orElseThrow();
 
         MemberSignupRequest ms = new MemberSignupRequest(
                 "dummy",
@@ -80,10 +49,6 @@ public class PlanDetailTest {
                 "mail@test.com",
                 "dummy"
         );
-
-        memberService.signup(ms);
-        Plan plan = new Plan(memberRepository.findById(1L).get(), LocalDateTime.now(),LocalDateTime.now(),"test","test");
-        planRepository.save(plan);
 
         ResultActions resultActions = mockMvc
                 .perform(

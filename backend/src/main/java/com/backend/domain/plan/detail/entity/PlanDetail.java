@@ -41,16 +41,6 @@ public class PlanDetail {
     @NotNull
     String content;
 
-    public PlanDetail(Plan plan, Place place, Member member, LocalDateTime startTime, LocalDateTime endTime, String title, String content) {
-        this.plan = plan;
-        this.place = place;
-        this.member = member;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.title = title;
-        this.content = content;
-    }
-
     public PlanDetail(Member member, Plan plan, Place place ,PlanDetailRequestBody planDetailRequestBody) {
         this.member = member;
         this.plan = plan;
@@ -61,14 +51,13 @@ public class PlanDetail {
         this.content = planDetailRequestBody.content();
     }
 
-    public PlanDetail(Long id, Plan plan, Place place, Member member, LocalDateTime startTime, LocalDateTime endTime, String title, String content) {
-        this.id = id;
-        this.plan = plan;
+
+    public PlanDetail updatePlanDetail(PlanDetailRequestBody planDetailRequestBody,Place place) {
         this.place = place;
-        this.member = member;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.title = title;
-        this.content = content;
+        this.title = planDetailRequestBody.title();
+        this.content = planDetailRequestBody.content();
+        this.startTime = planDetailRequestBody.startTime();
+        this.endTime = planDetailRequestBody.endTime();
+        return this;
     }
 }

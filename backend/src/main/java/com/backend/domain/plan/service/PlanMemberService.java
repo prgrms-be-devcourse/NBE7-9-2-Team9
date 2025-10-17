@@ -2,7 +2,7 @@ package com.backend.domain.plan.service;
 
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
-import com.backend.domain.plan.dto.MyPlanMemberResponseBody;
+import com.backend.domain.plan.dto.PlanMemberMyResponseBody;
 import com.backend.domain.plan.dto.PlanMemberAddRequestBody;
 import com.backend.domain.plan.dto.PlanMemberAnswerRequestBody;
 import com.backend.domain.plan.dto.PlanMemberResponseBody;
@@ -28,7 +28,6 @@ public class PlanMemberService {
     private final PlanRepository planRepository;
 
     public PlanMemberResponseBody invitePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
-        // TODO 회원 초대시 중복되는 문제 해결할 것 -> 해결됨, DB 유니크 제약 위반시 오류 메세지 통일규격 맞추기
         PlanMember planMember = isValidInvite(requestBody, memberId);
 
         try{
@@ -41,16 +40,16 @@ public class PlanMemberService {
         return new PlanMemberResponseBody(planMember);
     }
 
-    public List<MyPlanMemberResponseBody> myInvitedPlanList(String memberId) {
+    public List<PlanMemberMyResponseBody> myInvitedPlanList(String memberId) {
         Member member = memberRepository.findByMemberId(memberId).orElseThrow(
                 () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
         List<PlanMember> planMemberList = planMemberRepository.getPlanMembersByMember(member);
-        List<MyPlanMemberResponseBody> myPlanMemberList =
+        List<PlanMemberMyResponseBody> myPlanMemberList =
                 planMemberList
                         .stream()
-                        .map(pm -> new MyPlanMemberResponseBody(pm))
+                        .map(pm -> new PlanMemberMyResponseBody(pm))
                         .toList();
         return myPlanMemberList;
     }
@@ -115,5 +114,9 @@ public class PlanMemberService {
         );
 
         return planMember;
+    }
+
+    public boolean isAvailablePlanMember(long planId, Member member) {
+        return planMemberRepository.existsByMemberInPlanId(member.getId(),planId);
     }
 }
