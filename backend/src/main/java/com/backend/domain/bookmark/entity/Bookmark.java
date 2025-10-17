@@ -41,6 +41,7 @@ public class Bookmark {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
@@ -53,7 +54,6 @@ public class Bookmark {
         Bookmark b = new Bookmark();
         b.setMember(member);
         b.setPlace(place);
-        // createdAt는 @PrePersist에서 자동 설정됩니다.
         return b;
     }
 

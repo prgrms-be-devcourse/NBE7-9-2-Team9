@@ -1,29 +1,30 @@
 package com.backend.domain.bookmark.dto;
 
-
 import com.backend.domain.bookmark.entity.Bookmark;
-import lombok.Getter;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
-@Getter
-public class BookmarkResponseDto {
-
-    private Long bookmarkId;
-    private Long placeId;
-    private String placeName;
-    private String address;
-    private LocalDateTime createdAt;
-    private LocalDateTime deletedAt;
-
-    public static BookmarkResponseDto from(Bookmark b) {
-        BookmarkResponseDto dto = new BookmarkResponseDto();
-        dto.bookmarkId = b.getBookmarkId();
-        dto.placeId = b.getPlace().getId();
-        dto.placeName = b.getPlace().getPlaceName();
-        dto.address = b.getPlace().getAddress();
-        dto.createdAt = b.getCreatedAt();
-        dto.deletedAt = b.getDeletedAt();
-        return dto;
+@Builder
+public record BookmarkResponseDto(
+        Long bookmarkId,
+        Long memberId,
+        Long placeId,
+        String placeName,
+        String address,
+        LocalDateTime createdAt,
+        LocalDateTime deletedAt
+)
+{
+    public static BookmarkResponseDto from(Bookmark bookmark) {
+        return BookmarkResponseDto.builder()
+                .bookmarkId(bookmark.getBookmarkId())
+                .memberId(bookmark.getMember().getId())
+                .placeId(bookmark.getPlace().getId())
+                .placeName(bookmark.getPlace().getPlaceName())
+                .address(bookmark.getPlace().getAddress())
+                .createdAt(bookmark.getCreatedAt())
+                .deletedAt(bookmark.getDeletedAt())
+                .build();
     }
 }

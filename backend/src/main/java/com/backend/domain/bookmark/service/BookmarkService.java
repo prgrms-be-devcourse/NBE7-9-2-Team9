@@ -3,13 +3,13 @@ package com.backend.domain.bookmark.service;
 import com.backend.domain.bookmark.dto.BookmarkRequestDto;
 import com.backend.domain.bookmark.dto.BookmarkResponseDto;
 import com.backend.domain.bookmark.entity.Bookmark;
-import com.backend.domain.bookmark.exception.AlreadyExistsException;
-import com.backend.domain.bookmark.exception.NotFoundException;
 import com.backend.domain.bookmark.repository.BookmarkRepository;
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.place.repository.PlaceRepository;
+import com.backend.global.exception.BusinessException;
+import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,27 +28,27 @@ public class BookmarkService {
 
     /**
      * 북마크 생성
-     * - 동일 조합(활성) 존재 시 예외
      * - 이미 소프트 삭제된 엔티티가 있으면 재활성화(삭제일 제거, createdAt 갱신)
      */
     @Transactional
-    public BookmarkResponseDto create(BookmarkRequestDto request) {
-        Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new NotFoundException("Member not found"));
-        Place place = placeRepository.findById(request.getPlaceId())
-                .orElseThrow(() -> new NotFoundException("Place not found"));
+    public BookmarkResponseDto create(BookmarkRequestDto request, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Place place = placeRepository.findById(request.placeId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
 
         // 활성 상태의 북마크가 이미 있으면 중복
         bookmarkRepository.findByMemberAndPlaceAndDeletedAtIsNull(member, place)
-                .ifPresent(b -> { throw new AlreadyExistsException("이미 북마크된 장소입니다."); });
+                .ifPresent(b -> { throw new BusinessException(ErrorCode.ALREADY_EXISTS_BOOKMARK); });
 
         // 소프트 삭제된 항목이 있었으면 재활성화
-        var maybe = bookmarkRepository.findByMemberAndPlace(member, place);
+        var maybe = bookmarkRepository.findByMemberAndPlace(member, place); // Optional<Bookmark> 반환 받음
         if (maybe.isPresent()) {
-            Bookmark existing = maybe.get();
-            existing.setDeletedAt(null);
-            existing.setCreatedAt(LocalDateTime.now());
-            Bookmark saved = bookmarkRepository.save(existing);
+            Bookmark exist = maybe.get();
+            exist.setDeletedAt(null);
+            exist.setCreatedAt(LocalDateTime.now());
+            Bookmark saved = bookmarkRepository.save(exist);
             return BookmarkResponseDto.from(saved);
         }
 
@@ -64,7 +64,7 @@ public class BookmarkService {
     @Transactional(readOnly = true)
     public List<BookmarkResponseDto> getList(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("Member not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         return bookmarkRepository.findAllByMemberAndDeletedAtIsNullOrderByCreatedAtDesc(member)
                 .stream()
@@ -74,22 +74,27 @@ public class BookmarkService {
 
     /**
      * 소프트 삭제: deletedAt = now()
-     * 소유자 체크 수행
      */
     @Transactional
     public void delete(Long memberId, Long bookmarkId) {
         Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
-                .orElseThrow(() -> new NotFoundException("Bookmark not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_BOOKMARK));
 
-        if (!bookmark.getMember().getId().equals(memberId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+        // 소유자 확인
+        if (memberId == null || bookmark.getMember() == null) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_BOOKMARK);
+        }
+
+        long ownerId = bookmark.getMember().getId();
+        if (ownerId != memberId.longValue()) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_BOOKMARK);
         }
 
         if (bookmark.isDeleted()) {
-            return; // 이미 삭제된 상태면 idempotent 처리
+            return; // 이미 삭제된 상태면 멱등성 보장
         }
 
-        bookmark.delete(); // 엔티티 내 헬퍼 사용
+        bookmark.delete(); // 엔티티 내 헬퍼 사용 (deletedAt = now())
         bookmarkRepository.save(bookmark);
     }
 }
