@@ -11,6 +11,15 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
+    // ResponseCode Status Created인 경우
+    public static <T> ApiResponse<T> created(T data) {
+        return new ApiResponse<>(
+                ResponseCode.CREATED.getCode(),
+                ResponseCode.CREATED.getMessage(),
+                data
+        );
+    }
+
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(
                 ResponseCode.OK.getCode(),

@@ -2,28 +2,28 @@
 ydp:
   api:
     base-url: http://openAPI.ydp.go.kr:8088
-    key: 6f4a495a43706a7338334b7843536e
+    key: ${SEOUL_API_KEY}
     endpoint: YdpModelRestaurantDesignate
 
 # 양천구
 yangcheon:
   api:
     base-url: http://openAPI.yangcheon.go.kr:8088
-    key: 6f4a495a43706a7338334b7843536e
+    key: ${SEOUL_API_KEY}
     endpoint: YcModelRestaurantDesignate
 
 # 동대문구
 ddm:
   api:
     base-url: http://openAPI.ddm.go.kr:8088
-    key: 6f4a495a43706a7338334b7843536e
+    key: ${SEOUL_API_KEY}
     endpoint: DongdeamoonModelRestaurantDesignate
 
 # 동작구
 dongjak:
   api:
     base-url: http://openAPI.dongjak.go.kr:8088
-    key: 6f4a495a43706a7338334b7843536e
+    key: ${SEOUL_API_KEY}
     endpoint: DjModelRestaurantDesignate
 
 # … 필요한 구 계속 추가 …
