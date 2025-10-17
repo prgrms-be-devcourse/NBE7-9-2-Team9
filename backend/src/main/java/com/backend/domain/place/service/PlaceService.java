@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Builder
 @RequiredArgsConstructor
 public class PlaceService {
 
