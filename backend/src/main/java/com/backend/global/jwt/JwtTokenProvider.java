@@ -59,17 +59,18 @@ public class JwtTokenProvider {
     }
 
     // 토큰 유효성 검증 (서명 검증 + 만료 체크)
-    public boolean validateToken(String token) {
+    public TokenStatus validateTokenStatus(String token) {
 
         try {
             Jwts.parser().verifyWith(key).build().parse(token);
-            return true;
+            return TokenStatus.VALID;
         } catch (ExpiredJwtException e) {
             log.info("⏰ 토큰이 만료되었습니다.");
+            return TokenStatus.EXPIRED;
         } catch (JwtException | IllegalArgumentException e) {
             log.info("❌ 유효하지 않은 토큰입니다.");
+            return TokenStatus.INVALID;
         }
-        return false;
     }
 
     /** 토큰 파싱 관련 (Claims 읽기) */
