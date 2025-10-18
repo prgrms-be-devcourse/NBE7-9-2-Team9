@@ -21,3 +21,11 @@ spring:
   h2:
     console:
       enabled: true
+
+custom:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}      
+    access-token:
+      expire-time: 1800000              # 30분 (ms)
+    refresh-token:
+      expire-time: 604800000            # 7일 (ms)
