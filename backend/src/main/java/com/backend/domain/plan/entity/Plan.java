@@ -4,6 +4,7 @@ import com.backend.domain.member.entity.Member;
 import com.backend.domain.plan.dto.PlanCreateRequestBody;
 import com.backend.domain.plan.dto.PlanUpdateRequestBody;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -15,12 +15,8 @@ public record PlanCreateRequestBody(
         @NotNull
         String content,
         @NotNull
-        @JsonSerialize(using = LocalDateTimeSerializer.class)
-        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         LocalDateTime startDate,
         @NotNull
-        @JsonSerialize(using = LocalDateTimeSerializer.class)
-        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         LocalDateTime endDate
 ) {
     public PlanCreateRequestBody(String title, String content, LocalDateTime startDate, LocalDateTime endDate) {

@@ -14,6 +14,7 @@ import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class PlanService {
         hasValidPlan(plan);
 
         Plan savedPlan = planRepository.save(plan);
-        planMemberRepository.save(new PlanMember(member,plan).inviteAccept());
+        planMemberRepository.save(new PlanMember(member,plan).inviteAccept()); // 단순 저장이므로 레포지토리 사용.
 
         return savedPlan;
     }
@@ -76,7 +77,14 @@ public class PlanService {
         if (plan.getStartDate().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
-    }
+        if (plan.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new BusinessException(ErrorCode.NOT_VALID_DATE);
+        }
+        if(plan.getEndDate().isAfter(LocalDateTime.now().plusYears(10))) {
+            throw new BusinessException(ErrorCode.NOT_VALID_DATE);
+        }
+
+       }
 
     private void isSameMember(Plan plan, Member member) {
         if(member.getId() != plan.getMember().getId()){

@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlanMemberService {
     private final PlanMemberRepository planMemberRepository;
-    private final PlanRepository planRepository;
+    private final PlanService planService;
     private final MemberService memberService;
 
     public PlanMemberResponseBody invitePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
@@ -53,6 +53,7 @@ public class PlanMemberService {
         return myPlanMemberList;
     }
 
+
     public PlanMemberResponseBody DeletePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
         PlanMember planMember = isValidInvite(requestBody, memberId);
         // TODO isValidInvite가 사실상 새로운 객체를 반환하므로 인식 안되는 문제 해결할 것.
@@ -77,9 +78,7 @@ public class PlanMemberService {
     private PlanMember isValidInvite(PlanMemberAddRequestBody requestBody, String memberId) {
         Member myMember = memberService.findByMemberId(memberId);
 
-        Plan plan = planRepository.getPlanById(requestBody.planId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_PLAN)
-        );
+        Plan plan = planService.getPlanById(requestBody.planId());
 
         if (plan.getMember().getId() != myMember.getId()) {
             throw new BusinessException(ErrorCode.NOT_MY_PLAN);
@@ -94,9 +93,7 @@ public class PlanMemberService {
     private PlanMember isMyInvite(PlanMemberAnswerRequestBody requestBody, String memberId) {
         Member member = memberService.findByMemberId(memberId);
 
-        Plan plan = planRepository.getPlanById(requestBody.planId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_PLAN)
-        );
+        Plan plan = planService.getPlanById(requestBody.planId());
 
         if (requestBody.memberId() != member.getId()) {
             throw new BusinessException(ErrorCode.NOT_MY_PLAN);
