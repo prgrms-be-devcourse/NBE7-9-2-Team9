@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDateTime;
 
-public record PlanUpdateRequestBody(
+public record PlanUpdateRequestBody (
         @NotNull
         long id,
         @NotNull

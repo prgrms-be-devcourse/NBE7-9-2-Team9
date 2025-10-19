@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,7 +40,10 @@ public class Plan {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    public Plan(Member member,LocalDateTime startDate, LocalDateTime endDate, String title, String content) {
+    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<PlanMember> planMembers = new ArrayList<>();
+
+    public Plan(Member member, LocalDateTime startDate, LocalDateTime endDate, String title, String content) {
         this.member = member;
         this.createDate = LocalDateTime.now();
         this.modifyDate = LocalDateTime.now();
@@ -47,6 +52,7 @@ public class Plan {
         this.title = title;
         this.content = content;
     }
+
     public Plan(LocalDateTime startDate, LocalDateTime endDate, String title, String content) {
         this.createDate = LocalDateTime.now();
         this.modifyDate = LocalDateTime.now();
@@ -64,6 +70,11 @@ public class Plan {
         this.endDate = planCreateRequestBody.endDate();
         this.title = planCreateRequestBody.title();
         this.content = planCreateRequestBody.content();
+    }
+
+    public Plan(long planId, Member member) {
+        this.id = planId;
+        this.member = member;
     }
 
     public Plan updatePlan(PlanUpdateRequestBody planUpdateRequestBody, Member member) {

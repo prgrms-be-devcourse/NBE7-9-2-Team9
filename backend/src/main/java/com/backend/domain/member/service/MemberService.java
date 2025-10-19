@@ -82,6 +82,12 @@ public class MemberService {
         return MemberResponse.from(member);
     }
 
+    @Transactional(readOnly = true)
+    public Member findByMemberId(String memberId) {
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
 
     private void validateDuplicate(MemberSignupRequest request) {
 
