@@ -42,8 +42,9 @@ public enum ErrorCode {
     NOT_FOUND_BOOKMARK("B002", HttpStatus.NOT_FOUND, "북마크를 찾을 수 없습니다."),
     FORBIDDEN_BOOKMARK("B003", HttpStatus.FORBIDDEN, "북마크에 대한 권한이 없습니다()"),
 
-    //
-    NOT_FOUND_REVIEW("R001",HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없습니다.")
+    //리뷰
+    NOT_FOUND_REVIEW("R001",HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없습니다."),
+    GIVEN_REVIEW("R002",HttpStatus.NOT_FOUND,"이미 별점을 남겼습니다.")
     ;
 
     private final String code;
