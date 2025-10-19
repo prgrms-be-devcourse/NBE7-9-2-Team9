@@ -55,4 +55,10 @@ public class Review {
         this.rating = rating;
         this.createdDate = LocalDateTime.now();
     }
+
+    public int setRating(int rating) {
+        this.rating = rating;
+        return rating;
+    }
+
 }

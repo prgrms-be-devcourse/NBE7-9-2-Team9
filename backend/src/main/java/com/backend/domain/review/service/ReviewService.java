@@ -47,4 +47,14 @@ public class ReviewService {
         return new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate());
     }
 
+    //리뷰 수정 메서드
+    @Transactional
+    public void modifyReview(long reviewId, int modifyRating){
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+        );
+        review.setRating(modifyRating);
+        review.onUpdate();
+    }
+
 }

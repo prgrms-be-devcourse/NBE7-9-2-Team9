@@ -7,10 +7,7 @@ import com.backend.domain.review.service.ReviewService;
 import com.backend.global.reponse.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +23,12 @@ public class ReviewController {
         return ApiResponse.created(createdReview);
     }
 
+    //리뷰 수정
+    @PatchMapping("/modify/{reviewId}")
+    public ApiResponse<Void> modifyReview(@PathVariable long reviewId, @RequestParam int modifyRating) {
+        reviewService.modifyReview(reviewId, modifyRating);
+        return ApiResponse.success();
+    }
 
 
 }
