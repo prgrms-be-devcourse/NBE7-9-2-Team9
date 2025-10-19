@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,6 +65,31 @@ public class ReviewService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
         );
         reviewRepository.delete(review);
+    }
+
+
+    //내가 작성한 리뷰 조회
+    public ReviewResponseDto getReview(long reviewId){
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
+
+        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getId(), review.getRating(),review.getModifiedDate());
+        return reviewResponseDto;
+    }
+    //전체 리뷰 조회
+    public List<ReviewResponseDto> getAllReviews() {
+        List<Review> reviews = reviewRepository.findAll();
+        return reviews.stream()
+                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+                .toList();
+    }
+
+    //여행지의 전체 리뷰 조회
+    public List<ReviewResponseDto> getReviewList(long placeId){
+        List<Review> reviews = reviewRepository.findByPlaceId(placeId);
+        return reviews.stream()
+                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+                .toList();
     }
 
 }
