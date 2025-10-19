@@ -92,4 +92,11 @@ public class ReviewService {
                 .toList();
     }
 
+    public List<ReviewResponseDto> recommendByPlace(long placeId){
+        List<Review> recommandReviewLists = reviewRepository.findTop5ByPlaceIdOrderByRatingDesc(placeId);
+        return recommandReviewLists.stream()
+                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+                .toList();
+
+    }
 }

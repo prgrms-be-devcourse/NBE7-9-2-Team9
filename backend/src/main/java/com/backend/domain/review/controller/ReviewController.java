@@ -39,26 +39,31 @@ public class ReviewController {
         return ApiResponse.success();
     }
 
-    // ✅ 내가 작성한 리뷰 조회
+    // 내가 작성한 리뷰 조회
     @GetMapping("/{reviewId}")
     public ApiResponse<ReviewResponseDto> getMyReview(@PathVariable long reviewId) {
         ReviewResponseDto response = reviewService.getReview(reviewId);
         return ApiResponse.success(response);
     }
 
-    // ✅ 특정 여행지의 리뷰 조회
+    // 특정 여행지의 리뷰 조회
     @GetMapping("/list/{placeId}")
     public ApiResponse<List<ReviewResponseDto>> getPlaceReview(@PathVariable long placeId) {
         List<ReviewResponseDto> reviews = reviewService.getReviewList(placeId);
         return ApiResponse.success(reviews);
     }
 
-    // ✅ 전체 리뷰 조회
+    // 전체 리뷰 조회
     @GetMapping("/lists")
     public ApiResponse<List<ReviewResponseDto>> getAllReview() {
         List<ReviewResponseDto> reviews = reviewService.getAllReviews();
         return ApiResponse.success(reviews);
     }
 
-
+    // 추천 리뷰 조회
+    @GetMapping("/recommend/{placeId}")
+    public ApiResponse<List<ReviewResponseDto>> getRecommendedReviews(@PathVariable long placeId) {
+        List<ReviewResponseDto> recommendedReviews = reviewService.recommendByPlace(placeId);
+        return ApiResponse.success(recommendedReviews);
+    }
 }
