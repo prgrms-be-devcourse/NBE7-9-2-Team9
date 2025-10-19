@@ -30,5 +30,13 @@ public class ReviewController {
         return ApiResponse.success();
     }
 
+    //리뷰 삭제
+    @DeleteMapping("/delete/{reviewId}")
+    public ApiResponse<Void> deleteReview(@PathVariable long reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ApiResponse.success();
+    }
+
+
 
 }

@@ -57,4 +57,13 @@ public class ReviewService {
         review.onUpdate();
     }
 
+    //리뷰 삭제 메서드
+    @Transactional
+    public void deleteReview(long reviewId){
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+        );
+        reviewRepository.delete(review);
+    }
+
 }
