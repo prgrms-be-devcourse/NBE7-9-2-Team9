@@ -2,6 +2,7 @@ package com.backend.domain.plan.detail.dto;
 
 import com.backend.domain.plan.detail.entity.PlanDetail;
 import com.backend.global.reponse.ErrorCode;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
@@ -15,8 +16,9 @@ public record PlanDetailRequestBody(
         LocalDateTime startTime,
         @NotNull
         LocalDateTime endTime,
-        @NotNull
+        @NotEmpty
         String title,
+        @NotEmpty
         String content
 ) {
 

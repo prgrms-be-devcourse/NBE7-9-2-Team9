@@ -6,6 +6,8 @@ import com.backend.domain.plan.service.PlanMemberService;
 import com.backend.domain.plan.service.PlanService;
 import com.backend.global.reponse.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +61,7 @@ public class PlanController {
 
     @GetMapping("/{planId}")
     public ApiResponse<PlanResponseBody> getPlan(
-            @PathVariable long planId
+         @NotNull @PathVariable long planId
     ) {
         PlanResponseBody planResponseBody = planService.getPlanResponseBodyById(planId);
         return ApiResponse.success(planResponseBody);
@@ -67,7 +69,7 @@ public class PlanController {
 
     @DeleteMapping("/delete/{planId}")
     public ResponseEntity deletePlan(
-            @PathVariable long planId
+           @NotNull @PathVariable long planId
     ) {
         //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
         String memberId = "dummy";
@@ -78,7 +80,7 @@ public class PlanController {
 
     @PostMapping("/member/invite")
     public ApiResponse<PlanMemberResponseBody> inviteMember(
-            @RequestBody PlanMemberAddRequestBody memberRequestBody
+            @Valid @RequestBody PlanMemberAddRequestBody memberRequestBody
     ) {
         String memberId = "dummy";
         PlanMemberResponseBody planMemberResponseBody = planMemberService.invitePlanMember(memberRequestBody, memberId);
@@ -93,7 +95,7 @@ public class PlanController {
 
     @PatchMapping("/member/accept")
     public ApiResponse<PlanMemberResponseBody> acceptMember(
-            @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
+           @Valid @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
     ){
         String memberId = "dummy2";
         PlanMemberResponseBody planMemberResponseBody = planMemberService.acceptInvitePlanMember(memberAnswerRequestBody, memberId);
@@ -103,7 +105,7 @@ public class PlanController {
 
     @PatchMapping("/member/deny")
     public ApiResponse<PlanMemberResponseBody> denyMember(
-            @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
+          @Valid  @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
     ){
         String memberId = "dummy2";
         PlanMemberResponseBody planMemberResponseBody = planMemberService.denyInvitePlanMember(memberAnswerRequestBody, memberId);

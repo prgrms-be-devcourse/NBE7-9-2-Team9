@@ -28,18 +28,18 @@ public class PlanService {
 
     public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, String memberId) {
         Member member = memberService.findByMemberId(memberId);
-        Plan plan = new Plan(planCreateRequestBody,member);
+        Plan plan = new Plan(planCreateRequestBody, member);
         hasValidPlan(plan);
 
         Plan savedPlan = planRepository.save(plan);
-        planMemberRepository.save(new PlanMember(member,plan).inviteAccept()); // 단순 저장이므로 레포지토리 사용.
+        planMemberRepository.save(new PlanMember(member, plan).inviteAccept()); // 단순 저장이므로 레포지토리 사용.
 
         return savedPlan;
     }
 
 
     public List<PlanResponseBody> getPlanList(String memberID) {
-        List<Plan> plans= planRepository.getPlansByMember_MemberId(memberID);
+        List<Plan> plans = planRepository.getPlansByMember_MemberId(memberID);
         List<PlanResponseBody> planResponseBodies = plans.stream().map(PlanResponseBody::new).toList();
         return planResponseBodies;
     }
@@ -49,7 +49,7 @@ public class PlanService {
         Member member = memberService.findByMemberId(memberId);
         Optional<Plan> optionalPlan = planRepository.findById(planId);
 
-        if(optionalPlan.isEmpty()){
+        if (optionalPlan.isEmpty()) {
             throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
         }
 
@@ -80,28 +80,31 @@ public class PlanService {
         if (plan.getStartDate().isBefore(LocalDateTime.now())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
-        if(plan.getEndDate().isAfter(LocalDateTime.now().plusYears(10))) {
+        if (plan.getEndDate().isAfter(LocalDateTime.now().plusYears(10))) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
 
-       }
+    }
 
     private void isSameMember(Plan plan, Member member) {
-        if(member.getId() != plan.getMember().getId()){
+        if (member.getId() != plan.getMember().getId()) {
             throw new BusinessException(ErrorCode.NOT_SAME_MEMBER);
         }
+    }
+
+    private void dateSetter(Plan plan) {
+
     }
 
     public void deletePlanById(long planId, String memberId) {
         Optional<Plan> optionalPlan = planRepository.findById(planId);
         Member member = memberService.findByMemberId(memberId);
 
-        if(optionalPlan.isEmpty()){
+        if (optionalPlan.isEmpty()) {
             throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
         }
 
         Plan plan = optionalPlan.get();
         planRepository.deleteById(planId);
-
     }
 }
