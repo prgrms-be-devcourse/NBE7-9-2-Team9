@@ -26,10 +26,10 @@ public class Review {
 
 
     @Column(nullable = false)
-    private LocalDateTime createdDate;
+    private LocalDateTime created_Date;
 
     @Column(nullable = false)
-    private LocalDateTime modifiedDate;
+    private LocalDateTime modified_Date;
 
     @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)
@@ -40,12 +40,12 @@ public class Review {
     private Member member;
 
     public void onCreate() {
-        this.createdDate = LocalDateTime.now();
-        this.modifiedDate = LocalDateTime.now();
+        this.created_Date = LocalDateTime.now();
+        this.modified_Date = LocalDateTime.now();
     }
 
     public void onUpdate() {
-        this.modifiedDate = LocalDateTime.now();
+        this.modified_Date = LocalDateTime.now();
     }
 
 
@@ -53,7 +53,7 @@ public class Review {
         this.place = place;
         this.member = member;
         this.rating = rating;
-        this.createdDate = LocalDateTime.now();
+        this.created_Date = LocalDateTime.now();
     }
 
     public int setRating(int rating) {

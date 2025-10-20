@@ -45,13 +45,17 @@ public class ReviewService {
         review.onCreate();
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate());
+        return new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date());
     }
 
     //리뷰 수정 메서드
     @Transactional
-    public void modifyReview(long reviewId, int modifyRating){
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
+    public void modifyReview(long memberId, int modifyRating){
+//        Review review = reviewRepository.findById(reviewId).orElseThrow(
+//                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+//        );
+//        Review review = getReviewEntity(reviewId);
+        Review review = reviewRepository.findByMemberId(memberId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
         );
         review.setRating(modifyRating);
@@ -61,26 +65,28 @@ public class ReviewService {
     //리뷰 삭제 메서드
     @Transactional
     public void deleteReview(long reviewId){
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
-        );
+        Review review = getReviewEntity(reviewId);
+//        Review review = reviewRepository.findById(reviewId).orElseThrow(
+//                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+//        );
         reviewRepository.delete(review);
     }
 
 
     //내가 작성한 리뷰 조회
     public ReviewResponseDto getReview(long reviewId){
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
+//        Review review = reviewRepository.findById(reviewId).orElseThrow(
+//                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
+        Review review = getReviewEntity(reviewId);
 
-        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getId(), review.getRating(),review.getModifiedDate());
+        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getId(), review.getRating(),review.getModified_Date());
         return reviewResponseDto;
     }
     //전체 리뷰 조회
     public List<ReviewResponseDto> getAllReviews() {
         List<Review> reviews = reviewRepository.findAll();
         return reviews.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date()))
                 .toList();
     }
 
@@ -88,15 +94,22 @@ public class ReviewService {
     public List<ReviewResponseDto> getReviewList(long placeId){
         List<Review> reviews = reviewRepository.findByPlaceId(placeId);
         return reviews.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date()))
                 .toList();
     }
 
     public List<ReviewResponseDto> recommendByPlace(long placeId){
         List<Review> recommandReviewLists = reviewRepository.findTop5ByPlaceIdOrderByRatingDesc(placeId);
         return recommandReviewLists.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date()))
                 .toList();
 
+    }
+
+
+    public Review getReviewEntity(long reviewId){
+        return reviewRepository.findById(reviewId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+        );
     }
 }

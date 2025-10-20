@@ -26,9 +26,9 @@ public class ReviewController {
     }
 
     //리뷰 수정
-    @PatchMapping("/modify/{reviewId}")
-    public ApiResponse<Void> modifyReview(@PathVariable long reviewId, @RequestParam int modifyRating) {
-        reviewService.modifyReview(reviewId, modifyRating);
+    @PatchMapping("/modify/{memberId}")
+    public ApiResponse<Void> modifyReview(@PathVariable long memberId, @RequestParam int modifyRating) {
+        reviewService.modifyReview(memberId, modifyRating);
         return ApiResponse.success();
     }
 
