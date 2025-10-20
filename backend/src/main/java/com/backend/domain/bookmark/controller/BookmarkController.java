@@ -4,10 +4,8 @@ import com.backend.domain.bookmark.dto.BookmarkRequestDto;
 import com.backend.domain.bookmark.dto.BookmarkResponseDto;
 import com.backend.domain.bookmark.service.BookmarkService;
 import com.backend.global.reponse.ApiResponse;
-import com.backend.global.reponse.ResponseCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,36 +22,35 @@ public class BookmarkController {
      * body: { "placeId": 10 }
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<BookmarkResponseDto>> create(
+    public ApiResponse<BookmarkResponseDto> create(
             @Valid @RequestBody BookmarkRequestDto request) {
         // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
         Long memberId = 1L;
 
         BookmarkResponseDto response = bookmarkService.create(request, memberId);
-        return ResponseEntity.status(ResponseCode.CREATED.getStatus())
-                .body(ApiResponse.created(response));
+        return ApiResponse.created(response);
     }
 
     /**
      * GET /api/bookmarks
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<BookmarkResponseDto>>> list() {
+    public ApiResponse<List<BookmarkResponseDto>> list() {
         // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
         Long memberId = 1L;
         List<BookmarkResponseDto> list = bookmarkService.getList(memberId);
-        return ResponseEntity.ok(ApiResponse.success(list));
+        return ApiResponse.success(list);
     }
 
     /**
      * DELETE /api/bookmarks/{bookmarkId}
      */
     @DeleteMapping("/{bookmarkId}")
-    public ResponseEntity<ApiResponse<Long>> delete(@PathVariable Long bookmarkId) {
+    public ApiResponse<Long> delete(@Valid @PathVariable Long bookmarkId) {
 
         // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
         Long memberId = 1L;
         bookmarkService.delete(memberId, bookmarkId);
-        return ResponseEntity.ok(ApiResponse.success(bookmarkId));
+        return ApiResponse.success(bookmarkId);
     }
 }

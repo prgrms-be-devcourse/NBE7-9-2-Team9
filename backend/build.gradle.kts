@@ -32,6 +32,7 @@ dependencies {
 
     // 스프링 시큐리티 (나중에 SecurityConfig 적용할 때)
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
 
     // JWT
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")
