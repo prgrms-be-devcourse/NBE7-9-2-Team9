@@ -40,6 +40,10 @@ public enum ErrorCode {
     NOT_FOUND_BOOKMARK("B002", HttpStatus.NOT_FOUND, "북마크를 찾을 수 없습니다."),
     FORBIDDEN_BOOKMARK("B003", HttpStatus.FORBIDDEN, "북마크에 대한 권한이 없습니다()"),
 
+    //리뷰
+    NOT_FOUND_REVIEW("R001",HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없습니다."),
+    GIVEN_REVIEW("R002",HttpStatus.NOT_FOUND,"이미 별점을 남겼습니다."),
+  
     // 인증/인가
     TOKEN_NOT_FOUND("A005", HttpStatus.UNAUTHORIZED, "요청에 토큰이 존재하지 않습니다."),
 
@@ -54,10 +58,7 @@ public enum ErrorCode {
     MISMATCH_REFRESH_TOKEN("A004", HttpStatus.UNAUTHORIZED, "저장된 리프레시 토큰과 일치하지 않습니다."),
 
     INVALID_ACCESS_TOKEN("A010", HttpStatus.UNAUTHORIZED, "유효하지 않은 액세스 토큰입니다."),
-    EXPIRED_ACCESS_TOKEN("A009", HttpStatus.UNAUTHORIZED, "액세스 토큰이 만료되었습니다."),
-
-    //
-    NOT_FOUND_REVIEW("R001", HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."),
+    EXPIRED_ACCESS_TOKEN("A009", HttpStatus.UNAUTHORIZED, "액세스 토큰이 만료되었습니다.")
     ;
 
     private final String code;
