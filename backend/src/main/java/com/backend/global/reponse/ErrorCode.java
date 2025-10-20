@@ -6,15 +6,13 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
-    // 회원가입 - Member
+    // 회원 (Member)
     DUPLICATE_MEMBER_ID("M003", HttpStatus.CONFLICT, "이미 사용 중인 아이디입니다."),
     DUPLICATE_EMAIL("M004", HttpStatus.CONFLICT, "이미 가입된 이메일입니다."),
     DUPLICATE_NICKNAME("M005", HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
 
-    CONFLICT_REGISTER("M001", HttpStatus.CONFLICT, "이미 가입된 회원입니다."),
-
-    MEMBER_NOT_FOUND("M006", HttpStatus.NOT_FOUND,"존재하지 않는 회원입니다."),
-    INVALID_PASSWORD("M007", HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다."),
+    MEMBER_NOT_FOUND("M006", HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+    INVALID_PASSWORD("M007", HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     ALREADY_DELETED_MEMBER("M008", HttpStatus.BAD_REQUEST, "이미 탈퇴된 회원입니다."),
 
     //계획
@@ -33,17 +31,33 @@ public enum ErrorCode {
     NOT_FOUND_INVITE("I001",HttpStatus.NOT_FOUND,"초대 내역을 찾을 수 없습니다."),
     DUPLICATE_MEMBER_INVITE("I002",HttpStatus.CONFLICT,"이미 초대된 사용자입니다."),
 
-    //여행지
-    NOT_FOUND_PLACE("P001",HttpStatus.NOT_FOUND,"여행지를 찾을 수 없습니다."),
-    NOT_FOUND_CATEGORY("P002",HttpStatus.NOT_FOUND,"카테고리를 찾을 수 없습니다."),
+    // 여행지
+    NOT_FOUND_PLACE("P001", HttpStatus.NOT_FOUND, "여행지를 찾을 수 없습니다."),
+    NOT_FOUND_CATEGORY("P002", HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
 
     //북마크
     ALREADY_EXISTS_BOOKMARK("B001", HttpStatus.CONFLICT, "이미 북마크된 장소입니다."),
     NOT_FOUND_BOOKMARK("B002", HttpStatus.NOT_FOUND, "북마크를 찾을 수 없습니다."),
     FORBIDDEN_BOOKMARK("B003", HttpStatus.FORBIDDEN, "북마크에 대한 권한이 없습니다()"),
 
+    // 인증/인가
+    TOKEN_NOT_FOUND("A005", HttpStatus.UNAUTHORIZED, "요청에 토큰이 존재하지 않습니다."),
+
+    UNAUTHORIZED_MEMBER("A006", HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+    LOGOUT_USER("A007", HttpStatus.UNAUTHORIZED, "로그아웃된 사용자입니다."),
+    TOKEN_MALFORMED("A013", HttpStatus.BAD_REQUEST, "잘못된 형식의 JWT 토큰입니다."),
+    BLACKLISTED_TOKEN("A014", HttpStatus.UNAUTHORIZED, "사용이 제한된 토큰입니다."),
+    TOKEN_SIGNATURE_INVALID("A012", HttpStatus.UNAUTHORIZED, "토큰 서명이 유효하지 않습니다."),
+
+    INVALID_REFRESH_TOKEN("A003", HttpStatus.UNAUTHORIZED, "리프레시 토큰이 유효하지 않습니다."),
+    EXPIRED_REFRESH_TOKEN("A008", HttpStatus.UNAUTHORIZED, "리프레시 토큰이 만료되었습니다."),
+    MISMATCH_REFRESH_TOKEN("A004", HttpStatus.UNAUTHORIZED, "저장된 리프레시 토큰과 일치하지 않습니다."),
+
+    INVALID_ACCESS_TOKEN("A010", HttpStatus.UNAUTHORIZED, "유효하지 않은 액세스 토큰입니다."),
+    EXPIRED_ACCESS_TOKEN("A009", HttpStatus.UNAUTHORIZED, "액세스 토큰이 만료되었습니다."),
+
     //
-    NOT_FOUND_REVIEW("R001",HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없습니다.")
+    NOT_FOUND_REVIEW("R001", HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."),
     ;
 
     private final String code;
