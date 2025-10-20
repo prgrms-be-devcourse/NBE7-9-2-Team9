@@ -1,40 +1,78 @@
 package com.backend.global.config;
 
+import com.backend.global.security.JwtAuthenticationFilter;
+import com.backend.global.security.hadler.JwtAccessDeniedHandler;
+import com.backend.global.security.hadler.JwtAuthenticationEntryPoint;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.security.Security;
-
+/**
+ * Spring Security의 전반적인 설정을 담당하는 클래스
+ * 1. 인증(Authentication) - JWT 필터에서 검증
+ * 2. 인가(Authorization) - 역할(Role)에 따른 접근 제어
+ * 3. 세션 관리 - JWT는 Stateless(세션 비사용)
+ * 4. 예외 처리 - 401 / 403 에러 핸들러 연결
+ */
 @Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
     @Bean
+
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // 1. 기본 보안 설정 비활성화
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
 
+                // 2. 세션 관리 정책 - 세션 생성, 사용 X
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // 3. 요청별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        /*.requestMatchers(
+
+                        // 1. 인증이 필요 없는 요청
+                        .requestMatchers(
                                 "/api/members/signup",
-                                "/api/members/login",
+                                "/api/auth/**",
                                 "/h2-console/**"
                         ).permitAll()
 
-                        // TODO: 관리자 전용 API (추후 적용)
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        */
+                        // 2. 인증이 필요한 API만 명시
+                        .requestMatchers(
+                                "/api/members/**"
+                        ).authenticated()
 
+                        // 3. TODO: 관리자 전용 API (추후 적용)
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        //TODO: 수정해야 함
                         .anyRequest().permitAll()
                 )
+                // 4. 예외 처리 (401, 403)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint) // 인증 실패
+                        .accessDeniedHandler(jwtAccessDeniedHandler) // 인가 실패
+                )
 
-                // H2 콘솔 접근 허용
+                // 5. jwt 필터 추가 (UsernamePasswordAuthenticationFilter 앞에 삽입)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // 6. H2 콘솔 접근 허용
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+
         return http.build();
     }
 }
