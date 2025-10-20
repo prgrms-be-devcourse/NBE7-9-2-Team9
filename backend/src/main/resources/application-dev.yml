@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:./db_dev;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  config:
+    import:
+      - optional:classpath:districts.yml
+      - optional:file:./config/districts.yml
+seoul:
+  api:
+    key: ${SEOUL_API_KEY}
+    base-url: http://openapi.seoul.go.kr:8088
+
+modelrestaurant:
+  districts: ydp,yangcheon,ddm,dongjak
