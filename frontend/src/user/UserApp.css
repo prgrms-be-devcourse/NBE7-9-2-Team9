@@ -1,0 +1,40 @@
+.user-app {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.user-home {
+  padding: 2rem;
+  text-align: center;
+}
+
+.user-home h1 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.user-home p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.feature-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.feature-links a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.feature-links a:hover {
+  background-color: #0056b3;
+}
