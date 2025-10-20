@@ -114,6 +114,12 @@ public class AuthService {
 
     // === 공통 유틸 메서드 === //
 
+    /** 토큰에서 memberId 가져오기 */
+    public Long getMemberId(String accessTokenHeader) {
+        String token = extractToken(accessTokenHeader);
+        return jwtTokenProvider.getMemberIdFromToken(token);
+    }
+
     /** Bearer 접두사 제거 */
     private String extractToken(String headerValue) {
         if (headerValue == null || !headerValue.startsWith("Bearer ")) {
