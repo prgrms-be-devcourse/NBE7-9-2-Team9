@@ -2,6 +2,7 @@ package com.backend.domain.plan.service;
 
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
+import com.backend.domain.member.service.MemberService;
 import com.backend.domain.plan.dto.PlanMemberMyResponseBody;
 import com.backend.domain.plan.dto.PlanMemberAddRequestBody;
 import com.backend.domain.plan.dto.PlanMemberAnswerRequestBody;
@@ -24,8 +25,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlanMemberService {
     private final PlanMemberRepository planMemberRepository;
-    private final MemberRepository memberRepository;
-    private final PlanRepository planRepository;
+    private final PlanService planService;
+    private final MemberService memberService;
 
     public PlanMemberResponseBody invitePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
         PlanMember planMember = isValidInvite(requestBody, memberId);
@@ -41,9 +42,7 @@ public class PlanMemberService {
     }
 
     public List<PlanMemberMyResponseBody> myInvitedPlanList(String memberId) {
-        Member member = memberRepository.findByMemberId(memberId).orElseThrow(
-                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+        Member member = memberService.findByMemberId(memberId);
 
         List<PlanMember> planMemberList = planMemberRepository.getPlanMembersByMember(member);
         List<PlanMemberMyResponseBody> myPlanMemberList =
@@ -53,6 +52,7 @@ public class PlanMemberService {
                         .toList();
         return myPlanMemberList;
     }
+
 
     public PlanMemberResponseBody DeletePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
         PlanMember planMember = isValidInvite(requestBody, memberId);
@@ -76,38 +76,28 @@ public class PlanMemberService {
     }
 
     private PlanMember isValidInvite(PlanMemberAddRequestBody requestBody, String memberId) {
-        Member myMember = memberRepository.findByMemberId(memberId).orElseThrow(
-                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+        Member myMember = memberService.findByMemberId(memberId);
 
-        Plan plan = planRepository.getPlanById(requestBody.planId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_PLAN)
-        );
+        Plan plan = planService.getPlanById(requestBody.planId());
 
         if (plan.getMember().getId() != myMember.getId()) {
             throw new BusinessException(ErrorCode.NOT_MY_PLAN);
         }
 
-        Member invitedMember = memberRepository.findById(requestBody.memberId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+        Member invitedMember = memberService.findByMemberId(requestBody.memberId());
 
         PlanMember planMember = new PlanMember(invitedMember, plan);
         return planMember;
     }
 
     private PlanMember isMyInvite(PlanMemberAnswerRequestBody requestBody, String memberId) {
-        Member member = memberRepository.findByMemberId(memberId).orElseThrow(
-                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
-        );
-        Plan plan = planRepository.getPlanById(requestBody.planId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_PLAN)
-        );
+        Member member = memberService.findByMemberId(memberId);
+
+        Plan plan = planService.getPlanById(requestBody.planId());
 
         if (requestBody.memberId() != member.getId()) {
             throw new BusinessException(ErrorCode.NOT_MY_PLAN);
         }
-
 
         PlanMember planMember = planMemberRepository.findById(requestBody.planMemberId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_INVITE)

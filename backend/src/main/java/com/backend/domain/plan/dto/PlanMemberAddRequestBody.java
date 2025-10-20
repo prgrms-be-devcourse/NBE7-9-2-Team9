@@ -1,7 +1,11 @@
 package com.backend.domain.plan.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public record PlanMemberAddRequestBody(
-        long memberId,
+        @NotNull
+        String memberId,
+        @NotNull
         long planId
 ) {
 }
