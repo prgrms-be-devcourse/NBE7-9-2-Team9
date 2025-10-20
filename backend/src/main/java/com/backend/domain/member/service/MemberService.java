@@ -52,8 +52,8 @@ public class MemberService {
     //TODO: 수정 시 비밀번호 입력하기
 
     @Transactional
-    public MemberResponse updateMember(String memberId, MemberUpdateRequest request) {
-        Member member = findByMemberId(memberId);
+    public MemberResponse updateMember(Long memberPk, MemberUpdateRequest request) {
+        Member member = findByMemberId(memberPk);
 
         if(request.email() != null) member.updateEmail(request.email());
         if(request.nickname() != null) member.updateNickname(request.nickname());
@@ -79,11 +79,18 @@ public class MemberService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
+    @Transactional(readOnly = true)
+    public Member findByMemberId(Long memberPk) {
+        return memberRepository.findByMemberId(memberPk)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
     @Transactional
     public MemberResponse getMember(String memberId) {
         Member member = findByMemberId(memberId);
         return MemberResponse.from(member);
     }
+
 
     @Transactional(readOnly = true)
     public Member findByIdEntity(Long memberPk) {
