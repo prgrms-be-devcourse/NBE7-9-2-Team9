@@ -4,6 +4,7 @@ import com.backend.domain.member.entity.Member;
 import com.backend.domain.plan.dto.PlanCreateRequestBody;
 import com.backend.domain.plan.dto.PlanUpdateRequestBody;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -51,6 +52,7 @@ public class Plan {
         this.endDate = endDate;
         this.title = title;
         this.content = content;
+        timeSet();
     }
 
     public Plan(LocalDateTime startDate, LocalDateTime endDate, String title, String content) {
@@ -60,6 +62,7 @@ public class Plan {
         this.endDate = endDate;
         this.title = title;
         this.content = content;
+        timeSet();
     }
 
     public Plan(PlanCreateRequestBody planCreateRequestBody, Member member) {
@@ -70,6 +73,7 @@ public class Plan {
         this.endDate = planCreateRequestBody.endDate();
         this.title = planCreateRequestBody.title();
         this.content = planCreateRequestBody.content();
+        timeSet();
     }
 
     public Plan(long planId, Member member) {
@@ -84,7 +88,13 @@ public class Plan {
         this.startDate = planUpdateRequestBody.startDate();
         this.endDate = planUpdateRequestBody.endDate();
         this.modifyDate = LocalDateTime.now();
+        timeSet();
         return this;
+    }
+
+    private void timeSet() {
+        this.startDate = LocalDateTime.of(this.startDate.getYear(), this.startDate.getMonth(), this.startDate.getDayOfMonth(), 0, 0, 0);
+        this.endDate = LocalDateTime.of(this.endDate.getYear(),this.endDate.getMonth(),this.endDate.getDayOfMonth(), 23, 59, 59);
     }
 
 

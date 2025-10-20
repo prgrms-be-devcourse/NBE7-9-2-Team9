@@ -8,6 +8,8 @@ import com.backend.domain.plan.detail.repository.PlanDetailRepository;
 import com.backend.domain.plan.detail.service.PlanDetailService;
 import com.backend.domain.plan.entity.Plan;
 import com.backend.global.reponse.ApiResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,7 @@ public class PlanDetailController {
 
     @PostMapping("/add")
     public ApiResponse<PlanDetailResponseBody> addPlanDetail(
-            @RequestBody PlanDetailRequestBody planDetailRequestBody
+            @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
         String memberId = "dummy";
         PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberId);
@@ -35,7 +37,7 @@ public class PlanDetailController {
 
     @GetMapping("/{planDetailId}")
     public ApiResponse<PlanDetailsElementBody> getPlanDetail(
-            @PathVariable long planDetailId
+           @NotNull @PathVariable long planDetailId
     ) {
         String memberId = "dummy3";
 
@@ -48,7 +50,7 @@ public class PlanDetailController {
 
     @GetMapping("/{planId}/list")
     public ApiResponse<List<PlanDetailsElementBody>> getAllPlanDetail(
-            @PathVariable long planId
+           @NotNull @PathVariable long planId
     ) {
         String memberId = "dummy";
 
@@ -61,8 +63,8 @@ public class PlanDetailController {
 
     @PatchMapping("/{planDetailId}/update")
     public ApiResponse<PlanDetailResponseBody> updatePlanDetail(
-            @PathVariable long planDetailId,
-            @RequestBody PlanDetailRequestBody planDetailRequestBody
+            @NotNull @PathVariable long planDetailId,
+            @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
         String memberId = "dummy";
 
