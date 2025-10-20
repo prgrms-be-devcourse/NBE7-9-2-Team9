@@ -10,4 +10,6 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
     List<Plan> getPlansByMember_MemberId(String memberID);
 
     Optional<Plan> getPlanById(Long id);
+
+    List<Plan> getPlansByMember_Id(Long memberId);
 }

@@ -26,9 +26,9 @@ public class PlanService {
     private final MemberService memberService;
     // TODO 회원 서비스 기반 처리 하기, JWT에서 멤버 ID 식별자 사용하면 더 편할것 같은데 보안상의 문제는 없는지?
 
-    public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, String memberId) {
-        Member member = memberService.findByMemberId(memberId);
-        Plan plan = new Plan(planCreateRequestBody, member);
+    public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, long memberPkId) {
+        Member member = Member.builder().id(memberPkId).build();
+        Plan plan = planCreateRequestBody.toEntity(member);
         hasValidPlan(plan);
 
         Plan savedPlan = planRepository.save(plan);
@@ -38,29 +38,28 @@ public class PlanService {
     }
 
 
-    public List<PlanResponseBody> getPlanList(String memberID) {
-        List<Plan> plans = planRepository.getPlansByMember_MemberId(memberID);
+    public List<PlanResponseBody> getPlanList(long memberPkId) {
+        List<Plan> plans = planRepository.getPlansByMember_Id(memberPkId);
         List<PlanResponseBody> planResponseBodies = plans.stream().map(PlanResponseBody::new).toList();
         return planResponseBodies;
     }
 
-    public PlanResponseBody updatePlan(long planId, PlanUpdateRequestBody planUpdateRequestBody, String memberId) {
-
-        Member member = memberService.findByMemberId(memberId);
-        Optional<Plan> optionalPlan = planRepository.findById(planId);
-
-        if (optionalPlan.isEmpty()) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
-        }
-
-        Plan plan = optionalPlan.get();
-
+    public PlanResponseBody updatePlan(long planId, PlanUpdateRequestBody planUpdateRequestBody, long memberPkId) {
+        Member member = Member.builder().id(memberPkId).build();
+        Plan plan = getPlanById(planId);
         isSameMember(plan, member);
         hasValidPlan(plan);
 
         plan.updatePlan(planUpdateRequestBody, member);
         planRepository.save(plan);
         return new PlanResponseBody(plan);
+    }
+
+    public void deletePlanById(long planId, long memberPkId) {
+        Plan plan = getPlanById(planId);
+        Member member = Member.builder().id(memberPkId).build();
+
+        planRepository.deleteById(planId);
     }
 
     public PlanResponseBody getPlanResponseBodyById(long planId) {
@@ -92,19 +91,5 @@ public class PlanService {
         }
     }
 
-    private void dateSetter(Plan plan) {
 
-    }
-
-    public void deletePlanById(long planId, String memberId) {
-        Optional<Plan> optionalPlan = planRepository.findById(planId);
-        Member member = memberService.findByMemberId(memberId);
-
-        if (optionalPlan.isEmpty()) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
-        }
-
-        Plan plan = optionalPlan.get();
-        planRepository.deleteById(planId);
-    }
 }

@@ -53,6 +53,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // .env 파일
+    implementation("me.paulschwarz:spring-dotenv:3.0.0")
 }
 
 tasks.withType<Test> {

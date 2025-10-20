@@ -28,20 +28,20 @@ public class PlanController {
     ) {
 
         // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
-        String memberId = "dummy";
+        long memberPkId = 1;
 
-        Plan plan = planService.createPlan(planCreateRequestBody, memberId);
+        Plan plan = planService.createPlan(planCreateRequestBody, memberPkId);
         PlanResponseBody planResponseBody = new PlanResponseBody(plan);
-        return ApiResponse.success(planResponseBody);
+        return ApiResponse.created(planResponseBody);
     }
 
     @GetMapping("/list")
     public ApiResponse<List<PlanResponseBody>> getList() {
         //TODO 페이징 처리 적용하기, 일단은 전체 목록 조회
         //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
-        String memberId = "dummy";
+        long memberPkId = 1;
 
-        List<PlanResponseBody> plans = planService.getPlanList(memberId);
+        List<PlanResponseBody> plans = planService.getPlanList(memberPkId);
         return ApiResponse.success(plans);
 
     }
@@ -52,9 +52,9 @@ public class PlanController {
             @PathVariable long planId
     ) {
         //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
-        String memberId = "dummy";
+        long memberPkId = 1;
 
-        PlanResponseBody planResponseBody = planService.updatePlan(planId, planUpdateRequestBody, memberId);
+        PlanResponseBody planResponseBody = planService.updatePlan(planId, planUpdateRequestBody, memberPkId);
 
         return ApiResponse.success(planResponseBody);
     }
@@ -72,33 +72,33 @@ public class PlanController {
            @NotNull @PathVariable long planId
     ) {
         //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
-        String memberId = "dummy";
+        long memberPkId = 1;
 
-        planService.deletePlanById(planId, memberId);
-        return new ResponseEntity<>( HttpStatus.OK);
+        planService.deletePlanById(planId, memberPkId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/member/invite")
     public ApiResponse<PlanMemberResponseBody> inviteMember(
             @Valid @RequestBody PlanMemberAddRequestBody memberRequestBody
     ) {
-        String memberId = "dummy";
-        PlanMemberResponseBody planMemberResponseBody = planMemberService.invitePlanMember(memberRequestBody, memberId);
+        long memberPkId = 1;
+        PlanMemberResponseBody planMemberResponseBody = planMemberService.invitePlanMember(memberRequestBody, memberPkId);
         return ApiResponse.success(planMemberResponseBody);
     }
 
     @GetMapping("/member/mylist")
     public ApiResponse<List<PlanMemberMyResponseBody>> getMyPlanMember(){
-        String memberId = "dummy2";
-        return ApiResponse.success(planMemberService.myInvitedPlanList(memberId));
+        long memberPkId = 2;
+        return ApiResponse.success(planMemberService.myInvitedPlanList(memberPkId));
     }
 
     @PatchMapping("/member/accept")
     public ApiResponse<PlanMemberResponseBody> acceptMember(
            @Valid @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
     ){
-        String memberId = "dummy2";
-        PlanMemberResponseBody planMemberResponseBody = planMemberService.acceptInvitePlanMember(memberAnswerRequestBody, memberId);
+        long memberPkId = 2;
+        PlanMemberResponseBody planMemberResponseBody = planMemberService.acceptInvitePlanMember(memberAnswerRequestBody, memberPkId);
 
         return ApiResponse.success(planMemberResponseBody);
     }
@@ -107,8 +107,8 @@ public class PlanController {
     public ApiResponse<PlanMemberResponseBody> denyMember(
           @Valid  @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
     ){
-        String memberId = "dummy2";
-        PlanMemberResponseBody planMemberResponseBody = planMemberService.denyInvitePlanMember(memberAnswerRequestBody, memberId);
+        long memberPkId = 2;
+        PlanMemberResponseBody planMemberResponseBody = planMemberService.denyInvitePlanMember(memberAnswerRequestBody, memberPkId);
 
         return ApiResponse.success(planMemberResponseBody);
     }

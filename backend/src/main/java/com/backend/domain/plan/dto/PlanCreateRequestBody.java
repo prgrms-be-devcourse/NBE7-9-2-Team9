@@ -1,5 +1,6 @@
 package com.backend.domain.plan.dto;
 
+import com.backend.domain.member.entity.Member;
 import com.backend.domain.plan.entity.Plan;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -26,12 +27,15 @@ public record PlanCreateRequestBody(
         this.endDate = endDate;
     }
 
-    public Plan createPlan(){
-        return new Plan(
-                this.startDate,
-                this.endDate,
-                this.title,
-                this.content
-        );
+    public Plan toEntity(Member member) {
+        return Plan.builder()
+                .member(member)
+                .createDate(LocalDateTime.now())
+                .modifyDate(LocalDateTime.now())
+                .title(title)
+                .content(content)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
     }
 }

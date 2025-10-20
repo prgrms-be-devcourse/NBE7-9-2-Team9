@@ -5,6 +5,7 @@ import com.backend.domain.plan.entity.Plan;
 import java.time.LocalDateTime;
 
 public record PlanResponseBody(
+        long id,
         String title,
         String content,
         LocalDateTime startDate,
@@ -12,6 +13,7 @@ public record PlanResponseBody(
 ) {
     public PlanResponseBody(Plan plan) {
         this(
+                plan.getId(),
                 plan.getTitle(),
                 plan.getContent(),
                 plan.getStartDate(),
@@ -19,7 +21,8 @@ public record PlanResponseBody(
         );
     }
 
-    public PlanResponseBody(String title, String content, LocalDateTime startDate, LocalDateTime EndDate) {
+    public PlanResponseBody(long id, String title, String content, LocalDateTime startDate, LocalDateTime EndDate) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.startDate = startDate;
