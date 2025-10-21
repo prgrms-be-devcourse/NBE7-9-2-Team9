@@ -25,4 +25,7 @@ AND pm.member.id = :memberId
             @Param("planId")long planId
     );
 
+    void deletePlanMembersByPlanId(Long planId);
+
+    void deletePlanMembersByPlan(Plan plan);
 }

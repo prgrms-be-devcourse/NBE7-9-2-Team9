@@ -58,7 +58,7 @@ public class PlanDetailService {
     public List<PlanDetailsElementBody> getPlanDetailsByPlanId(long planId, String memberId) {
         getAvailableMember(planId, memberId);
 
-        List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlan_Id(planId);
+        List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlanId(planId);
 
         List<PlanDetailsElementBody> planDetailList = planDetails.stream()
                 .map(
@@ -86,6 +86,8 @@ public class PlanDetailService {
         getAvailableMember(planDetailId, memberId);
         planDetailRepository.deleteById(planDetailId);
     }
+
+
 
     private PlanDetail getPlanDetailById(long planDetailId) {
         return planDetailRepository.getPlanDetailById(planDetailId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_DETAIL_PLAN));
