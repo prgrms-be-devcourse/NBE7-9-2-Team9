@@ -1,5 +1,6 @@
 package com.backend.domain.bookmark.controller;
 
+import com.backend.domain.auth.service.AuthService;
 import com.backend.domain.bookmark.dto.BookmarkRequestDto;
 import com.backend.domain.bookmark.dto.BookmarkResponseDto;
 import com.backend.domain.bookmark.service.BookmarkService;
@@ -16,6 +17,7 @@ import java.util.List;
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;
+    private final AuthService authService;
 
     /**
      * POST /api/bookmarks

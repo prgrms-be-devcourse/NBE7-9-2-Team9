@@ -1,5 +1,7 @@
 package com.backend.domain.bookmark.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public record BookmarkRequestDto(
-        Long placeId
+        @NotNull Long placeId
 ) {}

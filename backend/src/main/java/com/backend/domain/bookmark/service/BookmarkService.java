@@ -32,18 +32,13 @@ public class BookmarkService {
     @Transactional
     public BookmarkResponseDto create(BookmarkRequestDto request, Long memberId) {
 
-        Member member = Member.builder().id(memberId).build();
-
-        // 기존 DB 조회 방식
-//        Place place = placeService.findPlaceById(request.placeId());
-
-        // DB 조회 하지않고 필요한 ID로만 엔티티 생성
-        Place place = Place.builder().id(request.placeId()).build();
-
+        Member member = memberService.findByMemberId(memberId);
+        Place place = placeService.findPlaceById(request.placeId());
         // 활성 상태의 북마크가 이미 있으면 중복
         bookmarkRepository.findByMemberAndPlaceAndDeletedAtIsNull(member, place)
-                .ifPresent(b -> { throw new BusinessException(ErrorCode.ALREADY_EXISTS_BOOKMARK); });
-
+                .ifPresent(b -> {
+                    throw new BusinessException(ErrorCode.ALREADY_EXISTS_BOOKMARK);
+                });
         // 소프트 삭제된 항목이 있었으면 재활성화
         var maybe = bookmarkRepository.findByMemberAndPlace(member, place); // Optional<Bookmark> 반환 받음
         if (maybe.isPresent()) {
