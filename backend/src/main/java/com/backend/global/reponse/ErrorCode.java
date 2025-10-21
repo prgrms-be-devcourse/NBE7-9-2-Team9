@@ -16,20 +16,20 @@ public enum ErrorCode {
     ALREADY_DELETED_MEMBER("M008", HttpStatus.BAD_REQUEST, "이미 탈퇴된 회원입니다."),
 
     //계획
-    NOT_FOUND_PLAN("D001",HttpStatus.NOT_FOUND,"계획이 없습니다."),
-    NOT_VALID_DATE("D002",HttpStatus.BAD_REQUEST,"입력된 날짜가 유효하지 않습니다."),
-    NOT_SAME_MEMBER("D003",HttpStatus.FORBIDDEN,"본인이 작성한 계획만 수정이 가능합니다."),
-    NOT_MY_PLAN("D004",HttpStatus.FORBIDDEN,"내가 만든 계획이 아닙니다."),
+    NOT_FOUND_PLAN("D001", HttpStatus.NOT_FOUND, "계획이 없습니다."),
+    NOT_VALID_DATE("D002", HttpStatus.BAD_REQUEST, "입력된 날짜가 유효하지 않습니다."),
+    NOT_SAME_MEMBER("D003", HttpStatus.FORBIDDEN, "본인이 작성한 계획만 수정이 가능합니다."),
+    NOT_MY_PLAN("D004", HttpStatus.FORBIDDEN, "내가 만든 계획이 아닙니다."),
 
     //계획 상세
-    NOT_FOUND_DETAIL_PLAN("D101",HttpStatus.NOT_FOUND,"상세 계획을 찾을 수 없습니다"),
-    NOT_ALLOWED_MEMBER("D102",HttpStatus.UNAUTHORIZED,"허용되지 않은 사용자입니다."),
-    NOT_ACCEPTED_MEMBER("D103",HttpStatus.FORBIDDEN,"초대를 승낙해야 사용이 가능합니다."),
-    CONFLICT_TIME("D104",HttpStatus.CONFLICT,"겹치는 시간이 존재합니다. 겹치지 않는 시간으로 작성해 주세요."),
+    NOT_FOUND_DETAIL_PLAN("D101", HttpStatus.NOT_FOUND, "상세 계획을 찾을 수 없습니다"),
+    NOT_ALLOWED_MEMBER("D102", HttpStatus.UNAUTHORIZED, "허용되지 않은 사용자입니다."),
+    NOT_ACCEPTED_MEMBER("D103", HttpStatus.FORBIDDEN, "초대를 승낙해야 사용이 가능합니다."),
+    CONFLICT_TIME("D104", HttpStatus.CONFLICT, "겹치는 시간이 존재합니다. 겹치지 않는 시간으로 작성해 주세요."),
 
     //회원 초대
-    NOT_FOUND_INVITE("I001",HttpStatus.NOT_FOUND,"초대 내역을 찾을 수 없습니다."),
-    DUPLICATE_MEMBER_INVITE("I002",HttpStatus.CONFLICT,"이미 초대된 사용자입니다."),
+    NOT_FOUND_INVITE("I001", HttpStatus.NOT_FOUND, "초대 내역을 찾을 수 없습니다."),
+    DUPLICATE_MEMBER_INVITE("I002", HttpStatus.CONFLICT, "이미 초대된 사용자입니다."),
 
     // 여행지
     NOT_FOUND_PLACE("P001", HttpStatus.NOT_FOUND, "여행지를 찾을 수 없습니다."),
@@ -38,7 +38,7 @@ public enum ErrorCode {
     //북마크
     ALREADY_EXISTS_BOOKMARK("B001", HttpStatus.CONFLICT, "이미 북마크된 장소입니다."),
     NOT_FOUND_BOOKMARK("B002", HttpStatus.NOT_FOUND, "북마크를 찾을 수 없습니다."),
-    FORBIDDEN_BOOKMARK("B003", HttpStatus.FORBIDDEN, "북마크에 대한 권한이 없습니다()"),
+    FORBIDDEN_BOOKMARK("B003", HttpStatus.FORBIDDEN, "북마크에 대한 권한이 없습니다."),
 
     //리뷰
     NOT_FOUND_REVIEW("R001",HttpStatus.NOT_FOUND,"리뷰를 찾을 수 없습니다."),
@@ -46,6 +46,9 @@ public enum ErrorCode {
   
     // 인증/인가
     TOKEN_NOT_FOUND("A005", HttpStatus.UNAUTHORIZED, "요청에 토큰이 존재하지 않습니다."),
+
+    UNAUTHORIZED_REQUEST("A015", HttpStatus.UNAUTHORIZED, "인증되지 않은 요청입니다."),
+    ACCESS_DENIED("A016", HttpStatus.FORBIDDEN, "인가되지 않은 요청입니다."),
 
     UNAUTHORIZED_MEMBER("A006", HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     LOGOUT_USER("A007", HttpStatus.UNAUTHORIZED, "로그아웃된 사용자입니다."),
