@@ -7,6 +7,7 @@ import com.backend.domain.bookmark.service.BookmarkService;
 import com.backend.global.reponse.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,9 +26,10 @@ public class BookmarkController {
      */
     @PostMapping
     public ApiResponse<BookmarkResponseDto> create(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @Valid @RequestBody BookmarkRequestDto request) {
         // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
-        Long memberId = 1L;
+        Long memberId = authService.getMemberId(accessToken);
 
         BookmarkResponseDto response = bookmarkService.create(request, memberId);
         return ApiResponse.created(response);
@@ -37,9 +39,11 @@ public class BookmarkController {
      * GET /api/bookmarks
      */
     @GetMapping
-    public ApiResponse<List<BookmarkResponseDto>> list() {
+    public ApiResponse<List<BookmarkResponseDto>> list(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken
+    ) {
         // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
-        Long memberId = 1L;
+        Long memberId = authService.getMemberId(accessToken);
         List<BookmarkResponseDto> list = bookmarkService.getList(memberId);
         return ApiResponse.success(list);
     }
@@ -48,10 +52,12 @@ public class BookmarkController {
      * DELETE /api/bookmarks/{bookmarkId}
      */
     @DeleteMapping("/{bookmarkId}")
-    public ApiResponse<Long> delete(@Valid @PathVariable Long bookmarkId) {
+    public ApiResponse<Long> delete(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @Valid @PathVariable Long bookmarkId) {
 
         // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
-        Long memberId = 1L;
+        Long memberId = authService.getMemberId(accessToken);
         bookmarkService.delete(memberId, bookmarkId);
         return ApiResponse.success(bookmarkId);
     }

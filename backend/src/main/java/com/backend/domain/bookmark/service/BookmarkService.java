@@ -32,7 +32,7 @@ public class BookmarkService {
     @Transactional
     public BookmarkResponseDto create(BookmarkRequestDto request, Long memberId) {
 
-        Member member = memberService.findByMemberId(memberId);
+        Member member = memberService.findById(memberId);
         Place place = placeService.findPlaceById(request.placeId());
         // 활성 상태의 북마크가 이미 있으면 중복
         bookmarkRepository.findByMemberAndPlaceAndDeletedAtIsNull(member, place)
