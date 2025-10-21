@@ -42,8 +42,8 @@ public class PlanDetailService {
 
         PlanDetail planDetail = new PlanDetail(member, plan, place, requestBody);
         checkValidTime(requestBody, plan,planDetail);
-        this.planDetailRepository.save(planDetail);
-        return planDetail;
+        PlanDetail savedPlanDetail = this.planDetailRepository.save(planDetail);
+        return savedPlanDetail;
     }
 
 
@@ -69,14 +69,10 @@ public class PlanDetailService {
     public List<PlanDetailsElementBody> getTodayPlanDetails(long planId, long memberPkId) {
         getAvailableMember(planId, memberPkId);
         List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlanId(planId);
-        return planDetails.stream().filter(planDetail -> {
-            if(planDetail.getEndTime().isAfter(LocalDateTime.now().toLocalDate().atStartOfDay()) &&
-                    planDetail.getStartTime().isBefore(LocalDateTime.now().toLocalDate().atTime(LocalTime.MAX)
-            ))  {
-                return true;
-            }
-            return false;
-        }).map(PlanDetailsElementBody::new).toList();
+        return planDetails.stream().filter(planDetail ->
+                planDetail.getEndTime().isAfter(LocalDateTime.now().toLocalDate().atStartOfDay()) && planDetail.getStartTime().isBefore(LocalDateTime.now().toLocalDate().atTime(LocalTime.MAX)
+            )
+        ).map(PlanDetailsElementBody::new).toList();
     }
 
     @Transactional
@@ -106,7 +102,7 @@ public class PlanDetailService {
 
 
     private Member getAvailableMember(long planId, long memberPkId) {
-        Member member = memberService.findByMemberId(memberPkId);
+        Member member = memberService.findById(memberPkId);
         Plan plan = planService.getPlanById(planId);
         if (!planMemberService.isAvailablePlanMember(planId, member)) {
             throw new BusinessException(ErrorCode.NOT_ALLOWED_MEMBER);

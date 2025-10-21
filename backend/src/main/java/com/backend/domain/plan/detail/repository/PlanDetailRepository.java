@@ -26,7 +26,7 @@ AND (:#{#detailId} IS NULL OR pd.id != :detailId)
             @Param("planId")long planId,
             @Param("endTime")LocalDateTime startTime,
             @Param("startTime")LocalDateTime endTime,
-            @Param("detailId")long detailId
+            @Param("detailId")Long detailId
     );
 
     void deletePlanDetailsByPlan(Plan plan);

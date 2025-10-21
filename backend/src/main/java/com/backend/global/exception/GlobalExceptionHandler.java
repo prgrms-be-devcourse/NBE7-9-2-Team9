@@ -40,6 +40,6 @@ public class GlobalExceptionHandler {
         log.error("Business exception occurred : Code - {}, Message - {}", errorCode, errorCode.getMessage());
         ApiResponse<Void> apiResponse = ApiResponse.error(errorCode);
 
-        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, e.getErrorCode().getStatus());
     }
 }

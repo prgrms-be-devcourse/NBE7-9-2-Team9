@@ -9,7 +9,7 @@ public record PlanResponseBody(
         String title,
         String content,
         LocalDateTime startDate,
-        LocalDateTime EndDate
+        LocalDateTime endDate
 ) {
     public PlanResponseBody(Plan plan) {
         this(
@@ -21,11 +21,11 @@ public record PlanResponseBody(
         );
     }
 
-    public PlanResponseBody(long id, String title, String content, LocalDateTime startDate, LocalDateTime EndDate) {
+    public PlanResponseBody(long id, String title, String content, LocalDateTime startDate, LocalDateTime endDate) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.startDate = startDate;
-        this.EndDate = EndDate;
+        this.endDate = endDate;
     }
 }
