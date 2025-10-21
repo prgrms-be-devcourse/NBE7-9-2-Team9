@@ -16,36 +16,36 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    /*@GetMapping("/me")
+    public ApiResponse<MemberResponse> getMyInfo(@AuthenticationPrincipal CustomUserDetails user) {
+        MemberResponse response = memberService.getMember(user.getMemberId());
+        return ApiResponse.success(response, "회원 조회 성공");
+    }*/
+
     @PostMapping("/signup")
     public ApiResponse<MemberResponse> signup(@RequestBody MemberSignupRequest request) {
         MemberResponse response = memberService.signup(request);
         return ApiResponse.success(response, "회원가입이 완료되었습니다");
     }
 
-    @PostMapping("/login")
-    public ApiResponse<MemberResponse> login(@RequestBody MemberLoginRequest request) {
-        MemberResponse response = memberService.login(request);
-        return ApiResponse.success(response, "로그인 성공! 환영합니다");
-    }
-
     @GetMapping("/{memberId}")
-    public ApiResponse<MemberResponse> getMember(@PathVariable String memberId) {
-        MemberResponse response = memberService.getMember(memberId);
+    public ApiResponse<MemberResponse> getMember(@PathVariable Long memberPk) {
+        MemberResponse response = memberService.getMember(memberPk);
         return ApiResponse.success(response, "회원 조회 성공");
     }
 
     @PatchMapping("/{memberId}")
     public ApiResponse<MemberResponse> updateMember(
-            @PathVariable String memberId,
+            @PathVariable Long memberPk,
             @RequestBody MemberUpdateRequest request
     ) {
-        MemberResponse response = memberService.updateMember(memberId, request);
+        MemberResponse response = memberService.updateMember(memberPk, request);
         return ApiResponse.success(response, "회원정보가 수정되었습니다");
     }
 
     @DeleteMapping("/{memberId}")
-    public ApiResponse<MemberResponse> deleteMember(@PathVariable String memberId) {
-        MemberResponse response = memberService.deleteMember(memberId);
+    public ApiResponse<MemberResponse> deleteMember(@PathVariable Long memberPk) {
+        MemberResponse response = memberService.deleteMember(memberPk);
         return ApiResponse.success(response, "회원 탈퇴가 완료되었습니다.");
     }
 }

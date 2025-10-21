@@ -2,8 +2,10 @@ package com.backend.domain.auth.controller;
 
 import com.backend.domain.auth.dto.reponse.TokenResponse;
 import com.backend.domain.auth.service.AuthService;
+import com.backend.domain.auth.util.CookieManager;
 import com.backend.domain.member.dto.request.MemberLoginRequest;
 import com.backend.global.reponse.ApiResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,23 +15,45 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final CookieManager cookieManager;
 
     @PostMapping("/login")
-    public ApiResponse<TokenResponse> login(@RequestBody MemberLoginRequest request) {
+    public ApiResponse<TokenResponse> login(@RequestBody MemberLoginRequest request,
+                                            HttpServletResponse response) {
         TokenResponse tokenResponse = authService.login(request.memberId(), request.password());
+
+        cookieManager.addRefreshTokenCookie(
+                response,
+                tokenResponse.refreshToken(),
+                tokenResponse.refreshTokenMaxAge()
+        );
         return ApiResponse.success(tokenResponse, "로그인 성공! 토큰 발급 완료");
     }
 
     //TODO: 토큰을 헤더로 보낼지, 바디로 보낼지 결정
     @PostMapping("/reissue")
-    public ApiResponse<TokenResponse> reissue(@RequestHeader("Authorization") String refreshToken) {
+    public ApiResponse<TokenResponse> reissue(
+            @CookieValue(value = "refreshToken", required = false) String refreshToken,
+            HttpServletResponse response
+    ) {
         TokenResponse tokenResponse = authService.reissue(refreshToken);
+
+        cookieManager.addRefreshTokenCookie(
+                response,
+                tokenResponse.refreshToken(),
+                tokenResponse.refreshTokenMaxAge()
+        );
+
         return ApiResponse.success(tokenResponse, "AccessToken 재발급 완료");
     }
 
     @PostMapping("/logout")
-    public ApiResponse<Void> logout(@RequestHeader("Authorization") String accessToken) {
+    public ApiResponse<Void> logout(
+            @RequestHeader("Authorization") String accessToken,
+            HttpServletResponse response)
+    {
         authService.logout(accessToken);
+        cookieManager.deleteRefreshTokenCookie(response);
         return ApiResponse.success(null, "로그아웃 완료");
     }
 }
