@@ -72,9 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
             }
         }
-
         // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
-
     }
 }
