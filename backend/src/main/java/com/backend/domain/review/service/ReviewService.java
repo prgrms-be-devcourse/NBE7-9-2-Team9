@@ -2,6 +2,8 @@ package com.backend.domain.review.service;
 
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
+import com.backend.domain.place.dto.RequestPlaceDto;
+import com.backend.domain.place.dto.ResponsePlaceDto;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.place.repository.PlaceRepository;
 import com.backend.domain.review.dto.ReviewRequestDto;
@@ -14,8 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -98,12 +99,32 @@ public class ReviewService {
                 .toList();
     }
 
-    public List<ReviewResponseDto> recommendByPlace(long placeId){
-        List<Review> recommandReviewLists = reviewRepository.findTop5ByPlaceIdOrderByRatingDesc(placeId);
-        return recommandReviewLists.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date()))
+    public List<ResponsePlaceDto> recommendByPlace(long placeId){
+
+        Map<Long, Double> placeAverageRatings = new HashMap<>(); //<placeId, averageRating> 으로 저장
+//        long placeSize = placeRepository.count();               //중간에 값이 삭제되고나면 id가 건더뛰게 되는 상황은 어떻게 처리?
+        List<Place> findAllPlaces = placeRepository.findAll();
+        for(Place place : findAllPlaces){
+            double averageRating = reviewRepository.findAverageRatingByPlaceId(place.getId());
+            placeAverageRatings.put(place.getId(), averageRating);
+        }
+
+        //평균 평점 기준 내림차순 정렬
+        List<Map.Entry<Long, Double>> sortedList = placeAverageRatings.entrySet().stream()
+                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed()) // 값 기준 내림차순
                 .toList();
 
+        List<Place> recommendList = new ArrayList<>();
+        for(long i = 0; i < 5 && i < sortedList.size(); i++){       //여행지를 상위5개의 placeId를 가져와서 recommendList에 추가
+            long recommendedPlaceId = sortedList.get((int)i).getKey();
+            recommendList.add(placeRepository.findById(recommendedPlaceId).orElseThrow(
+                    () -> new BusinessException(ErrorCode.NOT_FOUND_PLACE)
+            ));
+
+        }
+        return recommendList.stream()
+                .map(ResponsePlaceDto::from)
+                .toList();
     }
 
 

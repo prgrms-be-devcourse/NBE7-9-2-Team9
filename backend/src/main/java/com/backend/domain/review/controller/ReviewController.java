@@ -1,6 +1,8 @@
 package com.backend.domain.review.controller;
 
 
+import com.backend.domain.place.dto.ResponsePlaceDto;
+import com.backend.domain.place.entity.Place;
 import com.backend.domain.review.dto.ReviewRequestDto;
 import com.backend.domain.review.dto.ReviewResponseDto;
 import com.backend.domain.review.service.ReviewService;
@@ -61,9 +63,16 @@ public class ReviewController {
     }
 
     // 추천 리뷰 조회
+//    @GetMapping("/recommend/{placeId}")
+//    public ApiResponse<List<ReviewResponseDto>> getRecommendedReviews(@PathVariable long placeId) {
+//        List<ReviewResponseDto> recommendedReviews = reviewService.recommendByPlace(placeId);
+//        return ApiResponse.success(recommendedReviews);
+//    }
+    //추천리뷰 -> 평균 별점 상위 5개의 여행지를 추천
     @GetMapping("/recommend/{placeId}")
-    public ApiResponse<List<ReviewResponseDto>> getRecommendedReviews(@PathVariable long placeId) {
-        List<ReviewResponseDto> recommendedReviews = reviewService.recommendByPlace(placeId);
-        return ApiResponse.success(recommendedReviews);
+    public ApiResponse<List<ResponsePlaceDto>> getRecommendedReviews(@PathVariable long placeId){
+        List<ResponsePlaceDto> recommendedPlaces = reviewService.recommendByPlace(placeId);
+        return ApiResponse.success(recommendedPlaces);
     }
+
 }
