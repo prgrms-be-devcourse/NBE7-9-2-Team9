@@ -27,8 +27,8 @@ public class PlanDetailController {
     public ApiResponse<PlanDetailResponseBody> addPlanDetail(
             @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
-        String memberId = "dummy";
-        PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberId);
+        long memberPkId = 1;
+        PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberPkId);
 
         return ApiResponse.success(
                 new PlanDetailResponseBody(planDetail)
@@ -39,9 +39,9 @@ public class PlanDetailController {
     public ApiResponse<PlanDetailsElementBody> getPlanDetail(
            @NotNull @PathVariable long planDetailId
     ) {
-        String memberId = "dummy3";
+        long memberPkId = 3;
 
-        PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberId);
+        PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberPkId);
 
         return ApiResponse.success(
                 planDetailsElementBody
@@ -52,9 +52,9 @@ public class PlanDetailController {
     public ApiResponse<List<PlanDetailsElementBody>> getAllPlanDetail(
            @NotNull @PathVariable long planId
     ) {
-        String memberId = "dummy";
+        long memberPkId = 1;
 
-        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId, memberId);
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId, memberPkId);
         return
                 ApiResponse.success(
                         planDetailsElementBodies
@@ -66,9 +66,9 @@ public class PlanDetailController {
             @NotNull @PathVariable long planDetailId,
             @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
-        String memberId = "dummy";
+        long memberPkId = 1;
 
-        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberId, planDetailId);
+        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberPkId, planDetailId);
         return ApiResponse.success(
                 planDetailResponseBody
         );
@@ -78,8 +78,8 @@ public class PlanDetailController {
     public ApiResponse<PlanDetailResponseBody> deletePlanDetail(
             @PathVariable long planDetailId
     ){
-        String memberId = "dummy";
-        planDetailService.deletePlanDetail(planDetailId,memberId);
+        long memberPkId = 1;
+        planDetailService.deletePlanDetail(planDetailId,memberPkId);
         return ApiResponse.success();
     }
 
