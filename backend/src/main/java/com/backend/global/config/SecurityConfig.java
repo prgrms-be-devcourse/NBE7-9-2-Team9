@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 /**
  * Spring Security의 전반적인 설정을 담당하는 클래스
@@ -32,6 +33,18 @@ public class SecurityConfig {
 
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+
+                // 0. 쿠키 포함 필수
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(true); // 쿠키 포함 허용
+                    config.addAllowedOriginPattern("http://localhost:3000"); // 프론트 주소
+                    config.addAllowedHeader("*");
+                    config.addAllowedMethod("*");
+                    config.addExposedHeader("Set-Cookie"); // 쿠키 노출 허용
+                    return config;
+                }))
+
                 // 1. 기본 보안 설정 비활성화
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
