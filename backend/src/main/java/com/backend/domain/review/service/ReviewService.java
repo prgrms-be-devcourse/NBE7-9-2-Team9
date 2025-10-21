@@ -52,10 +52,6 @@ public class ReviewService {
     //리뷰 수정 메서드
     @Transactional
     public void modifyReview(long memberId, int modifyRating){
-//        Review review = reviewRepository.findById(reviewId).orElseThrow(
-//                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
-//        );
-//        Review review = getReviewEntity(reviewId);
         Review review = reviewRepository.findByMemberId(memberId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
         );
@@ -67,17 +63,12 @@ public class ReviewService {
     @Transactional
     public void deleteReview(long reviewId){
         Review review = getReviewEntity(reviewId);
-//        Review review = reviewRepository.findById(reviewId).orElseThrow(
-//                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
-//        );
         reviewRepository.delete(review);
     }
 
 
     //내가 작성한 리뷰 조회
     public ReviewResponseDto getReview(long reviewId){
-//        Review review = reviewRepository.findById(reviewId).orElseThrow(
-//                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
         Review review = getReviewEntity(reviewId);
 
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getId(), review.getRating(),review.getModified_Date());

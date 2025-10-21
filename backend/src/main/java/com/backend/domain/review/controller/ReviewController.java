@@ -62,12 +62,6 @@ public class ReviewController {
         return ApiResponse.success(reviews);
     }
 
-    // 추천 리뷰 조회
-//    @GetMapping("/recommend/{placeId}")
-//    public ApiResponse<List<ReviewResponseDto>> getRecommendedReviews(@PathVariable long placeId) {
-//        List<ReviewResponseDto> recommendedReviews = reviewService.recommendByPlace(placeId);
-//        return ApiResponse.success(recommendedReviews);
-//    }
     //추천리뷰 -> 평균 별점 상위 5개의 여행지를 추천
     @GetMapping("/recommend/{placeId}")
     public ApiResponse<List<ResponsePlaceDto>> getRecommendedReviews(@PathVariable long placeId){
