@@ -30,14 +30,14 @@ public class PlanDetailController {
         long memberPkId = 1;
         PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberPkId);
 
-        return ApiResponse.success(
+        return ApiResponse.created(
                 new PlanDetailResponseBody(planDetail)
         );
     }
 
     @GetMapping("/{planDetailId}")
     public ApiResponse<PlanDetailsElementBody> getPlanDetail(
-           @NotNull @PathVariable long planDetailId
+            @NotNull @PathVariable long planDetailId
     ) {
         long memberPkId = 3;
 
@@ -50,16 +50,23 @@ public class PlanDetailController {
 
     @GetMapping("/{planId}/list")
     public ApiResponse<List<PlanDetailsElementBody>> getAllPlanDetail(
-           @NotNull @PathVariable long planId
+            @NotNull @PathVariable long planId
     ) {
         long memberPkId = 1;
 
         List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId, memberPkId);
-        return
-                ApiResponse.success(
-                        planDetailsElementBodies
-                );
+        return ApiResponse.success(planDetailsElementBodies);
     }
+
+    @GetMapping("/{planId}/todaylist")
+    public ApiResponse<List<PlanDetailsElementBody>> getTodayPlanDetail(
+            @NotNull @PathVariable long planId
+    ) {
+        long memberPkId = 1;
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getTodayPlanDetails(memberPkId, planId);
+        return ApiResponse.success(planDetailsElementBodies);
+    }
+
 
     @PatchMapping("/{planDetailId}/update")
     public ApiResponse<PlanDetailResponseBody> updatePlanDetail(
@@ -77,9 +84,9 @@ public class PlanDetailController {
     @DeleteMapping("/{planDetailId}/delete")
     public ApiResponse<PlanDetailResponseBody> deletePlanDetail(
             @PathVariable long planDetailId
-    ){
+    ) {
         long memberPkId = 1;
-        planDetailService.deletePlanDetail(planDetailId,memberPkId);
+        planDetailService.deletePlanDetail(planDetailId, memberPkId);
         return ApiResponse.success();
     }
 

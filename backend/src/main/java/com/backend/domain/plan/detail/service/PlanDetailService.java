@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -61,6 +63,20 @@ public class PlanDetailService {
         List<PlanDetailsElementBody> planDetailList = planDetails.stream().map(PlanDetailsElementBody::new).toList();
 
         return planDetailList;
+    }
+
+
+    public List<PlanDetailsElementBody> getTodayPlanDetails(long planId, long memberPkId) {
+        getAvailableMember(planId, memberPkId);
+        List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlanId(planId);
+        return planDetails.stream().filter(planDetail -> {
+            if(planDetail.getEndTime().isAfter(LocalDateTime.now().toLocalDate().atStartOfDay()) &&
+                    planDetail.getStartTime().isBefore(LocalDateTime.now().toLocalDate().atTime(LocalTime.MAX)
+            ))  {
+                return true;
+            }
+            return false;
+        }).map(PlanDetailsElementBody::new).toList();
     }
 
     @Transactional

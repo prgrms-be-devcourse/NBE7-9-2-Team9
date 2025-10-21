@@ -29,6 +29,7 @@ AND (:#{#detailId} IS NULL OR pd.id != :detailId)
             @Param("detailId")long detailId
     );
 
-
     void deletePlanDetailsByPlan(Plan plan);
+
+    List<PlanDetail> getPlanDetailsByMemberId(Long memberId);
 }
