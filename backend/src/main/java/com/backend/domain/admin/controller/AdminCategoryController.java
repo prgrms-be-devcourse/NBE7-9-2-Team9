@@ -22,9 +22,9 @@ public class AdminCategoryController {
     }
 
     /** 카테고리 단건 조회 */
-    @GetMapping("/{id}")
-    public ApiResponse<ResponseCategoryDto> getCategoryById(@PathVariable Long id) {
-        return ApiResponse.success(adminCategoryService.getCategoryById(id));
+    @GetMapping("/{categoryId}")
+    public ApiResponse<ResponseCategoryDto> getCategoryById(@PathVariable Long categoryId) {
+        return ApiResponse.success(adminCategoryService.getCategoryById(categoryId));
     }
 
     /** 카테고리 생성 */
@@ -34,15 +34,18 @@ public class AdminCategoryController {
     }
 
     /** 카테고리 수정 */
-    @PutMapping("/{id}")
-    public ApiResponse<ResponseCategoryDto> updateCategory(@PathVariable Long id, @RequestParam String newName) {
-        return ApiResponse.success(adminCategoryService.updateCategory(id, newName));
+    @PutMapping("/{categoryId}")
+    public ApiResponse<ResponseCategoryDto> updateCategory(
+            @PathVariable Long categoryId,
+            @RequestParam String newName
+    ) {
+        return ApiResponse.success(adminCategoryService.updateCategory(categoryId, newName));
     }
 
     /** 카테고리 삭제 */
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteCategory(@PathVariable Long id) {
-        adminCategoryService.deleteCategory(id);
+    @DeleteMapping("/{categoryId}")
+    public ApiResponse<Void> deleteCategory(@PathVariable Long categoryId) {
+        adminCategoryService.deleteCategory(categoryId);
         return ApiResponse.success(null, "카테고리 삭제 완료");
     }
 }
