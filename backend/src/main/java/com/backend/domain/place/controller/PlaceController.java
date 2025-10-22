@@ -44,7 +44,7 @@ public class PlaceController {
     @PutMapping("/{id}")
     public ApiResponse<ResponsePlaceDto> updatePlace(
             @PathVariable @Min(1) Long id,
-            @RequestBody RequestPlaceDto dto
+            @RequestBody @Valid RequestPlaceDto dto
     ) {
         ResponsePlaceDto updated = placeService.update(id, dto);
         return ApiResponse.success(updated, "여행지가 성공적으로 수정되었습니다.");

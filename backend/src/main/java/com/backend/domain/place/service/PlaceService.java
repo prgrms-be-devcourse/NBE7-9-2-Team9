@@ -32,7 +32,7 @@ public class PlaceService {
         return placeRepository.findByCategoryId(categoryId)
                 .stream()
                 .map(ResponsePlaceDto::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ResponsePlaceDto findOnePlace(Long id) {
