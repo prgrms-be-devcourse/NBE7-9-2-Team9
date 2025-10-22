@@ -79,10 +79,9 @@ public class PlanDetailService {
     public PlanDetailResponseBody updatePlanDetail(PlanDetailRequestBody planDetailRequestBody, long memberPkId, long planDetailId) {
         getAvailableMember(planDetailRequestBody.planId(), memberPkId);
 
-
         Place place = placeService.findPlaceById(planDetailRequestBody.placeId());
         PlanDetail planDetail = getPlanDetailById(planDetailId);
-        checkValidTime(planDetailRequestBody, planService.getPlanById(planDetailId), planDetail);
+        checkValidTime(planDetailRequestBody, planService.getPlanById(planDetailRequestBody.planId()), planDetail);
         planDetail.updatePlanDetail(planDetailRequestBody, place);
         planDetailRepository.save(planDetail);
         return new PlanDetailResponseBody(planDetail);
@@ -118,10 +117,9 @@ public class PlanDetailService {
         }
 
         //계획 안의 시간인지
-        if(planDetailRequestBody.startTime().isBefore(plan.getStartDate()) || planDetailRequestBody.endTime().isBefore(plan.getEndDate())) {
+        if(planDetailRequestBody.startTime().isBefore(plan.getStartDate()) || planDetailRequestBody.endTime().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
-
         // 지금으로부터 10년 뒤 까지만 계획 설정 가능
         if (planDetailRequestBody.startTime().isAfter(LocalDateTime.now().plusYears(10))) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);

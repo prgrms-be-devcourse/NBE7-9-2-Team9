@@ -68,7 +68,7 @@ public class PlanDetailController {
     }
 
 
-    @PatchMapping("/{planDetailId}/update")
+    @PatchMapping("/update/{planDetailId}")
     public ApiResponse<PlanDetailResponseBody> updatePlanDetail(
             @NotNull @PathVariable long planDetailId,
             @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
