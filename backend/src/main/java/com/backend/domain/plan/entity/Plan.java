@@ -1,12 +1,12 @@
 package com.backend.domain.plan.entity;
 
 import com.backend.domain.member.entity.Member;
-import com.backend.domain.plan.dto.PlanCreateRequestBody;
 import com.backend.domain.plan.dto.PlanUpdateRequestBody;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +56,8 @@ public class Plan {
     }
 
     public void timeSet() {
-        this.startDate = LocalDateTime.of(this.startDate.getYear(), this.startDate.getMonth(), this.startDate.getDayOfMonth(), 0, 0, 0);
-        this.endDate = LocalDateTime.of(this.endDate.getYear(),this.endDate.getMonth(),this.endDate.getDayOfMonth(), 23, 59, 59);
+        this.startDate = startDate.toLocalDate().atStartOfDay();
+        this.endDate = endDate.toLocalDate().atTime(LocalTime.MAX);
     }
 
 

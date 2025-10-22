@@ -3,7 +3,6 @@ package com.backend.domain.plan.service;
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.service.MemberService;
 import com.backend.domain.plan.detail.repository.PlanDetailRepository;
-import com.backend.domain.plan.detail.service.PlanDetailService;
 import com.backend.domain.plan.dto.PlanCreateRequestBody;
 import com.backend.domain.plan.dto.PlanResponseBody;
 import com.backend.domain.plan.dto.PlanUpdateRequestBody;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +34,7 @@ public class PlanService {
         Plan plan = planCreateRequestBody.toEntity(member);
         hasValidPlan(plan);
         Plan savedPlan = planRepository.save(plan);
-        planMemberRepository.save(new PlanMember(member, plan).inviteAccept()); // 단순 저장이므로 레포지토리 사용.
+        planMemberRepository.save(PlanMember.builder().member(member).plan(plan).build().inviteAccept()); // 단순 저장이므로 레포지토리 사용.
         return savedPlan;
     }
 
@@ -79,11 +77,17 @@ public class PlanService {
         );
     }
 
+    public PlanResponseBody getTodayPlan(long memberPkId){
+        LocalDateTime todayStart = LocalDateTime.now().toLocalDate().atStartOfDay();
+        Plan plan = planRepository.getPlanByStartDateAndMemberId(todayStart, memberPkId);
+        return new PlanResponseBody(plan);
+    }
+
     private void hasValidPlan(Plan plan) {
         if (plan.getStartDate().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
-        if (plan.getStartDate().isBefore(LocalDateTime.now())) {
+        if (plan.getStartDate().isBefore(LocalDateTime.now().toLocalDate().atStartOfDay().minusSeconds(1))) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
         if (plan.getEndDate().isAfter(LocalDateTime.now().plusYears(10))) {

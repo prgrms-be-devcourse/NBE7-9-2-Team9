@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record PlanMemberAddRequestBody(
         @NotNull
-        String memberId,
+        long memberId,
         @NotNull
         long planId
 ) {

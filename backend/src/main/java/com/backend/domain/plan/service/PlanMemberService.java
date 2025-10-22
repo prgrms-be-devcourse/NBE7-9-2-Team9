@@ -30,14 +30,7 @@ public class PlanMemberService {
 
     public PlanMemberResponseBody invitePlanMember(PlanMemberAddRequestBody requestBody, long memberId) {
         PlanMember planMember = isValidInvite(requestBody, memberId);
-
-        try{
-            planMemberRepository.save(planMember);
-        } catch (DataIntegrityViolationException e){
-            log.error(e.getMessage());
-            throw new BusinessException(ErrorCode.DUPLICATE_MEMBER_INVITE);
-        }
-
+        planMemberRepository.save(planMember);
         return new PlanMemberResponseBody(planMember);
     }
 
@@ -56,7 +49,7 @@ public class PlanMemberService {
 
     public PlanMemberResponseBody DeletePlanMember(PlanMemberAddRequestBody requestBody, long memberPkId) {
         PlanMember planMember = isValidInvite(requestBody, memberPkId);
-        // TODO isValidInvite가 사실상 새로운 객체를 반환하므로 인식 안되는 문제 해결할 것.
+
         planMemberRepository.delete(planMember);
         return new PlanMemberResponseBody(planMember);
     }
@@ -76,17 +69,19 @@ public class PlanMemberService {
     }
 
     private PlanMember isValidInvite(PlanMemberAddRequestBody requestBody, long memberId) {
-        Member myMember = Member.builder().id(memberId).build();
-
         Plan plan = planService.getPlanById(requestBody.planId());
-
-        if (plan.getMember().getId() != myMember.getId()) {
+        if (plan.getMember().getId() != memberId) {
             throw new BusinessException(ErrorCode.NOT_MY_PLAN);
         }
 
-        Member invitedMember = memberService.findByMemberId(requestBody.memberId());
+        Member invitedMember = memberService.findById(requestBody.memberId());
 
-        PlanMember planMember = new PlanMember(invitedMember, plan);
+        // 데이터 베이스 오류 처리를 서비스 로직 처리로 변경
+        if(planMemberRepository.existsByMemberInPlanId(invitedMember.getId(),plan.getId())) {
+            throw new BusinessException(ErrorCode.DUPLICATE_MEMBER_INVITE);
+        };
+
+        PlanMember planMember = PlanMember.builder().member(invitedMember).plan(plan).build();
         return planMember;
     }
 

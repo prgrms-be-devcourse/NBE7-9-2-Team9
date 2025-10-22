@@ -66,7 +66,7 @@ public class PlanDetailService {
     }
 
 
-    public List<PlanDetailsElementBody> getTodayPlanDetails(long planId, long memberPkId) {
+    public List<PlanDetailsElementBody> getTodayPlanDetails(long planId ,long memberPkId) {
         getAvailableMember(planId, memberPkId);
         List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlanId(planId);
         return planDetails.stream().filter(planDetail ->

@@ -63,7 +63,7 @@ public class PlanDetailController {
             @NotNull @PathVariable long planId
     ) {
         long memberPkId = 1;
-        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getTodayPlanDetails(memberPkId, planId);
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getTodayPlanDetails(planId,memberPkId);
         return ApiResponse.success(planDetailsElementBodies);
     }
 

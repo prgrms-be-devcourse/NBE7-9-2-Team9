@@ -28,4 +28,6 @@ AND pm.member.id = :memberId
     void deletePlanMembersByPlanId(Long planId);
 
     void deletePlanMembersByPlan(Plan plan);
+
+    List<PlanMember> getPlanMembersByMemberId(Long memberId);
 }

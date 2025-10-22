@@ -46,6 +46,12 @@ public class PlanController {
 
     }
 
+    @GetMapping("/todayPlan")
+    public ApiResponse<PlanResponseBody> getTodayPlan() {
+        long memberPkId = 1;
+        return ApiResponse.success(planService.getTodayPlan(memberPkId));
+    }
+
     @PatchMapping("/update/{planId}")
     public ApiResponse<PlanResponseBody> updatePlan(
             @Valid @RequestBody PlanUpdateRequestBody planUpdateRequestBody,
