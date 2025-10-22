@@ -43,13 +43,7 @@ public class PlaceService {
         Category category = categoryRepository.findById(dto.categoryId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
 
-        Place place = Place.builder()
-                .placeName(dto.placeName())
-                .address(dto.address())
-                .gu(dto.gu())
-                .category(category)
-                .description(dto.description())
-                .build();
+        Place place = dto.toEntity(category);
 
         placeRepository.save(place);
     }
@@ -57,6 +51,7 @@ public class PlaceService {
     @Transactional
     public ResponsePlaceDto update(Long id, RequestPlaceDto dto) {
         Place place = findPlaceById(id);
+
         place.update(
                 dto.placeName(),
                 dto.address(),

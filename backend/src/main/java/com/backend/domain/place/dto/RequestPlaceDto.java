@@ -1,5 +1,7 @@
 package com.backend.domain.place.dto;
 
+import com.backend.domain.category.entity.Category;
+import com.backend.domain.place.entity.Place;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,4 +25,16 @@ public record RequestPlaceDto(
 
         @Size(max = 255, message = "설명은 최대 255자까지 가능합니다.")
         String description
-) {}
+) {
+
+    public Place toEntity(Category category) {
+        return Place.builder()
+                .placeName(placeName)
+                .address(address)
+                .gu(gu)
+                .category(category)
+                .description(description)
+                .build();
+    }
+
+}

@@ -38,7 +38,7 @@ public class PlaceController {
     @PostMapping
     public ApiResponse<Void> createPlace(@RequestBody @Valid RequestPlaceDto dto) {
         placeService.save(dto);
-        return ApiResponse.success(null,"여행지가 성공적으로 생성되었습니다.");
+        return ApiResponse.created(null);
     }
 
     @PutMapping("/{id}")
