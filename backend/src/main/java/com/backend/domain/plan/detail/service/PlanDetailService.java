@@ -118,7 +118,7 @@ public class PlanDetailService {
         }
 
         //계획 안의 시간인지
-        if(planDetailRequestBody.startTime().isBefore(plan.getStartDate()) || planDetailRequestBody.endTime().isBefore(plan.getEndDate())) {
+        if(planDetailRequestBody.startTime().isBefore(plan.getStartDate()) || planDetailRequestBody.endTime().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
 
