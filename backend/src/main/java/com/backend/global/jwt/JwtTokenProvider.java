@@ -1,11 +1,14 @@
 package com.backend.global.jwt;
 
 import com.backend.domain.member.entity.Role;
+import com.backend.global.security.CustomUserDetails;
+import com.backend.global.security.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +24,9 @@ import java.util.List;
 @Component
 @Slf4j
 public class JwtTokenProvider {
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Value("${custom.jwt.secret-key}")
     private String secretKey;
@@ -106,10 +112,14 @@ public class JwtTokenProvider {
         Long memberPk = getMemberIdFromToken(token);
         Role role = getRoleFromToken(token);
 
+        // DB에서 Member 엔티티 조회 후 CustomUserDetails 생성
+        CustomUserDetails userDetails =
+                (CustomUserDetails) customUserDetailsService.loadUserById(memberPk);
+
         return new UsernamePasswordAuthenticationToken(
-                memberPk,
+                userDetails,  // principal을 CustomUserDetails로
                 null,
-                List.of(new SimpleGrantedAuthority("ROLE_" + role.name()))
+                userDetails.getAuthorities()
         );
     }
 
