@@ -38,13 +38,13 @@ public class PlaceController {
     @PostMapping
     public ApiResponse<Void> createPlace(@RequestBody @Valid RequestPlaceDto dto) {
         placeService.save(dto);
-        return ApiResponse.success(null,"여행지가 성공적으로 생성되었습니다.");
+        return ApiResponse.created(null);
     }
 
     @PutMapping("/{id}")
     public ApiResponse<ResponsePlaceDto> updatePlace(
             @PathVariable @Min(1) Long id,
-            @RequestBody RequestPlaceDto dto
+            @RequestBody @Valid RequestPlaceDto dto
     ) {
         ResponsePlaceDto updated = placeService.update(id, dto);
         return ApiResponse.success(updated, "여행지가 성공적으로 수정되었습니다.");
