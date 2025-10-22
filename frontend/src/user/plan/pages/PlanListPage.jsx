@@ -130,6 +130,8 @@ function PlanDetailPage({ planId, onBack }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingDetailId, setEditingDetailId] = useState(null);
+  const [editingDetailData, setEditingDetailData] = useState({});
   
   const [editData, setEditData] = useState({
     title: '',
@@ -269,6 +271,75 @@ function PlanDetailPage({ planId, onBack }) {
     }
   };
 
+  const handleEditDetail = (detail) => {
+    setEditingDetailId(detail.id);
+    setEditingDetailData({
+      placeId: detail.placeId,
+      startTime: detail.startTime,
+      endTime: detail.endTime,
+      title: detail.title,
+      content: detail.content
+    });
+  };
+
+  const handleUpdateDetail = async (detailId) => {
+    try {
+      const requestBody = {
+        planId: planId,
+        placeId: parseInt(editingDetailData.placeId),
+        startTime: editingDetailData.startTime,
+        endTime: editingDetailData.endTime,
+        title: editingDetailData.title,
+        content: editingDetailData.content
+      };
+
+      const response = await fetch(`http://localhost:8080/api/plan/detail/update/${detailId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error('상세 일정 수정에 실패했습니다.');
+      }
+
+      alert('상세 일정이 수정되었습니다.');
+      setEditingDetailId(null);
+      setEditingDetailData({});
+      fetchPlanDetailsList();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleDeleteDetail = async (detailId) => {
+    if (!window.confirm('이 상세 일정을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/plan/detail/delete/${detailId}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error('상세 일정 삭제에 실패했습니다.');
+      }
+
+      alert('상세 일정이 삭제되었습니다.');
+      fetchPlanDetailsList();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleCancelEditDetail = () => {
+    setEditingDetailId(null);
+    setEditingDetailData({});
+  };
+
   const isAddFormValid = () => {
     if (!newDetail.placeId || !newDetail.startTime || !newDetail.endTime || 
         !newDetail.title || !newDetail.content) {
@@ -380,7 +451,7 @@ function PlanDetailPage({ planId, onBack }) {
 
           <div style={styles.formContainer}>
             <div style={styles.formGroup}>
-              <h2 style={styles.formLabel}>제목</h2>
+              <h3 style={styles.formLabel}>제목</h3>
               {isEditing ? (
                 <input
                   type="text"
@@ -408,17 +479,16 @@ function PlanDetailPage({ planId, onBack }) {
             </div>
 
             <div style={styles.formGroup}>
+              <h3 style={styles.formLabel}>기간</h3>
               {isEditing ? (
                 <div style={styles.dateRangeContainer}>
-                   <h3 style={styles.formLabel}>시작일</h3>
                   <input
                     type="datetime-local"
                     value={editData.startDate}
                     onChange={(e) => setEditData({ ...editData, startDate: e.target.value })}
                     style={styles.dateInput}
                   />
-                    
-                    <h3 style={styles.formLabel}>종료일</h3>
+                  <span style={styles.dateSeparator}>~</span>
                   <input
                     type="datetime-local"
                     value={editData.endDate}
@@ -459,9 +529,9 @@ function PlanDetailPage({ planId, onBack }) {
                   placeholder="장소 ID를 입력하세요"
                 />
               </div>
-              <label style={styles.formLabel}>시작 시간</label>
+
               <div style={styles.formGroup}>
-                
+                <label style={styles.formLabel}>시작 시간</label>
                 <input
                   type="datetime-local"
                   value={newDetail.startTime}
@@ -472,9 +542,9 @@ function PlanDetailPage({ planId, onBack }) {
                   <p style={styles.warningText}>시작 시간은 계획 기간 내에 있어야 합니다.</p>
                 )}
               </div>
-              <label style={styles.formLabel}>종료 시간</label>
+
               <div style={styles.formGroup}>
-                
+                <label style={styles.formLabel}>종료 시간</label>
                 <input
                   type="datetime-local"
                   value={newDetail.endTime}
@@ -530,20 +600,112 @@ function PlanDetailPage({ planId, onBack }) {
             <div style={styles.detailList}>
               {planDetails.map((detail) => (
                 <div key={detail.id} style={styles.detailItem}>
-                  <div style={styles.detailItemHeader}>
+                  {editingDetailId === detail.id ? (
+                    // 수정 모드
                     <div>
-                      <h3 style={styles.detailItemTitle}>{detail.title}</h3>
-                      <div style={styles.detailItemPlace}>
-                        📍 {detail.placeName}
+                      <div style={styles.detailItemEditHeader}>
+                        <h3 style={styles.detailItemTitle}>상세 일정 수정</h3>
+                        <div style={styles.buttonGroup}>
+                          <button
+                            onClick={() => handleUpdateDetail(detail.id)}
+                            style={styles.saveButton}
+                          >
+                            저장
+                          </button>
+                          <button
+                            onClick={handleCancelEditDetail}
+                            style={styles.cancelButton}
+                          >
+                            취소
+                          </button>
+                        </div>
+                      </div>
+
+                      <div style={styles.formContainer}>
+                        <div style={styles.formGroup}>
+                          <label style={styles.formLabel}>장소 ID</label>
+                          <input
+                            type="number"
+                            value={editingDetailData.placeId}
+                            onChange={(e) => setEditingDetailData({ ...editingDetailData, placeId: e.target.value })}
+                            style={styles.input}
+                          />
+                        </div>
+
+                        <div style={styles.formGroup}>
+                          <label style={styles.formLabel}>시작 시간</label>
+                          <input
+                            type="datetime-local"
+                            value={editingDetailData.startTime}
+                            onChange={(e) => setEditingDetailData({ ...editingDetailData, startTime: e.target.value })}
+                            style={styles.input}
+                          />
+                        </div>
+
+                        <div style={styles.formGroup}>
+                          <label style={styles.formLabel}>종료 시간</label>
+                          <input
+                            type="datetime-local"
+                            value={editingDetailData.endTime}
+                            onChange={(e) => setEditingDetailData({ ...editingDetailData, endTime: e.target.value })}
+                            style={styles.input}
+                          />
+                        </div>
+
+                        <div style={styles.formGroup}>
+                          <label style={styles.formLabel}>제목</label>
+                          <input
+                            type="text"
+                            value={editingDetailData.title}
+                            onChange={(e) => setEditingDetailData({ ...editingDetailData, title: e.target.value })}
+                            style={styles.input}
+                          />
+                        </div>
+
+                        <div style={styles.formGroup}>
+                          <label style={styles.formLabel}>내용</label>
+                          <textarea
+                            value={editingDetailData.content}
+                            onChange={(e) => setEditingDetailData({ ...editingDetailData, content: e.target.value })}
+                            rows="4"
+                            style={styles.textarea}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    // 보기 모드
+                    <div>
+                      <div style={styles.detailItemHeader}>
+                        <div>
+                          <h3 style={styles.detailItemTitle}>{detail.title}</h3>
+                          <div style={styles.detailItemPlace}>
+                            📍 {detail.placeName}
+                          </div>
+                        </div>
+                        <div style={styles.buttonGroup}>
+                          <button
+                            onClick={() => handleEditDetail(detail)}
+                            style={styles.editSmallButton}
+                          >
+                            수정
+                          </button>
+                          <button
+                            onClick={() => handleDeleteDetail(detail.id)}
+                            style={styles.deleteSmallButton}
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </div>
 
-                  <p style={styles.detailItemContent}>{detail.content}</p>
+                      <p style={styles.detailItemContent}>{detail.content}</p>
 
-                  <div style={styles.detailItemTime}>
-                    🕐 {formatDetailDateTime(detail.startTime)} ~ {formatDetailDateTime(detail.endTime)}
-                  </div>
+                      <div style={styles.detailItemTime}>
+                        🕐 {formatDetailDateTime(detail.startTime)} ~ {formatDetailDateTime(detail.endTime)}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -842,7 +1004,7 @@ const styles = {
     boxSizing: 'border-box'
   },
   dateRangeContainer: {
-    display: 'flex; flex-wrap: wrap',
+    display: 'flex',
     gap: '16px',
     alignItems: 'center'
   },
@@ -909,6 +1071,12 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+    marginBottom: '16px'
+  },
+  detailItemEditHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: '16px'
   },
   detailItemTitle: {
@@ -979,5 +1147,25 @@ const styles = {
     fontSize: '14px',
     cursor: 'pointer',
     fontWeight: '600'
+  },
+  editSmallButton: {
+    padding: '6px 12px',
+    backgroundColor: '#4f46e5',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    fontSize: '12px',
+    cursor: 'pointer',
+    fontWeight: '500'
+  },
+  deleteSmallButton: {
+    padding: '6px 12px',
+    backgroundColor: '#dc2626',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    fontSize: '12px',
+    cursor: 'pointer',
+    fontWeight: '500'
   }
 };

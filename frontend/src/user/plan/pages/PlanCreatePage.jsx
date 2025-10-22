@@ -43,11 +43,6 @@ export default function PlanCreateForm() {
       newErrors.title = '계획 제목을 입력해주세요.';
     }
 
-    if (!formData.placeId.trim()) {
-      newErrors.placeId = '여행지 ID를 입력해주세요.';
-    } else if (isNaN(formData.placeId) || Number(formData.placeId) <= 0) {
-      newErrors.placeId = '올바른 여행지 ID를 입력해주세요.';
-    }
 
     if (!formData.startDate) {
       newErrors.startDate = '시작 날짜를 선택해주세요.';
@@ -253,30 +248,7 @@ export default function PlanCreateForm() {
                 <p style={styles.error}>{errors.title}</p>
               )}
             </div>
-
-            {/* 여행지 ID */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>
-                📍 여행지 ID
-              </label>
-              <input
-                type="text"
-                name="placeId"
-                value={formData.placeId}
-                onChange={handleChange}
-                placeholder="숫자로 입력해주세요"
-                style={styles.input}
-                onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#d1d5db';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
-              {errors.placeId && (
-                <p style={styles.error}>{errors.placeId}</p>
-              )}
-              <p style={styles.hint}>※ 추후 여행지 추천 API로 대체될 예정입니다</p>
-            </div>
+  
 
             {/* 날짜 선택 */}
             <div style={styles.dateGrid}>
