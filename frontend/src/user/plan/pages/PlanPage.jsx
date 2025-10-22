@@ -14,7 +14,7 @@ export default function TravelPlanMain() {
   const fetchTodayPlan = async () => {
     try {
       setLoading(true);
-      const planResponse = await fetch("http://localhost:8080/api/plan/today");
+      const planResponse = await fetch("http://localhost:8080/api/plan/todayPlan");
       if (!planResponse.ok) {
         if (planResponse.status === 404) {
           setTodayPlan(null);
@@ -28,7 +28,7 @@ export default function TravelPlanMain() {
       const planData = await planResponse.json();
       setTodayPlan(planData);
 
-      const detailResponse = await fetch("http://localhost:8080/api/plan/detail/today");
+      const detailResponse = await fetch("http://localhost:8080/api/plan/detail/{planData.data.id}/");
       if (detailResponse.ok) {
         const detailData = await detailResponse.json();
         setPlanDetails(detailData);
@@ -110,12 +110,12 @@ export default function TravelPlanMain() {
           ) : (
             <div>
               <div className="today-card">
-                <h3>{todayPlan.title}</h3>
-                {todayPlan.content && <p className="content">{todayPlan.content}</p>}
+                <h3>{todayPlan.data.title}</h3>
+                {todayPlan.data.content && <p className="content">{todayPlan.content}</p>}
                 <div className="date">
-                  <span>🕐 {formatDateTime(todayPlan.startDate)}</span>
+                  <span>🕐 {formatDateTime(todayPlan.data.startDate)}</span>
                   <span>~</span>
-                  <span>{formatDateTime(todayPlan.endDate)}</span>
+                  <span>{formatDateTime(todayPlan.data.endDate)}</span>
                 </div>
               </div>
 
