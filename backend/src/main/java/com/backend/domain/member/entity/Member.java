@@ -1,5 +1,6 @@
 package com.backend.domain.member.entity;
 
+import com.backend.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "member")
-public class Member {
+public class Member extends BaseEntity {
 
     //TODO: name
 
