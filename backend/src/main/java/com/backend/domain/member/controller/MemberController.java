@@ -1,6 +1,5 @@
 package com.backend.domain.member.controller;
 
-import com.backend.domain.member.dto.request.MemberLoginRequest;
 import com.backend.domain.member.dto.request.MemberSignupRequest;
 import com.backend.domain.member.dto.request.MemberUpdateRequest;
 import com.backend.domain.member.dto.response.MemberResponse;
