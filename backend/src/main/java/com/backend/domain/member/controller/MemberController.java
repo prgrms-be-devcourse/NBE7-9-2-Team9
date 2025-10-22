@@ -28,24 +28,24 @@ public class MemberController {
         return ApiResponse.success(response, "회원가입이 완료되었습니다");
     }
 
-    @GetMapping("/{memberId}")
-    public ApiResponse<MemberResponse> getMember(@PathVariable Long memberPk) {
-        MemberResponse response = memberService.getMember(memberPk);
+    @GetMapping("/{id}")
+    public ApiResponse<MemberResponse> getMember(@PathVariable Long id) {
+        MemberResponse response = memberService.getMember(id);
         return ApiResponse.success(response, "회원 조회 성공");
     }
 
-    @PatchMapping("/{memberId}")
+    @PatchMapping("/{id}")
     public ApiResponse<MemberResponse> updateMember(
-            @PathVariable Long memberPk,
+            @PathVariable Long id,
             @RequestBody MemberUpdateRequest request
     ) {
-        MemberResponse response = memberService.updateMember(memberPk, request);
+        MemberResponse response = memberService.updateMember(id, request);
         return ApiResponse.success(response, "회원정보가 수정되었습니다");
     }
 
-    @DeleteMapping("/{memberId}")
-    public ApiResponse<MemberResponse> deleteMember(@PathVariable Long memberPk) {
-        MemberResponse response = memberService.deleteMember(memberPk);
+    @DeleteMapping("/{id}")
+    public ApiResponse<MemberResponse> deleteMember(@PathVariable Long id) {
+        MemberResponse response = memberService.deleteMember(id);
         return ApiResponse.success(response, "회원 탈퇴가 완료되었습니다.");
     }
 }

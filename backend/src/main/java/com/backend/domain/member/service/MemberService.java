@@ -39,8 +39,8 @@ public class MemberService {
     //TODO: 수정 시 비밀번호 입력하기
 
     @Transactional
-    public MemberResponse updateMember(Long memberPk, MemberUpdateRequest request) {
-        Member member = findById(memberPk);
+    public MemberResponse updateMember(Long id, MemberUpdateRequest request) {
+        Member member = findById(id);
 
         if(request.email() != null) member.updateEmail(request.email());
         if(request.nickname() != null) member.updateNickname(request.nickname());
@@ -49,8 +49,8 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse deleteMember(Long memberPk) {
-        Member member = findById(memberPk);
+    public MemberResponse deleteMember(Long id) {
+        Member member = findById(id);
 
         if (member.isDeleted()) {
             throw new BusinessException(ErrorCode.ALREADY_DELETED_MEMBER);
@@ -62,8 +62,8 @@ public class MemberService {
 
     /** 회원 조회용 */
     @Transactional
-    public MemberResponse getMember(Long memberPk) {
-        Member member = findById(memberPk);
+    public MemberResponse getMember(Long id) {
+        Member member = findById(id);
         return MemberResponse.from(member);
     }
 
