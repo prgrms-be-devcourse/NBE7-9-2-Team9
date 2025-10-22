@@ -46,7 +46,7 @@ public class ReviewService {
         review.onCreate();
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date());
+        return new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate());
     }
 
     //리뷰 수정 메서드
@@ -71,14 +71,14 @@ public class ReviewService {
     public ReviewResponseDto getReview(long reviewId){
         Review review = getReviewEntity(reviewId);
 
-        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getId(), review.getRating(),review.getModified_Date());
+        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getId(), review.getRating(),review.getModifiedDate());
         return reviewResponseDto;
     }
     //전체 리뷰 조회
     public List<ReviewResponseDto> getAllReviews() {
         List<Review> reviews = reviewRepository.findAll();
         return reviews.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date()))
+                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
                 .toList();
     }
 
@@ -86,21 +86,21 @@ public class ReviewService {
     public List<ReviewResponseDto> getReviewList(long placeId){
         List<Review> reviews = reviewRepository.findByPlaceId(placeId);
         return reviews.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date()))
+                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
                 .toList();
     }
 
     public List<ResponsePlaceDto> recommendByPlace(long placeId){
 
         Map<Long, Double> placeAverageRatings = new HashMap<>(); //<placeId, averageRating> 으로 저장
-//        long placeSize = placeRepository.count();               //중간에 값이 삭제되고나면 id가 건더뛰게 되는 상황은 어떻게 처리?
+//        long placeSize = placeRepository.count();               //중간에 값이 삭제되고나면 id가 건더뛰게 되는 상황은 어떻게 처리? -> findAll()으로 변경
         List<Place> findAllPlaces = placeRepository.findAll();
         for(Place place : findAllPlaces){
             double averageRating = reviewRepository.findAverageRatingByPlaceId(place.getId());
             placeAverageRatings.put(place.getId(), averageRating);
         }
 
-        //평균 평점 기준 내림차순 정렬
+        //평균 평점 기준 내림차순 정렬 처음에 for 문으로 작성했다가 stream으로 변경했는데, 계속 에러떠서 결국 gpt의 도움을 받음.. 이런 방법은 괜찮은것인지?
         List<Map.Entry<Long, Double>> sortedList = placeAverageRatings.entrySet().stream()
                 .sorted(Map.Entry.<Long, Double>comparingByValue().reversed()) // 값 기준 내림차순
                 .toList();
