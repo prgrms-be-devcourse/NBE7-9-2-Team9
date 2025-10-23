@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./UserApp.css";
 import PlanApp from "./plan/PlanApp";
+import MemberApp from "./member/MemberApp";
 
 const UserApp = () => {
   return (
@@ -28,7 +29,7 @@ const UserApp = () => {
           path="/bookmark/*"
           element={<div>북마크 페이지 (개발 예정)</div>}
         />
-        <Route path="/member/*" element={<div>회원 페이지 (개발 예정)</div>} />
+       <Route path="member/*" element={<MemberApp />} />
       </Routes>
     </div>
   );
