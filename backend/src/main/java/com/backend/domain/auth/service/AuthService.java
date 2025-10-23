@@ -52,7 +52,7 @@ public class AuthService {
 
         log.info("[Auth] 로그인 성공: memberPk={}, issuedAt={}", memberPk, LocalDateTime.now());
 
-        return TokenResponse.of(accessToken, refreshToken, refreshTokenMaxAge);
+        return TokenResponse.of(accessToken, refreshToken, refreshTokenMaxAge, member.getRole().name());
     }
 
     /** AccessToken 재발급 */
@@ -82,7 +82,7 @@ public class AuthService {
 
         log.info("[Auth] AccessToken 재발급 완료: memberPk={}, reissuedAt={}", memberPk, LocalDateTime.now());
 
-        return TokenResponse.of(newAccessToken, savedToken.getToken(), refreshTokenMaxAge);
+        return TokenResponse.of(newAccessToken, savedToken.getToken(), refreshTokenMaxAge, member.getRole().name());
     }
 
     @Transactional
