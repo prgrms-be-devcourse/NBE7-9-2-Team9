@@ -1,3 +1,4 @@
+/*
 package com.backend.domain.admin.service;
 
 import com.backend.domain.member.entity.Member;
@@ -26,12 +27,15 @@ public class AdminReviewService {
     private final MemberRepository memberRepository;
     private final PlaceRepository placeRepository;
 
-    /** 전체 리뷰 조회 */
+    */
+/** 전체 리뷰 조회 *//*
+
     public List<ReviewResponseDto> getAllReviews() {
         return reviewService.getAllReviews();
     }
 
-    /*
+    */
+/*
     TODO: List<Review> findAllByMemberId(Long memberId); 필요
     // 특정 회원의 리뷰 조회
     public List<ReviewResponseDto> getReviewsByMember(Long memberId) {
@@ -43,9 +47,12 @@ public class AdminReviewService {
                 .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModified_Date()))
                 .toList();
     }
-    */
+    *//*
 
-    /** 특정 장소의 리뷰 조회 */
+
+    */
+/** 특정 장소의 리뷰 조회 *//*
+
     public List<ReviewResponseDto> getReviewsByPlace(Long placeId) {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
@@ -56,19 +63,26 @@ public class AdminReviewService {
                 .toList();
     }
 
-    /** 리뷰 단건 조회 */
+    */
+/** 리뷰 단건 조회 *//*
+
     public ReviewResponseDto getReview(Long reviewId) {
         return reviewService.getReview(reviewId);
     }
 
-    /** 리뷰 강제 삭제 */
+    */
+/** 리뷰 강제 삭제 *//*
+
     public void forceDeleteReview(Long reviewId) {
         Review review = reviewService.getReviewEntity(reviewId);
         reviewRepository.delete(review);
     }
 
-    /** 장소별 상위 리뷰 조회 */
+    */
+/** 장소별 상위 리뷰 조회 *//*
+
     public List<ReviewResponseDto> getTopReviews(Long placeId) {
         return reviewService.recommendByPlace(placeId);
     }
 }
+*/
