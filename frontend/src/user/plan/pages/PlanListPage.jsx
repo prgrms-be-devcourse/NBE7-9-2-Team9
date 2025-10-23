@@ -44,7 +44,7 @@ function PlanListPage({ onSelectPlan }) {
   };
 
   const handleHomeClick = () => {
-    window.location.href = 'http://localhost:3000/user/';
+    window.location.href = 'http://localhost:3000/user/plan';
   };
 
   if (loading) {

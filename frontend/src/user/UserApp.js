@@ -22,10 +22,7 @@ const UserApp = () => {
             </div>
           }
         />
-        <Route
-          path="/plan/*"
-          element={<div>여행 계획 페이지 (개발 예정)</div>}
-        />
+        <Route path="plan/*" element={<PlanApp />} />
         <Route path="/review/*" element={<div>리뷰 페이지 (개발 예정)</div>} />
         <Route
           path="/bookmark/*"
