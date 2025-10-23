@@ -21,3 +21,14 @@ export const getPlacesByCategory = async (categoryId) => {
     throw error;
   }
 };
+
+// 카테고리별 여행지 개수 조회
+export const getPlaceCountByCategory = async (categoryId) => {
+  try {
+    const response = await api.get(`/api/place/category/${categoryId}`);
+    return response.data ? response.data.length : 0;
+  } catch (error) {
+    console.error("카테고리별 여행지 개수 조회 실패:", error);
+    return 0;
+  }
+};

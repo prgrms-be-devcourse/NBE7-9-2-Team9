@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         // 1. 인증이 필요 없는 경로 (회원가입, 로그인, 토큰 재발급 등)
-        if (List.of("/api/auth/login", "/api/auth/signup", "/api/auth/reissue").contains(requestURI)) {
+        if (List.of("/api/auth/login", "/api/members/signup", "/api/auth/reissue").contains(requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }

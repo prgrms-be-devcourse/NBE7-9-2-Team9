@@ -1,6 +1,7 @@
 package com.backend.domain.plan.detail.repository;
 
 import com.backend.domain.plan.detail.entity.PlanDetail;
+import com.backend.domain.plan.entity.Plan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +13,7 @@ import java.util.Optional;
 public interface PlanDetailRepository extends JpaRepository<PlanDetail, Long> {
     Optional<PlanDetail> getPlanDetailById(Long planDetailId);
 
-    List<PlanDetail> getPlanDetailsByPlan_Id(long planId);
+    List<PlanDetail> getPlanDetailsByPlanId(Long planId);
 
     @Query("""
 SELECT COUNT(pd)>0
@@ -25,8 +26,10 @@ AND (:#{#detailId} IS NULL OR pd.id != :detailId)
             @Param("planId")long planId,
             @Param("endTime")LocalDateTime startTime,
             @Param("startTime")LocalDateTime endTime,
-            @Param("detailId")long detailId
+            @Param("detailId")Long detailId
     );
 
+    void deletePlanDetailsByPlan(Plan plan);
 
+    List<PlanDetail> getPlanDetailsByMemberId(Long memberId);
 }

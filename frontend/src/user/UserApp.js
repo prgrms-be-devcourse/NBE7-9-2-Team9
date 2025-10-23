@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./UserApp.css";
+import PlanApp from "./plan/PlanApp";
 
 const UserApp = () => {
   return (
@@ -37,4 +38,3 @@ const UserApp = () => {
 };
 
 export default UserApp;
-

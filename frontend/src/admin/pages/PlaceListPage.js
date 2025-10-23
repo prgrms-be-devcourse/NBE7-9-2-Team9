@@ -15,8 +15,8 @@ const PlaceListPage = () => {
 
   // 카테고리 정보 (임시 데이터)
   const categoryMap = {
-    1: { name: "관광지", icon: "🏛️" },
-    2: { name: "맛집", icon: "🍽️" },
+    1: { name: "맛집", icon: "🍽️" },
+    2: { name: "야경명소", icon: "🌃" },
     3: { name: "숙소", icon: "🏨" },
   };
 
