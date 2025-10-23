@@ -4,7 +4,11 @@ public record ReviewRequestDto(
 
         Long memberId,
         Long placeId,
-        int rating
+        int rating,
+        String Category,
+        String placeName,
+        String address,
+        String gu
 
 ) {
 }

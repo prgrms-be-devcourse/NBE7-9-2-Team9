@@ -6,6 +6,7 @@ import com.backend.domain.place.dto.RequestPlaceDto;
 import com.backend.domain.place.dto.ResponsePlaceDto;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.place.repository.PlaceRepository;
+import com.backend.domain.review.dto.RecommendResponse;
 import com.backend.domain.review.dto.ReviewRequestDto;
 import com.backend.domain.review.dto.ReviewResponseDto;
 import com.backend.domain.review.entity.Review;
@@ -29,14 +30,11 @@ public class ReviewService {
 
     //리뷰 생성 메서드
     @Transactional
-    public ReviewResponseDto createReview(ReviewRequestDto reviewRequestDto){
+    public ReviewResponseDto createReview(ReviewRequestDto reviewRequestDto, Long memberId) {
+        long placeId = reviewRequestDto.placeId();
 
-        Member member = memberRepository.findById(reviewRequestDto.memberId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
-        );
-        Place place = placeRepository.findById(reviewRequestDto.placeId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_PLACE)
-        );
+        Member member = getMemberEntity(memberId);
+        Place place = getPlaceEntity(placeId);
 
         Optional<Review> check = reviewRepository.findByMemberIdAndPlaceId(member.getId(), place.getId());
         if(check.isPresent()){
@@ -46,56 +44,81 @@ public class ReviewService {
         review.onCreate();
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate());
+        return new ReviewResponseDto(member.getMemberId(), review.getId(), review.getRating(), review.getModifiedDate(), place.getCategory().getName(), place.getPlaceName(), place.getAddress(), place.getGu());
     }
 
     //리뷰 수정 메서드
     @Transactional
-    public void modifyReview(long memberId, int modifyRating){
-        Review review = reviewRepository.findByMemberId(memberId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
-        );
+    public void modifyReview(Long memberId, int modifyRating){
+//        Member member = getMemberEntity(memberId);
+//        Review review = reviewRepository.findByMemberId(member.getId()).orElseThrow(
+//                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+//        );
+        Review review = getReviewWithAuth(memberId);
         review.setRating(modifyRating);
         review.onUpdate();
     }
 
     //리뷰 삭제 메서드
     @Transactional
-    public void deleteReview(long reviewId){
+    public void deleteReview(Long memberId, long reviewId){
+//        Review review = getReviewEntity(reviewId);
+//        Member member = getMemberEntity(memberId);
+//        if(member.getId() != review.getMember().getId()){           //본인 검증? 이정도면 괜찮을지 걱정..
+//            throw new BusinessException(ErrorCode.ACCESS_DENIED);
+//        }
+        if(!validWithReviewId(memberId, reviewId)){
+            throw new BusinessException(ErrorCode.ACCESS_DENIED);
+        }
         Review review = getReviewEntity(reviewId);
         reviewRepository.delete(review);
     }
 
-
     //내가 작성한 리뷰 조회
-    public ReviewResponseDto getReview(long reviewId){
-        Review review = getReviewEntity(reviewId);
+    public List<ReviewResponseDto> getMyReviews(Long memberId) {
+//        Member member = getMemberEntity(memberId);
+//        Review review = getReviewEntity(reviewId);
+//        Review review = reviewRepository.findByMemberId(member.getId()).orElseThrow(
+//                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+//        );
+        Review review = getReviewWithAuth(memberId);
+        Member member = getMemberEntity(memberId);
+        List<Review> myReviews = reviewRepository.findAllByMemberId(memberId);
+        if(myReviews.isEmpty()){
+            throw new BusinessException(ErrorCode.NOT_FOUND_REVIEW);
+        }
+        return myReviews.stream()
+                .map(ReviewResponseDto::from)
+                .toList();
 
-        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getId(), review.getRating(),review.getModifiedDate());
-        return reviewResponseDto;
     }
+
     //전체 리뷰 조회
     public List<ReviewResponseDto> getAllReviews() {
-        List<Review> reviews = reviewRepository.findAll();
-        return reviews.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+        return reviewRepository.findAll()
+                .stream()
+                .map(ReviewResponseDto::from)
                 .toList();
     }
 
     //여행지의 전체 리뷰 조회
-    public List<ReviewResponseDto> getReviewList(long placeId){
-        List<Review> reviews = reviewRepository.findByPlaceId(placeId);
-        return reviews.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+    public List<ReviewResponseDto> getReviewList(Long placeId) {
+        return reviewRepository.findByPlaceId(placeId)
+                .stream()
+                .map(ReviewResponseDto::from)
                 .toList();
     }
 
-    public List<ResponsePlaceDto> recommendByPlace(long placeId){
+//    public List<RecommendResponse> recommendHotel() {
+//        Map<Long, Double> placeAverageRatings = new HashMap<>();
+//        List<Place> findAllPlaces = placeRepository.findByCategoryName("호텔");
+//    }
 
+    public List<RecommendResponse> recommendByPlace(Long placeId) {
         Map<Long, Double> placeAverageRatings = new HashMap<>(); //<placeId, averageRating> 으로 저장
 //        long placeSize = placeRepository.count();               //중간에 값이 삭제되고나면 id가 건더뛰게 되는 상황은 어떻게 처리? -> findAll()으로 변경
         List<Place> findAllPlaces = placeRepository.findAll();
-        for(Place place : findAllPlaces){
+        for (Place place : findAllPlaces) {
             double averageRating = reviewRepository.findAverageRatingByPlaceId(place.getId());
             placeAverageRatings.put(place.getId(), averageRating);
         }
@@ -105,23 +128,45 @@ public class ReviewService {
                 .sorted(Map.Entry.<Long, Double>comparingByValue().reversed()) // 값 기준 내림차순
                 .toList();
 
-        List<Place> recommendList = new ArrayList<>();
-        for(long i = 0; i < 5 && i < sortedList.size(); i++){       //여행지를 상위5개의 placeId를 가져와서 recommendList에 추가
-            long recommendedPlaceId = sortedList.get((int)i).getKey();
-            recommendList.add(placeRepository.findById(recommendedPlaceId).orElseThrow(
-                    () -> new BusinessException(ErrorCode.NOT_FOUND_PLACE)
-            ));
-
+        List<RecommendResponse> recommendList = new ArrayList<>();
+        for (long i = 0; i < 5 && i < sortedList.size(); i++) {       //여행지를 상위5개의 placeId를 가져와서 recommendList에 추가
+            long recommendedPlaceId = sortedList.get((int) i).getKey();
+            double averageRating = sortedList.get((int) i).getValue();
+            Place place = getPlaceEntity(recommendedPlaceId);
+            recommendList.add(RecommendResponse.from(place, averageRating));
         }
-        return recommendList.stream()
-                .map(ResponsePlaceDto::from)
-                .toList();
+        return recommendList;
     }
 
-
-    public Review getReviewEntity(long reviewId){
+    public Review getReviewEntity(Long reviewId){
         return reviewRepository.findById(reviewId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
         );
     }
+
+    public Place getPlaceEntity(Long placeId){
+        return placeRepository.findById(placeId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_PLACE)
+        );
+    }
+
+    public Member getMemberEntity(Long memberId){
+        return memberRepository.findById(memberId).orElseThrow(
+                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+    }
+
+    public Review getReviewWithAuth(Long memberId){
+        Member member = getMemberEntity(memberId);
+        return reviewRepository.findByMemberId(member.getId()).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+        );
+    }
+
+    public boolean validWithReviewId(Long memberId, Long reviewId){
+        Review review = getReviewEntity(reviewId);
+        Member member = getMemberEntity(memberId);
+        return review.getMember().getId().equals(member.getId());
+    }
+
 }
