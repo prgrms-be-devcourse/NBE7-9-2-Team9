@@ -1,0 +1,205 @@
+/* =========================================
+   📘 Member 전용 공통 스타일 (UserApp과 통일)
+========================================= */
+
+.member-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* ✅ 제목 */
+.member-container h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ✅ 부제목 */
+.member-container p {
+  color: #666;
+  margin-bottom: 1rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* =========================================
+   ✏️ 입력 폼
+========================================= */
+.member-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  padding: 2.5rem 2.8rem; /* ✅ 여백 넉넉하게 */
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* ✅ 입력 필드 */
+.member-form input[type="text"],
+.member-form input[type="password"],
+.member-form input[type="email"] {
+  width: 100%;
+  box-sizing: border-box; /* ✅ padding 포함하여 계산 */
+  padding: 0.95rem 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #fafafa;
+}
+
+.member-form input:focus {
+  border-color: #007bff;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+/* =========================================
+   🔘 체크박스
+========================================= */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #007bff;
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* =========================================
+   🔵 버튼
+========================================= */
+.member-button {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  background-color: #007bff;
+  color: white !important;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+}
+
+.member-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+/* 회색 보조 버튼 */
+.member-button.secondary {
+  background-color: #6c757d;
+}
+
+.member-button.secondary:hover {
+  background-color: #555;
+}
+
+/* 빨간 버튼 (탈퇴 등 위험 동작용) */
+.member-button.danger {
+  background-color: #dc3545;
+}
+
+.member-button.danger:hover {
+  background-color: #a71d2a;
+}
+
+/* =========================================
+   ✅ 메시지
+========================================= */
+.error-text {
+  color: #dc3545;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.success-text {
+  color: #28a745;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* =========================================
+   링크 & 구분선
+========================================= */
+.divider {
+  width: 100%;
+  max-width: 420px;
+  height: 1px;
+  background-color: #ddd;
+  margin: 1.8rem 0;
+}
+
+.member-link {
+  color: #007bff;
+  text-decoration: none;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.member-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* ==============================
+   🧩 MyPage 전용 추가 스타일
+============================== */
+
+/* 프로필 정보 */
+.profile-info {
+  width: 100%;
+  text-align: left;
+  color: #333;
+  line-height: 1.8;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.profile-info p strong {
+  color: #000;
+}
+
+/* 수정 폼 */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+/* 제목(h3) 스타일 */
+.member-form h3 {
+  margin-bottom: 1rem;
+  color: #222;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+}
