@@ -1,31 +1,33 @@
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(to bottom right, #ebf8ff, #e0e7ff);
-    min-height: 100vh;
-    padding: 20px;
-}
-
+/* 컨테이너 스타일 */
 .container {
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #ebf8ff, #e0e7ff);
+    padding: 20px;
+  }
+  
+  .content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-}
-
-.detail-container {
+  }
+  
+  .detail-content {
     max-width: 900px;
     margin: 0 auto;
     padding: 20px;
-}
-
-.loading-container {
+  }
+  
+  /* 로딩 */
+  .loading-container {
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    min-height: 100vh;
-}
-
-.spinner {
+    background: linear-gradient(to bottom right, #ebf8ff, #e0e7ff);
+  }
+  
+  .spinner {
     width: 48px;
     height: 48px;
     border: 4px solid #e5e7eb;
@@ -33,18 +35,20 @@ body {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
-}
-
-@keyframes spin {
+  }
+  
+  @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-.header {
+  }
+  
+  /* 헤더 */
+  .header {
     margin-bottom: 32px;
-}
-
-.home-button, .back-button {
+  }
+  
+  .home-button,
+  .back-button {
     margin-bottom: 24px;
     padding: 12px 24px;
     background-color: white;
@@ -56,153 +60,165 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-}
-
-.home-button:hover, .back-button:hover {
+  }
+  
+  .home-button:hover,
+  .back-button:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-}
-
-.title {
+  }
+  
+  .title {
     font-size: 36px;
     font-weight: bold;
     color: #1f2937;
     margin-bottom: 8px;
-}
-
-.subtitle {
+  }
+  
+  .subtitle {
     font-size: 16px;
     color: #6b7280;
-}
-
-.grid {
+  }
+  
+  /* 그리드 */
+  .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 24px;
-}
-
-.card {
+  }
+  
+  /* 카드 */
+  .card {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: all 0.3s;
     overflow: hidden;
-}
-
-.card:hover {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    transform: translateY(-4px);
-}
-
-.card-content {
+  }
+  
+  .card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  .card-content {
     padding: 24px;
-}
-
-.card-section {
+  }
+  
+  .card-section {
     margin-bottom: 16px;
-}
-
-.card-label {
+  }
+  
+  .card-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .card-label {
     font-size: 12px;
     font-weight: 600;
     color: #6b7280;
     margin-bottom: 4px;
-}
-
-.card-title {
+  }
+  
+  .card-title {
     font-size: 20px;
     font-weight: bold;
     color: #1f2937;
-}
-
-.card-text {
+  }
+  
+  .card-text {
     font-size: 14px;
     color: #4b5563;
-}
-
-.card-date {
+  }
+  
+  .card-date {
     font-size: 14px;
     color: #374151;
-}
-
-.card-border {
+  }
+  
+  .card-border {
     height: 4px;
     background: linear-gradient(to right, #6366f1, #3b82f6);
-}
-
-.empty-box {
+  }
+  
+  /* 빈 박스 */
+  .empty-box,
+  .empty-detail-box {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 48px;
     text-align: center;
-}
-
-.empty-text {
+  }
+  
+  .empty-text {
     font-size: 18px;
     color: #6b7280;
-}
-
-.error-box {
+  }
+  
+  /* 에러 박스 */
+  .error-box {
     background-color: white;
     padding: 32px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.error-text {
+  }
+  
+  .error-text {
     color: #dc2626;
-    font-size: 16px;
-}
-
-.warning-text {
-    color: #f59e0b;
     font-size: 14px;
+  }
+  
+  .warning-text {
+    color: #f59e0b;
+    font-size: 12px;
     margin-top: 4px;
-}
-
-.retry-button {
+  }
+  
+  .retry-button {
     margin-top: 16px;
-    padding: 10px 20px;
+    padding: 8px 16px;
     background-color: #4f46e5;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
-}
-
-.detail-box {
+  }
+  
+  .retry-button:hover {
+    background-color: #4338ca;
+  }
+  
+  /* 상세 박스 */
+  .detail-box {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 32px;
     margin-bottom: 24px;
-}
-
-.detail-header {
+  }
+  
+  .detail-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.detail-title {
+  }
+  
+  .detail-title {
     font-size: 30px;
     font-weight: bold;
     color: #1f2937;
-}
-
-.button-group {
+  }
+  
+  /* 버튼 그룹 */
+  .button-group {
     display: flex;
     gap: 8px;
-}
-
-.edit-button {
+  }
+  
+  /* 버튼 스타일 */
+  .edit-button {
     padding: 10px 16px;
     background-color: #4f46e5;
     color: white;
@@ -211,13 +227,13 @@ body {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s;
-}
-
-.edit-button:hover {
+  }
+  
+  .edit-button:hover {
     background-color: #4338ca;
-}
-
-.delete-button {
+  }
+  
+  .delete-button {
     padding: 10px 16px;
     background-color: #dc2626;
     color: white;
@@ -226,14 +242,14 @@ body {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s;
-}
-
-.delete-button:hover {
+  }
+  
+  .delete-button:hover {
     background-color: #b91c1c;
-}
-
-.save-button {
-    padding: 10px 20px;
+  }
+  
+  .save-button {
+    padding: 10px 16px;
     background-color: #10b981;
     color: white;
     border: none;
@@ -241,19 +257,18 @@ body {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s;
-    font-weight: 600;
-}
-
-.save-button:hover:not(:disabled) {
+  }
+  
+  .save-button:hover {
     background-color: #059669;
-}
-
-.save-button:disabled {
+  }
+  
+  .save-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-.cancel-button {
+  }
+  
+  .cancel-button {
     padding: 10px 16px;
     background-color: #6b7280;
     color: white;
@@ -262,58 +277,89 @@ body {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s;
-}
-
-.cancel-button:hover {
+  }
+  
+  .cancel-button:hover {
     background-color: #4b5563;
-}
-
-.form-container {
+  }
+  
+  .edit-small-button {
+    padding: 6px 12px;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .edit-small-button:hover {
+    background-color: #4338ca;
+  }
+  
+  .delete-small-button {
+    padding: 6px 12px;
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .delete-small-button:hover {
+    background-color: #b91c1c;
+  }
+  
+  /* 폼 스타일 */
+  .form-container {
     display: flex;
     flex-direction: column;
     gap: 24px;
-}
-
-.form-group {
+  }
+  
+  .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 16px;
-}
-
-.form-label {
+  }
+  
+  .form-label {
     font-size: 14px;
     font-weight: 600;
     color: #6b7280;
     margin-bottom: 8px;
-}
-
-.form-value {
+  }
+  
+  .form-value {
     font-size: 20px;
     font-weight: bold;
     color: #1f2937;
-}
-
-.form-value-content {
+  }
+  
+  .form-value-content {
     font-size: 16px;
     color: #374151;
     white-space: pre-wrap;
-}
-
-.input {
+  }
+  
+  .input {
     width: 100%;
     padding: 10px 16px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 14px;
-}
-
-.input:focus {
+    box-sizing: border-box;
+  }
+  
+  .input:focus {
     outline: none;
     border-color: #4f46e5;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.textarea {
+  }
+  
+  .textarea {
     width: 100%;
     padding: 10px 16px;
     border: 1px solid #d1d5db;
@@ -321,57 +367,55 @@ body {
     font-size: 14px;
     resize: vertical;
     font-family: inherit;
-}
-
-.textarea:focus {
+    box-sizing: border-box;
+  }
+  
+  .textarea:focus {
     outline: none;
     border-color: #4f46e5;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.date-range-container {
+  }
+  
+  .date-range-container {
     display: flex;
     gap: 16px;
     align-items: center;
-    flex-wrap: wrap;
-}
-
-.date-input {
+  }
+  
+  .date-input {
     flex: 1;
-    min-width: 200px;
     padding: 10px 16px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 14px;
-}
-
-.date-input:focus {
+  }
+  
+  .date-input:focus {
     outline: none;
     border-color: #4f46e5;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.date-separator {
+  }
+  
+  .date-separator {
     font-size: 16px;
     color: #6b7280;
-}
-
-.detail-list-header {
+  }
+  
+  /* 상세 일정 리스트 */
+  .detail-list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.section-title {
+  }
+  
+  .section-title {
     font-size: 24px;
     font-weight: bold;
     color: #1f2937;
-}
-
-.add-button {
+  }
+  
+  .add-button {
     padding: 10px 20px;
     background-color: #4f46e5;
     color: white;
@@ -380,84 +424,86 @@ body {
     font-size: 14px;
     cursor: pointer;
     font-weight: 600;
-    transition: background-color 0.2s;
-}
-
-.add-button:hover {
+  }
+  
+  .add-button:hover {
     background-color: #4338ca;
-}
-
-.add-form-container {
+  }
+  
+  .add-form-container {
     background-color: #f9fafb;
     padding: 24px;
     border-radius: 8px;
     margin-bottom: 24px;
-}
-
-.add-form-title {
+  }
+  
+  .add-form-title {
     font-size: 18px;
     font-weight: bold;
     color: #1f2937;
     margin-bottom: 16px;
-}
-
-.empty-detail-box {
-    text-align: center;
-    padding: 48px;
-}
-
-.detail-list {
+  }
+  
+  .detail-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
-}
-
-.detail-item {
+  }
+  
+  .detail-item {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 24px;
     transition: box-shadow 0.2s;
-}
-
-.detail-item:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.detail-item-header {
+  }
+  
+  .detail-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .detail-item-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 16px;
-}
-
-.detail-item-title {
+  }
+  
+  .detail-item-edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .detail-item-title {
     font-size: 18px;
     font-weight: bold;
     color: #1f2937;
     margin-bottom: 4px;
-}
-
-.detail-item-place {
+  }
+  
+  .detail-item-place {
     font-size: 14px;
     color: #6366f1;
-}
-
-.detail-item-content {
+  }
+  
+  .detail-item-content {
     font-size: 14px;
     color: #4b5563;
     margin-bottom: 16px;
     white-space: pre-wrap;
-}
-
-.detail-item-time {
+  }
+  
+  .detail-item-time {
     font-size: 14px;
     color: #6b7280;
     background-color: #f9fafb;
     padding: 12px;
-    border-radius: 6px;
-}
-
-.modal {
+    border-radius: 8px;
+  }
+  
+  /* 모달 */
+  .modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -468,36 +514,138 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 1000;
-}
-
-.modal-content {
+  }
+  
+  /* 여행지 추천 */
+  .loading-places {
+    padding: 16px;
+    text-align: center;
+    color: #6b7280;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .place-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: white;
+  }
+  
+  .place-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .place-item:last-child {
+    border-bottom: none;
+  }
+  
+  .place-item:hover {
+    background-color: #f9fafb;
+  }
+  
+  .place-item.selected {
+    background-color: #eef2ff;
+    border-left: 3px solid #4f46e5;
+  }
+  
+  .place-item-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  
+  .place-rating {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f59e0b;
+  }
+  
+  .place-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  
+  .place-address {
+    font-size: 12px;
+    color: #6b7280;
+    padding-left: 24px;
+  }
+  
+  .selected-place-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background-color: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 8px;
+  }
+  
+  .selected-place-info strong {
+    color: #1f2937;
+    font-size: 15px;
+  }
+  
+  .place-id-badge {
+    padding: 4px 8px;
+    background-color: #4f46e5;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  /* 모달 */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
     background-color: white;
     padding: 32px;
     border-radius: 12px;
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
     max-width: 400px;
     width: 90%;
-}
-
-.modal-title {
+  }
+  
+  .modal-title {
     font-size: 24px;
     font-weight: bold;
     color: #1f2937;
     margin-bottom: 16px;
-}
-
-.modal-text {
+  }
+  
+  .modal-text {
     font-size: 16px;
     color: #4b5563;
     margin-bottom: 24px;
-}
-
-.modal-buttons {
+  }
+  
+  .modal-buttons {
     display: flex;
     gap: 12px;
     justify-content: flex-end;
-}
-
-.confirm-delete-button {
+  }
+  
+  .confirm-delete-button {
     padding: 10px 20px;
     background-color: #dc2626;
     color: white;
@@ -506,30 +654,8 @@ body {
     font-size: 14px;
     cursor: pointer;
     font-weight: 600;
-}
-
-.confirm-delete-button:hover {
+  }
+  
+  .confirm-delete-button:hover {
     background-color: #b91c1c;
-}
-
-.hidden {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    .detail-header {
-        flex-direction: column;
-    }
-
-    .date-range-container {
-        flex-direction: column;
-    }
-
-    .date-input {
-        width: 100%;
-    }
-}
+  }

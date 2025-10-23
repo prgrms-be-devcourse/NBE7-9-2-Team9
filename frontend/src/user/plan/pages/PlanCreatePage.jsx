@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { apiRequest } from "../../../utils/api";
 
 export default function PlanCreateForm() {
   const [formData, setFormData] = useState({
@@ -85,11 +86,8 @@ export default function PlanCreateForm() {
         endDate: endDateTime
       };
 
-      const response = await fetch('http://localhost:8080/api/plan/create', {
+      const response = await apiRequest('http://localhost:8080/api/plan/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(requestBody),
         credentials: 'include'
       });
