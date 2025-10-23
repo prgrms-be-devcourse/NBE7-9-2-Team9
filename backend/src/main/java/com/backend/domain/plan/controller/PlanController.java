@@ -1,5 +1,7 @@
 package com.backend.domain.plan.controller;
 
+import com.backend.domain.auth.service.AuthService;
+import com.backend.domain.bookmark.service.BookmarkService;
 import com.backend.domain.plan.dto.*;
 import com.backend.domain.plan.entity.Plan;
 import com.backend.domain.plan.service.PlanMemberService;
@@ -9,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +24,14 @@ import java.util.List;
 public class PlanController {
     private final PlanService planService;
     private final PlanMemberService planMemberService;
+    private final AuthService authService;
 
     @PostMapping("/create")
     public ApiResponse<PlanResponseBody> create(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @Valid @RequestBody PlanCreateRequestBody planCreateRequestBody
     ) {
-
-        // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
-        long memberPkId = 1;
+        long memberPkId = authService.getMemberId(accessToken);
 
         Plan plan = planService.createPlan(planCreateRequestBody, memberPkId);
         PlanResponseBody planResponseBody = new PlanResponseBody(plan);
@@ -36,29 +39,30 @@ public class PlanController {
     }
 
     @GetMapping("/list")
-    public ApiResponse<List<PlanResponseBody>> getList() {
-        //TODO 페이징 처리 적용하기, 일단은 전체 목록 조회
-        //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
-        long memberPkId = 1;
-
+    public ApiResponse<List<PlanResponseBody>> getList(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken
+    ) {
+        long memberPkId = authService.getMemberId(accessToken);
         List<PlanResponseBody> plans = planService.getPlanList(memberPkId);
         return ApiResponse.success(plans);
-
     }
 
     @GetMapping("/todayPlan")
-    public ApiResponse<PlanResponseBody> getTodayPlan() {
-        long memberPkId = 1;
+    public ApiResponse<PlanResponseBody> getTodayPlan(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken
+    ) {
+        long memberPkId = authService.getMemberId(accessToken);
         return ApiResponse.success(planService.getTodayPlan(memberPkId));
     }
 
     @PatchMapping("/update/{planId}")
     public ApiResponse<PlanResponseBody> updatePlan(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @Valid @RequestBody PlanUpdateRequestBody planUpdateRequestBody,
             @PathVariable long planId
     ) {
         //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
-        long memberPkId = 1;
+        long memberPkId = authService.getMemberId(accessToken);
 
         PlanResponseBody planResponseBody = planService.updatePlan(planId, planUpdateRequestBody, memberPkId);
 
@@ -67,7 +71,7 @@ public class PlanController {
 
     @GetMapping("/{planId}")
     public ApiResponse<PlanResponseBody> getPlan(
-         @NotNull @PathVariable long planId
+            @NotNull @PathVariable long planId
     ) {
         PlanResponseBody planResponseBody = planService.getPlanResponseBodyById(planId);
         return ApiResponse.success(planResponseBody);
@@ -75,10 +79,10 @@ public class PlanController {
 
     @DeleteMapping("/delete/{planId}")
     public ResponseEntity deletePlan(
-           @NotNull @PathVariable long planId
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @NotNull @PathVariable long planId
     ) {
-        //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
-        long memberPkId = 1;
+        long memberPkId = authService.getMemberId(accessToken);
 
         planService.deletePlanById(planId, memberPkId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -86,24 +90,28 @@ public class PlanController {
 
     @PostMapping("/member/invite")
     public ApiResponse<PlanMemberResponseBody> inviteMember(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @Valid @RequestBody PlanMemberAddRequestBody memberRequestBody
     ) {
-        long memberPkId = 1;
+        long memberPkId = authService.getMemberId(accessToken);
         PlanMemberResponseBody planMemberResponseBody = planMemberService.invitePlanMember(memberRequestBody, memberPkId);
         return ApiResponse.success(planMemberResponseBody);
     }
 
     @GetMapping("/member/mylist")
-    public ApiResponse<List<PlanMemberMyResponseBody>> getMyPlanMember(){
-        long memberPkId = 2;
+    public ApiResponse<List<PlanMemberMyResponseBody>> getMyPlanMember(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken
+            ) {
+        long memberPkId = authService.getMemberId(accessToken);
         return ApiResponse.success(planMemberService.myInvitedPlanList(memberPkId));
     }
 
     @PatchMapping("/member/accept")
     public ApiResponse<PlanMemberResponseBody> acceptMember(
-           @Valid @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
-    ){
-        long memberPkId = 2;
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @Valid @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
+    ) {
+        long memberPkId = authService.getMemberId(accessToken);
         PlanMemberResponseBody planMemberResponseBody = planMemberService.acceptInvitePlanMember(memberAnswerRequestBody, memberPkId);
 
         return ApiResponse.success(planMemberResponseBody);
@@ -111,9 +119,10 @@ public class PlanController {
 
     @PatchMapping("/member/deny")
     public ApiResponse<PlanMemberResponseBody> denyMember(
-          @Valid  @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
-    ){
-        long memberPkId = 2;
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @Valid @RequestBody PlanMemberAnswerRequestBody memberAnswerRequestBody
+    ) {
+        long memberPkId = authService.getMemberId(accessToken);
         PlanMemberResponseBody planMemberResponseBody = planMemberService.denyInvitePlanMember(memberAnswerRequestBody, memberPkId);
 
         return ApiResponse.success(planMemberResponseBody);
