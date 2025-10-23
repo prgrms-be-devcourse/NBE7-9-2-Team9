@@ -11,6 +11,7 @@ import com.backend.domain.plan.entity.Plan;
 import com.backend.global.reponse.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -89,8 +90,8 @@ public class PlanDetailController {
         );
     }
 
-    @DeleteMapping("/{planDetailId}/delete")
-    public ApiResponse<PlanDetailResponseBody> deletePlanDetail(
+    @DeleteMapping("/delete/{planDetailId}")
+    public ApiResponse<Null> deletePlanDetail(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @PathVariable long planDetailId
     ) {

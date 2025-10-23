@@ -65,7 +65,8 @@ public class SecurityConfig {
 
                         // 2. 인증이 필요한 API만 명시
                         .requestMatchers(
-                                "/api/members/**"
+                                "/api/members/**",
+                                "/api/plan/**"
                         ).authenticated()
 
                         // 3. TODO: 관리자 전용 API (추후 적용)
