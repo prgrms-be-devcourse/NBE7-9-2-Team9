@@ -1,6 +1,7 @@
 package com.backend.domain.review.controller;
 
 
+import com.backend.domain.auth.service.AuthService;
 import com.backend.domain.place.dto.ResponsePlaceDto;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.review.dto.RecommendResponse;
@@ -9,6 +10,7 @@ import com.backend.domain.review.dto.ReviewResponseDto;
 import com.backend.domain.review.service.ReviewService;
 import com.backend.global.reponse.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,32 +22,46 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final AuthService authService;
 
     //리뷰 등록
     @PostMapping("/add")
-    public ApiResponse<ReviewResponseDto> createReview(@RequestBody ReviewRequestDto reviewRequestDto) {
-        ReviewResponseDto createdReview = reviewService.createReview(reviewRequestDto);
+    public ApiResponse<ReviewResponseDto> createReview(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @RequestBody ReviewRequestDto reviewRequestDto
+    ) {
+        Long memberId = authService.getMemberId(accessToken);
+        ReviewResponseDto createdReview = reviewService.createReview(reviewRequestDto, memberId);
         return ApiResponse.created(createdReview);
     }
 
     //리뷰 수정
     @PatchMapping("/modify/{memberId}")
-    public ApiResponse<Void> modifyReview(@PathVariable long memberId, @RequestParam int modifyRating) {
+    public ApiResponse<Void> modifyReview(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @PathVariable long memberId, @RequestParam int modifyRating) {
+        Long authMemberId = authService.getMemberId(accessToken);
         reviewService.modifyReview(memberId, modifyRating);
         return ApiResponse.success();
     }
 
     //리뷰 삭제
     @DeleteMapping("/delete/{reviewId}")
-    public ApiResponse<Void> deleteReview(@PathVariable long reviewId) {
-        reviewService.deleteReview(reviewId);
+    public ApiResponse<Void> deleteReview(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @PathVariable long reviewId) {
+        Long memberId = authService.getMemberId(accessToken);
+        reviewService.deleteReview(memberId, reviewId);
         return ApiResponse.success();
     }
 
     // 내가 작성한 리뷰 조회
-    @GetMapping("/{reviewId}")
-    public ApiResponse<ReviewResponseDto> getMyReview(@PathVariable long reviewId) {
-        ReviewResponseDto response = reviewService.getReview(reviewId);
+    @GetMapping("/myReview") // 꼭 reviewId가 필요한가?
+    public ApiResponse<List<ReviewResponseDto>> getMyReview(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken) {
+        Long memberId = authService.getMemberId(accessToken);
+        List<ReviewResponseDto> response = reviewService.getMyReviews(memberId);
+//        ReviewResponseDto response = reviewService.getReview(memberId, reviewId);
         return ApiResponse.success(response);
     }
 
@@ -69,5 +85,24 @@ public class ReviewController {
         List<RecommendResponse> recommendedPlaces = reviewService.recommendByPlace(placeId);
         return ApiResponse.success(recommendedPlaces);
     }
+//    //카테고리 - 호텔
+//    @GetMapping("/recommend/hotel")
+//    public ApiResponse<List<RecommendResponse>> recommendHotelReviews(){
+//        List<RecommendResponse> recommendedPlaces = reviewService.recommendHotel();
+//        return ApiResponse.success(recommendedPlaces);
+//    }
+//    //카테고리 - 맛집
+//    @GetMapping("/recommend/restaurant")
+//    public ApiResponse<List<RecommendResponse>> recommendRestaurantReviews(){
+//        List<RecommendResponse> recommendedPlaces = reviewService.recommendRestaurant(placeId);
+//        return ApiResponse.success(recommendedPlaces);
+//    }
+//    //카테고리 - 야경
+//    @GetMapping("/recommend/nightspot")
+//    public ApiResponse<List<RecommendResponse>> recommendNightspotReviews(){
+//        List<RecommendResponse> recommendedPlaces = reviewService.recommendNightSpot(placeId);
+//        return ApiResponse.success(recommendedPlaces);
+//    }
+    //
 
 }
