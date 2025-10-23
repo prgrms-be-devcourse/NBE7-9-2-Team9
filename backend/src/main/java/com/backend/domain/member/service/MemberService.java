@@ -36,33 +36,21 @@ public class MemberService {
         return MemberResponse.from(member);
     }
 
-    @Transactional
-    public MemberResponse login(MemberLoginRequest request) {
-        Member member = findByMemberId(request.memberId());
-
-        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
-            throw new BusinessException(ErrorCode.INVALID_PASSWORD);
-        }
-
-        log.info("== 로그인 완료 == ");
-
-        return MemberResponse.from(member);
-    }
-
     //TODO: 수정 시 비밀번호 입력하기
 
     @Transactional
-    public MemberResponse updateMember(String memberId, MemberUpdateRequest request) {
-        Member member = findByMemberId(memberId);
+    public MemberResponse updateMember(Long id, MemberUpdateRequest request) {
+        Member member = findById(id);
 
         if(request.email() != null) member.updateEmail(request.email());
         if(request.nickname() != null) member.updateNickname(request.nickname());
 
         return MemberResponse.from(member);
     }
+
     @Transactional
-    public MemberResponse deleteMember(String memberId) {
-        Member member = findByMemberId(memberId);
+    public MemberResponse deleteMember(Long id) {
+        Member member = findById(id);
 
         if (member.isDeleted()) {
             throw new BusinessException(ErrorCode.ALREADY_DELETED_MEMBER);
@@ -72,17 +60,25 @@ public class MemberService {
         return MemberResponse.from(member);
     }
 
+    /** 회원 조회용 */
+    @Transactional
+    public MemberResponse getMember(Long id) {
+        Member member = findById(id);
+        return MemberResponse.from(member);
+    }
+
     // TODO: Member, MemberResponse 각각 반환 메서드가 필요?
+
     @Transactional(readOnly = true)
     public Member findByMemberId(String memberId) {
         return memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
-    @Transactional
-    public MemberResponse getMember(String memberId) {
-        Member member = findByMemberId(memberId);
-        return MemberResponse.from(member);
+    @Transactional(readOnly = true)
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)

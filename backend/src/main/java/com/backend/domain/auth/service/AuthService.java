@@ -3,16 +3,15 @@ package com.backend.domain.auth.service;
 import com.backend.domain.auth.dto.reponse.TokenResponse;
 import com.backend.domain.auth.entity.RefreshToken;
 import com.backend.domain.auth.repository.RefreshTokenRepository;
-import com.backend.domain.member.dto.request.MemberLoginRequest;
-import com.backend.domain.member.dto.response.MemberResponse;
 import com.backend.domain.member.entity.Member;
-import com.backend.domain.member.service.MemberService;
+import com.backend.domain.member.repository.MemberRepository;
 import com.backend.global.exception.BusinessException;
 import com.backend.global.jwt.JwtTokenProvider;
 import com.backend.global.jwt.TokenStatus;
 import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +26,8 @@ import java.time.LocalDateTime;
 @Transactional(readOnly = true)
 public class AuthService {
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -35,63 +35,61 @@ public class AuthService {
     @Transactional
     public TokenResponse login(String loginId, String password) {
 
-        MemberResponse memberResponse = memberService.login(
-                new MemberLoginRequest(loginId, password)
-        );
+        Member member = memberRepository.findByMemberId(loginId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Long memberPk = memberResponse.id();
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new BusinessException(ErrorCode.INVALID_PASSWORD);
+        }
 
-        String accessToken = jwtTokenProvider.generateAccessToken(memberResponse.id(), memberResponse.role());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(memberResponse.id(), memberResponse.role());
+        Long memberPk = member.getId();
+
+        String accessToken = jwtTokenProvider.generateAccessToken(memberPk, member.getRole());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(memberPk, member.getRole());
+        long refreshTokenMaxAge = jwtTokenProvider.getRefreshTokenExpireTime();
 
         saveOrUpdateRefreshToken(memberPk, refreshToken);
 
         log.info("[Auth] 로그인 성공: memberPk={}, issuedAt={}", memberPk, LocalDateTime.now());
 
-        return new TokenResponse(accessToken, refreshToken);
+        return TokenResponse.of(accessToken, refreshToken, refreshTokenMaxAge);
     }
 
     /** AccessToken 재발급 */
     @Transactional
-    public TokenResponse reissue(String refreshTokenHeader) {
+    public TokenResponse reissue(String refreshToken) {
 
-        // "Bearer" 접두사 제거
-        String token = extractToken(refreshTokenHeader);
+        if (refreshToken == null) {
+            throw new BusinessException(ErrorCode.TOKEN_NOT_FOUND);
+        }
 
-        // RefreshToken 유효성 검증
-        validateTokenStatus(token);
+        // 1. 유효성 검사
+        validateTokenStatus(refreshToken);
 
-        // 1. RefreshToken에서 memberPk 추출
-        Long memberPk = jwtTokenProvider.getMemberIdFromToken(token);
+        // 2. 토큰에서 memberPk 추출
+        Long memberPk = jwtTokenProvider.getMemberIdFromToken(refreshToken);
 
-        // 2. DB에 저장된 RefreshToken 검증 (일단 반환하게 만들었음)
-        RefreshToken savedToken = getValidatedRefreshToken(token, memberPk);
+        // 3. DB 토큰 검증
+        RefreshToken savedToken = getValidatedRefreshToken(refreshToken, memberPk);
 
-        // 3. RefreshToken에는 role 정보가 없기 때문에 MemberService로부터 다시 조회 필요
-        // TODO: 맴버 객체에 직접 접근하는 게 맞을까? (memberResponse도 있음)
-        Member member = memberService.findByIdEntity(memberPk);
+        // 4. RefreshToken에는 role 정보가 없기 때문에 MemberService로부터 다시 조회 필요
+        Member member = memberRepository.findById(memberPk)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-        // 4. 새 AccessToken 발급
+        // 5. 새 AccessToken 발급
         String newAccessToken = jwtTokenProvider.generateAccessToken(memberPk, member.getRole());
+        long refreshTokenMaxAge = jwtTokenProvider.getRefreshTokenExpireTime();
 
         log.info("[Auth] AccessToken 재발급 완료: memberPk={}, reissuedAt={}", memberPk, LocalDateTime.now());
-        return new TokenResponse(newAccessToken, token);
+
+        return TokenResponse.of(newAccessToken, savedToken.getToken(), refreshTokenMaxAge);
     }
 
     @Transactional
     public void logout(String accessTokenHeader) {
-
-        // 1. Bearer 제거
-        String token = extractToken(accessTokenHeader);
-
-        // 2. DB에서 해당 토큰 보유한 회원 조회
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN));
-
-        // 3. RefreshToken 삭제
-        refreshTokenRepository.deleteByMemberPk(refreshToken.getMemberPk());
-
-        log.info("[Auth] 로그아웃 완료: memberPk={}, deletedAt={}", refreshToken.getMemberPk(), LocalDateTime.now());
+        Long memberPk = jwtTokenProvider.getMemberIdFromToken(extractToken(accessTokenHeader));
+        refreshTokenRepository.deleteByMemberPk(memberPk);
+        log.info("[Auth] 로그아웃 완료: memberPk={}, deletedAt={}", memberPk, LocalDateTime.now());
     }
 
     /**
@@ -113,6 +111,12 @@ public class AuthService {
     }
 
     // === 공통 유틸 메서드 === //
+
+    /** 토큰에서 memberId 가져오기 */
+    public Long getMemberId(String accessTokenHeader) {
+        String token = extractToken(accessTokenHeader);
+        return jwtTokenProvider.getMemberIdFromToken(token);
+    }
 
     /** Bearer 접두사 제거 */
     private String extractToken(String headerValue) {
@@ -143,6 +147,5 @@ public class AuthService {
             case VALID -> log.debug("[Auth] 토큰 유효성 검증 완료");
         }
     }
-
 }
 

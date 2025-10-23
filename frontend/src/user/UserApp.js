@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./UserApp.css";
+import PlanApp from "./plan/PlanApp";
+
 
 const UserApp = () => {
   return (
@@ -25,6 +27,7 @@ const UserApp = () => {
           path="/plan/*"
           element={<div>여행 계획 페이지 (개발 예정)</div>}
         />
+        <Route path="/plan/*" element={<PlanApp />} />
         <Route path="/review/*" element={<div>리뷰 페이지 (개발 예정)</div>} />
         <Route
           path="/bookmark/*"

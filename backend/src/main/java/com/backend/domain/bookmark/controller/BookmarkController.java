@@ -1,13 +1,13 @@
 package com.backend.domain.bookmark.controller;
 
+import com.backend.domain.auth.service.AuthService;
 import com.backend.domain.bookmark.dto.BookmarkRequestDto;
 import com.backend.domain.bookmark.dto.BookmarkResponseDto;
 import com.backend.domain.bookmark.service.BookmarkService;
 import com.backend.global.reponse.ApiResponse;
-import com.backend.global.reponse.ResponseCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,42 +18,45 @@ import java.util.List;
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;
+    private final AuthService authService;
 
     /**
      * POST /api/bookmarks
      * body: { "placeId": 10 }
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<BookmarkResponseDto>> create(
+    public ApiResponse<BookmarkResponseDto> create(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @Valid @RequestBody BookmarkRequestDto request) {
-        // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
-        Long memberId = 1L;
+
+        Long memberId = authService.getMemberId(accessToken);
 
         BookmarkResponseDto response = bookmarkService.create(request, memberId);
-        return ResponseEntity.status(ResponseCode.CREATED.getStatus())
-                .body(ApiResponse.created(response));
+        return ApiResponse.created(response);
     }
 
     /**
      * GET /api/bookmarks
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<BookmarkResponseDto>>> list() {
-        // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
-        Long memberId = 1L;
+    public ApiResponse<List<BookmarkResponseDto>> list(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken
+    ) {
+        Long memberId = authService.getMemberId(accessToken);
         List<BookmarkResponseDto> list = bookmarkService.getList(memberId);
-        return ResponseEntity.ok(ApiResponse.success(list));
+        return ApiResponse.success(list);
     }
 
     /**
      * DELETE /api/bookmarks/{bookmarkId}
      */
     @DeleteMapping("/{bookmarkId}")
-    public ResponseEntity<ApiResponse<Long>> delete(@PathVariable Long bookmarkId) {
+    public ApiResponse<Long> delete(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @Valid @PathVariable Long bookmarkId) {
 
-        // TODO : JWT 토큰에서 멤버 아이디 정보 가져오기
-        Long memberId = 1L;
+        Long memberId = authService.getMemberId(accessToken);
         bookmarkService.delete(memberId, bookmarkId);
-        return ResponseEntity.ok(ApiResponse.success(bookmarkId));
+        return ApiResponse.success(bookmarkId);
     }
 }

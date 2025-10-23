@@ -25,10 +25,10 @@ public class Review {
     private int rating;
 
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "created_date")
     private LocalDateTime createdDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false ,name = "modified_date")
     private LocalDateTime modifiedDate;
 
     @ManyToOne

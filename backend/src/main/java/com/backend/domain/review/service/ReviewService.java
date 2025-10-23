@@ -2,6 +2,8 @@ package com.backend.domain.review.service;
 
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.repository.MemberRepository;
+import com.backend.domain.place.dto.RequestPlaceDto;
+import com.backend.domain.place.dto.ResponsePlaceDto;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.place.repository.PlaceRepository;
 import com.backend.domain.review.dto.ReviewRequestDto;
@@ -14,8 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -50,8 +51,8 @@ public class ReviewService {
 
     //리뷰 수정 메서드
     @Transactional
-    public void modifyReview(long reviewId, int modifyRating){
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
+    public void modifyReview(long memberId, int modifyRating){
+        Review review = reviewRepository.findByMemberId(memberId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
         );
         review.setRating(modifyRating);
@@ -61,17 +62,14 @@ public class ReviewService {
     //리뷰 삭제 메서드
     @Transactional
     public void deleteReview(long reviewId){
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
-        );
+        Review review = getReviewEntity(reviewId);
         reviewRepository.delete(review);
     }
 
 
     //내가 작성한 리뷰 조회
     public ReviewResponseDto getReview(long reviewId){
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
+        Review review = getReviewEntity(reviewId);
 
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getId(), review.getRating(),review.getModifiedDate());
         return reviewResponseDto;
@@ -92,11 +90,38 @@ public class ReviewService {
                 .toList();
     }
 
-    public List<ReviewResponseDto> recommendByPlace(long placeId){
-        List<Review> recommandReviewLists = reviewRepository.findTop5ByPlaceIdOrderByRatingDesc(placeId);
-        return recommandReviewLists.stream()
-                .map(review -> new ReviewResponseDto(review.getId(), review.getRating(), review.getModifiedDate()))
+    public List<ResponsePlaceDto> recommendByPlace(long placeId){
+
+        Map<Long, Double> placeAverageRatings = new HashMap<>(); //<placeId, averageRating> 으로 저장
+//        long placeSize = placeRepository.count();               //중간에 값이 삭제되고나면 id가 건더뛰게 되는 상황은 어떻게 처리? -> findAll()으로 변경
+        List<Place> findAllPlaces = placeRepository.findAll();
+        for(Place place : findAllPlaces){
+            double averageRating = reviewRepository.findAverageRatingByPlaceId(place.getId());
+            placeAverageRatings.put(place.getId(), averageRating);
+        }
+
+        //평균 평점 기준 내림차순 정렬 처음에 for 문으로 작성했다가 stream으로 변경했는데, 계속 에러떠서 결국 gpt의 도움을 받음.. 이런 방법은 괜찮은것인지?
+        List<Map.Entry<Long, Double>> sortedList = placeAverageRatings.entrySet().stream()
+                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed()) // 값 기준 내림차순
                 .toList();
 
+        List<Place> recommendList = new ArrayList<>();
+        for(long i = 0; i < 5 && i < sortedList.size(); i++){       //여행지를 상위5개의 placeId를 가져와서 recommendList에 추가
+            long recommendedPlaceId = sortedList.get((int)i).getKey();
+            recommendList.add(placeRepository.findById(recommendedPlaceId).orElseThrow(
+                    () -> new BusinessException(ErrorCode.NOT_FOUND_PLACE)
+            ));
+
+        }
+        return recommendList.stream()
+                .map(ResponsePlaceDto::from)
+                .toList();
+    }
+
+
+    public Review getReviewEntity(long reviewId){
+        return reviewRepository.findById(reviewId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+        );
     }
 }

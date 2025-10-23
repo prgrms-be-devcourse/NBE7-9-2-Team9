@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
-    // 활성(soft-deleted 아님) 상태의 북마크가 이미 존재하는지
+    // 소프트 삭제 미포함 상태의 북마크가 존재하는지
     Optional<Bookmark> findByMemberAndPlaceAndDeletedAtIsNull(Member member, Place place);
 
     // 소프트 삭제 포함(존재여부 확인용)

@@ -5,16 +5,15 @@ import com.backend.domain.bookmark.dto.BookmarkResponseDto;
 import com.backend.domain.bookmark.entity.Bookmark;
 import com.backend.domain.bookmark.repository.BookmarkRepository;
 import com.backend.domain.member.entity.Member;
-import com.backend.domain.member.repository.MemberRepository;
+import com.backend.domain.member.service.MemberService;
 import com.backend.domain.place.entity.Place;
-import com.backend.domain.place.repository.PlaceRepository;
+import com.backend.domain.place.service.PlaceService;
 import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +22,8 @@ import java.util.stream.Collectors;
 public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
-    private final MemberRepository memberRepository;
-    private final PlaceRepository placeRepository;
+    private final MemberService memberService;
+    private final PlaceService placeService;
 
     /**
      * 북마크 생성
@@ -32,22 +31,19 @@ public class BookmarkService {
      */
     @Transactional
     public BookmarkResponseDto create(BookmarkRequestDto request, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Place place = placeRepository.findById(request.placeId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
-
+        Member member = memberService.findById(memberId);
+        Place place = placeService.findPlaceById(request.placeId());
         // 활성 상태의 북마크가 이미 있으면 중복
         bookmarkRepository.findByMemberAndPlaceAndDeletedAtIsNull(member, place)
-                .ifPresent(b -> { throw new BusinessException(ErrorCode.ALREADY_EXISTS_BOOKMARK); });
-
+                .ifPresent(b -> {
+                    throw new BusinessException(ErrorCode.ALREADY_EXISTS_BOOKMARK);
+                });
         // 소프트 삭제된 항목이 있었으면 재활성화
         var maybe = bookmarkRepository.findByMemberAndPlace(member, place); // Optional<Bookmark> 반환 받음
         if (maybe.isPresent()) {
             Bookmark exist = maybe.get();
-            exist.setDeletedAt(null);
-            exist.setCreatedAt(LocalDateTime.now());
+            exist.reactivate();
             Bookmark saved = bookmarkRepository.save(exist);
             return BookmarkResponseDto.from(saved);
         }
@@ -63,8 +59,7 @@ public class BookmarkService {
      */
     @Transactional(readOnly = true)
     public List<BookmarkResponseDto> getList(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        Member member = Member.builder().id(memberId).build();
 
         return bookmarkRepository.findAllByMemberAndDeletedAtIsNullOrderByCreatedAtDesc(member)
                 .stream()

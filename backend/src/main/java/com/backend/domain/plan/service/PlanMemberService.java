@@ -28,21 +28,14 @@ public class PlanMemberService {
     private final PlanService planService;
     private final MemberService memberService;
 
-    public PlanMemberResponseBody invitePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
+    public PlanMemberResponseBody invitePlanMember(PlanMemberAddRequestBody requestBody, long memberId) {
         PlanMember planMember = isValidInvite(requestBody, memberId);
-
-        try{
-            planMemberRepository.save(planMember);
-        } catch (DataIntegrityViolationException e){
-            log.error(e.getMessage());
-            throw new BusinessException(ErrorCode.DUPLICATE_MEMBER_INVITE);
-        }
-
+        planMemberRepository.save(planMember);
         return new PlanMemberResponseBody(planMember);
     }
 
-    public List<PlanMemberMyResponseBody> myInvitedPlanList(String memberId) {
-        Member member = memberService.findByMemberId(memberId);
+    public List<PlanMemberMyResponseBody> myInvitedPlanList(long memberPkId) {
+        Member member = Member.builder().id(memberPkId).build();
 
         List<PlanMember> planMemberList = planMemberRepository.getPlanMembersByMember(member);
         List<PlanMemberMyResponseBody> myPlanMemberList =
@@ -54,44 +47,46 @@ public class PlanMemberService {
     }
 
 
-    public PlanMemberResponseBody DeletePlanMember(PlanMemberAddRequestBody requestBody, String memberId) {
-        PlanMember planMember = isValidInvite(requestBody, memberId);
-        // TODO isValidInvite가 사실상 새로운 객체를 반환하므로 인식 안되는 문제 해결할 것.
+    public PlanMemberResponseBody DeletePlanMember(PlanMemberAddRequestBody requestBody, long memberPkId) {
+        PlanMember planMember = isValidInvite(requestBody, memberPkId);
+
         planMemberRepository.delete(planMember);
         return new PlanMemberResponseBody(planMember);
     }
 
-    public PlanMemberResponseBody acceptInvitePlanMember(PlanMemberAnswerRequestBody requestBody, String memberId) {
-        PlanMember planMember = isMyInvite(requestBody, memberId);
+    public PlanMemberResponseBody acceptInvitePlanMember(PlanMemberAnswerRequestBody requestBody, long memberPkId) {
+        PlanMember planMember = isMyInvite(requestBody, memberPkId);
         planMember.inviteAccept();
         planMemberRepository.save(planMember);
         return new PlanMemberResponseBody(planMember);
     }
 
-    public PlanMemberResponseBody denyInvitePlanMember(PlanMemberAnswerRequestBody requestBody, String memberId) {
-        PlanMember planMember = isMyInvite(requestBody, memberId);
+    public PlanMemberResponseBody denyInvitePlanMember(PlanMemberAnswerRequestBody requestBody, long memberPkId) {
+        PlanMember planMember = isMyInvite(requestBody, memberPkId);
         planMember.inviteDeny();
         planMemberRepository.save(planMember);
         return new PlanMemberResponseBody(planMember);
     }
 
-    private PlanMember isValidInvite(PlanMemberAddRequestBody requestBody, String memberId) {
-        Member myMember = memberService.findByMemberId(memberId);
-
+    private PlanMember isValidInvite(PlanMemberAddRequestBody requestBody, long memberId) {
         Plan plan = planService.getPlanById(requestBody.planId());
-
-        if (plan.getMember().getId() != myMember.getId()) {
+        if (plan.getMember().getId() != memberId) {
             throw new BusinessException(ErrorCode.NOT_MY_PLAN);
         }
 
-        Member invitedMember = memberService.findByMemberId(requestBody.memberId());
+        Member invitedMember = memberService.findById(requestBody.memberId());
 
-        PlanMember planMember = new PlanMember(invitedMember, plan);
+        // 데이터 베이스 오류 처리를 서비스 로직 처리로 변경
+        if(planMemberRepository.existsByMemberInPlanId(invitedMember.getId(),plan.getId())) {
+            throw new BusinessException(ErrorCode.DUPLICATE_MEMBER_INVITE);
+        };
+
+        PlanMember planMember = PlanMember.builder().member(invitedMember).plan(plan).build();
         return planMember;
     }
 
-    private PlanMember isMyInvite(PlanMemberAnswerRequestBody requestBody, String memberId) {
-        Member member = memberService.findByMemberId(memberId);
+    private PlanMember isMyInvite(PlanMemberAnswerRequestBody requestBody, long memberPkId) {
+        Member member = Member.builder().id(memberPkId).build();
 
         Plan plan = planService.getPlanById(requestBody.planId());
 

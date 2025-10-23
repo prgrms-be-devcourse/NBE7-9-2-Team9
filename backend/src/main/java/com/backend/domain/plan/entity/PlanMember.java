@@ -2,8 +2,7 @@ package com.backend.domain.plan.entity;
 
 import com.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
@@ -11,6 +10,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Table(
         name = "plan_member", // 테이블 이름
         uniqueConstraints = {
@@ -37,20 +38,6 @@ public class PlanMember {
     @ColumnDefault("0")
     private int isConfirmed;
 
-    public PlanMember(Long id, Member member, Plan plan) {
-        this.id = id;
-        this.member = member;
-        this.plan = plan;
-        this.addDate = LocalDateTime.now();
-        this.updateDate = LocalDateTime.now();
-    }
-
-    public PlanMember(Member member, Plan plan) {
-        this.member = member;
-        this.plan = plan;
-        this.addDate = LocalDateTime.now();
-        this.updateDate = LocalDateTime.now();
-    }
 
     public PlanMember inviteAccept(){
         this.isConfirmed = 1;

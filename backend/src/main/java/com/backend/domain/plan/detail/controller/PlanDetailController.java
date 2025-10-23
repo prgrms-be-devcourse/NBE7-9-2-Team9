@@ -27,21 +27,21 @@ public class PlanDetailController {
     public ApiResponse<PlanDetailResponseBody> addPlanDetail(
             @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
-        String memberId = "dummy";
-        PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberId);
+        long memberPkId = 1;
+        PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberPkId);
 
-        return ApiResponse.success(
+        return ApiResponse.created(
                 new PlanDetailResponseBody(planDetail)
         );
     }
 
     @GetMapping("/{planDetailId}")
     public ApiResponse<PlanDetailsElementBody> getPlanDetail(
-           @NotNull @PathVariable long planDetailId
+            @NotNull @PathVariable long planDetailId
     ) {
-        String memberId = "dummy3";
+        long memberPkId = 3;
 
-        PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberId);
+        PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberPkId);
 
         return ApiResponse.success(
                 planDetailsElementBody
@@ -50,25 +50,32 @@ public class PlanDetailController {
 
     @GetMapping("/{planId}/list")
     public ApiResponse<List<PlanDetailsElementBody>> getAllPlanDetail(
-           @NotNull @PathVariable long planId
+            @NotNull @PathVariable long planId
     ) {
-        String memberId = "dummy";
+        long memberPkId = 1;
 
-        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId, memberId);
-        return
-                ApiResponse.success(
-                        planDetailsElementBodies
-                );
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId, memberPkId);
+        return ApiResponse.success(planDetailsElementBodies);
     }
 
-    @PatchMapping("/{planDetailId}/update")
+    @GetMapping("/{planId}/todaylist")
+    public ApiResponse<List<PlanDetailsElementBody>> getTodayPlanDetail(
+            @NotNull @PathVariable long planId
+    ) {
+        long memberPkId = 1;
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getTodayPlanDetails(planId,memberPkId);
+        return ApiResponse.success(planDetailsElementBodies);
+    }
+
+
+    @PatchMapping("/update/{planDetailId}")
     public ApiResponse<PlanDetailResponseBody> updatePlanDetail(
             @NotNull @PathVariable long planDetailId,
             @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
-        String memberId = "dummy";
+        long memberPkId = 1;
 
-        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberId, planDetailId);
+        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberPkId, planDetailId);
         return ApiResponse.success(
                 planDetailResponseBody
         );
@@ -77,9 +84,9 @@ public class PlanDetailController {
     @DeleteMapping("/{planDetailId}/delete")
     public ApiResponse<PlanDetailResponseBody> deletePlanDetail(
             @PathVariable long planDetailId
-    ){
-        String memberId = "dummy";
-        planDetailService.deletePlanDetail(planDetailId,memberId);
+    ) {
+        long memberPkId = 1;
+        planDetailService.deletePlanDetail(planDetailId, memberPkId);
         return ApiResponse.success();
     }
 

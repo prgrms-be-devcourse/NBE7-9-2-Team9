@@ -9,13 +9,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookmarks", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"place_id", "member_id"})
+        @UniqueConstraint(columnNames = {"member_id", "place_id"})
 }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Setter
 public class Bookmark {
 
     @Id
@@ -46,15 +45,20 @@ public class Bookmark {
         this.deletedAt = LocalDateTime.now();
     }
 
+    public void reactivate() {
+        this.deletedAt = null;
+        this.createdAt = LocalDateTime.now();
+    }
+
     public boolean isDeleted() {
         return this.deletedAt != null;
     }
 
     public static Bookmark create(Member member, Place place) {
-        Bookmark b = new Bookmark();
-        b.setMember(member);
-        b.setPlace(place);
-        return b;
+        Bookmark bookmark = new Bookmark();
+        bookmark.member = member;
+        bookmark.place = place;
+        return bookmark;
     }
 
 }

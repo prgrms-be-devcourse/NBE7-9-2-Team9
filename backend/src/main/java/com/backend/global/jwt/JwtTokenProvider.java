@@ -1,22 +1,32 @@
 package com.backend.global.jwt;
 
 import com.backend.domain.member.entity.Role;
+import com.backend.global.security.CustomUserDetails;
+import com.backend.global.security.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Component
 @Slf4j
 public class JwtTokenProvider {
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Value("${custom.jwt.secret-key}")
     private String secretKey;
@@ -65,10 +75,10 @@ public class JwtTokenProvider {
             Jwts.parser().verifyWith(key).build().parse(token);
             return TokenStatus.VALID;
         } catch (ExpiredJwtException e) {
-            log.info("⏰ 토큰이 만료되었습니다.");
+            log.info("== 토큰이 만료되었습니다 ==");
             return TokenStatus.EXPIRED;
         } catch (JwtException | IllegalArgumentException e) {
-            log.info("❌ 유효하지 않은 토큰입니다.");
+            log.info("== 유효하지 않은 토큰입니다 ==");
             return TokenStatus.INVALID;
         }
     }
@@ -95,6 +105,22 @@ public class JwtTokenProvider {
     public Role getRoleFromToken(String token) {
         Object role = parseClaims(token).get("role");
         return Role.valueOf(role.toString());
+    }
+
+    // JWT → Authentication으로 변환 (스프링 시큐리티는 “Authentication 객체”를 기준으로 사용자 인증 여부를 판단)
+    public Authentication getAuthentication(String token) {
+        Long memberPk = getMemberIdFromToken(token);
+        Role role = getRoleFromToken(token);
+
+        // DB에서 Member 엔티티 조회 후 CustomUserDetails 생성
+        CustomUserDetails userDetails =
+                (CustomUserDetails) customUserDetailsService.loadUserById(memberPk);
+
+        return new UsernamePasswordAuthenticationToken(
+                userDetails,  // principal을 CustomUserDetails로
+                null,
+                userDetails.getAuthorities()
+        );
     }
 
 
