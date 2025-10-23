@@ -80,7 +80,7 @@ public class ReviewController {
     }
 
     //추천리뷰 -> 평균 별점 상위 5개의 여행지를 추천
-    @GetMapping("/recommend/{placeId}")
+    @GetMapping("/recommend")
     public ApiResponse<List<RecommendResponse>> getRecommendedReviews(@PathVariable long placeId){
         List<RecommendResponse> recommendedPlaces = reviewService.recommendByPlace(placeId);
         return ApiResponse.success(recommendedPlaces);

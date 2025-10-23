@@ -1,14 +1,15 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import ReviewListPage from "./pages/ReviewListPage";
+import ReviewFormPage from "./pages/ReviewFormPage";
 import "./UserApp.css";
-import PlanApp from "./plan/PlanApp";
 
 const UserApp = () => {
   return (
     <div className="user-app">
       <Routes>
-        <Route
-          path="/"
+        <Route 
+          path="/" 
           element={
             <div className="user-home">
               <h1>사용자 페이지</h1>
@@ -20,14 +21,13 @@ const UserApp = () => {
                 <a href="/user/member">회원</a>
               </div>
             </div>
-          }
+          } 
         />
-        <Route path="plan/*" element={<PlanApp />} />
-        <Route path="/review/*" element={<div>리뷰 페이지 (개발 예정)</div>} />
-        <Route
-          path="/bookmark/*"
-          element={<div>북마크 페이지 (개발 예정)</div>}
-        />
+        <Route path="/plan/*" element={<div>여행 계획 페이지 (개발 예정)</div>} />
+        <Route path="/review" element={<ReviewListPage />} />
+        <Route path="/review/write" element={<ReviewFormPage />} />
+        <Route path="/review/edit" element={<ReviewFormPage />} />
+        <Route path="/bookmark/*" element={<div>북마크 페이지 (개발 예정)</div>} />
         <Route path="/member/*" element={<div>회원 페이지 (개발 예정)</div>} />
       </Routes>
     </div>
