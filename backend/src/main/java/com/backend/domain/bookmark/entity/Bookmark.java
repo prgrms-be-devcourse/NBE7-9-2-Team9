@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookmarks", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"place_id", "member_id"})
+        @UniqueConstraint(columnNames = {"member_id", "place_id"})
 }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
