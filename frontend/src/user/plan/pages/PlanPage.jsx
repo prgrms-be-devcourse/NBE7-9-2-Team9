@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { apiRequest } from "../../../utils/api";
 import "./PlanPage.css";
 
 export default function TravelPlanMain() {
@@ -14,7 +15,7 @@ export default function TravelPlanMain() {
   const fetchTodayPlan = async () => {
     try {
       setLoading(true);
-      const planResponse = await fetch("http://localhost:8080/api/plan/todayPlan");
+      const planResponse = await apiRequest("http://localhost:8080/api/plan/todayPlan");
       if (!planResponse.ok) {
         if (planResponse.status === 404) {
           setTodayPlan(null);
@@ -28,7 +29,7 @@ export default function TravelPlanMain() {
       const planData = await planResponse.json();
       setTodayPlan(planData);
 
-      const detailResponse = await fetch("http://localhost:8080/api/plan/detail/{planData.data.id}/");
+      const detailResponse = await apiRequest("http://localhost:8080/api/plan/detail/{planData.data.id}/");
       if (detailResponse.ok) {
         const detailData = await detailResponse.json();
         setPlanDetails(detailData);

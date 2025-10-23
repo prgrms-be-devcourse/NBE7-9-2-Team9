@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiRequest } from "../../../utils/api";
 import './planListPage.css';
 
 // 여행 계획 목록 컴포넌트
@@ -14,7 +15,8 @@ function PlanListPage({ onSelectPlan }) {
   const fetchPlans = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8080/api/plan/list');
+      const token = localStorage.getItem("accessToken");
+      const response = await apiRequest('http://localhost:8080/api/plan/list');
       
       if (!response.ok) {
         throw new Error('계획 목록을 불러오는데 실패했습니다.');
@@ -174,7 +176,7 @@ function PlanDetailPage({ planId, onBack }) {
   const fetchPlanDetail = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/api/plan/${planId}`);
+      const response = await apiRequest(`http://localhost:8080/api/plan/${planId}`);
       
       if (!response.ok) {
         throw new Error('계획 상세를 불러오는데 실패했습니다.');
@@ -198,7 +200,7 @@ function PlanDetailPage({ planId, onBack }) {
 
   const fetchPlanDetailsList = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/plan/detail/${planId}/list`);
+      const response = await apiRequest(`http://localhost:8080/api/plan/detail/${planId}/list`);
       
       if (!response.ok) {
         throw new Error('상세 목록을 불러오는데 실패했습니다.');
@@ -213,11 +215,8 @@ function PlanDetailPage({ planId, onBack }) {
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/plan/update/${planId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await apiRequest(`http://localhost:8080/api/plan/update/${planId}`, {
+        method: 'PATCH',
         body: JSON.stringify(editData)
       });
 
@@ -236,7 +235,7 @@ function PlanDetailPage({ planId, onBack }) {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/plan/delete/${planId}`, {
+      const response = await apiRequest(`http://localhost:8080/api/plan/delete/${planId}`, {
         method: 'DELETE'
       });
 
@@ -262,7 +261,7 @@ function PlanDetailPage({ planId, onBack }) {
         content: newDetail.content
       };
 
-      const response = await fetch('http://localhost:8080/api/plan/detail/add', {
+      const response = await apiRequest('http://localhost:8080/api/plan/detail/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -315,11 +314,8 @@ function PlanDetailPage({ planId, onBack }) {
         content: editingDetailData.content
       };
 
-      const response = await fetch(`http://localhost:8080/api/plan/detail/${detailId}/update`, {
+      const response = await apiRequest(`http://localhost:8080/api/plan/detail/${detailId}/update`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(requestBody)
       });
 
@@ -345,7 +341,7 @@ function PlanDetailPage({ planId, onBack }) {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/plan/detail/delete/${detailId}`, {
+      const response = await apiRequest(`http://localhost:8080/api/plan/detail/delete/${detailId}`, {
         method: 'DELETE'
       });
 
@@ -371,7 +367,7 @@ function PlanDetailPage({ planId, onBack }) {
   const fetchRecommendedPlaces = async (category) => {
     try {
       setLoadingPlaces(true);
-      const response = await fetch(`http://localhost:8080/api/review/recommend/${encodeURIComponent(category)}`);
+      const response = await apiRequest(`http://localhost:8080/api/review/recommend/${encodeURIComponent(category)}`);
       
       if (!response.ok) {
         throw new Error('추천 여행지를 불러오는데 실패했습니다.');
@@ -391,7 +387,7 @@ function PlanDetailPage({ planId, onBack }) {
   const fetchEditRecommendedPlaces = async (category) => {
     try {
       setEditLoadingPlaces(true);
-      const response = await fetch(`http://localhost:8080/api/review/recommend/${encodeURIComponent(category)}`);
+      const response = await apiRequest(`http://localhost:8080/api/review/recommend/${encodeURIComponent(category)}`);
       
       if (!response.ok) {
         throw new Error('추천 여행지를 불러오는데 실패했습니다.');
