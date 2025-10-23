@@ -11,4 +11,6 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     List<Place> findByCategoryId(int categoryId);
 
     Place getPlaceById(Long id);
+
+    List<Place> findByCategory_Name(String name);
 }

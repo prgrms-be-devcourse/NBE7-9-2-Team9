@@ -2,6 +2,7 @@ package com.backend.domain.review.controller;
 
 
 import com.backend.domain.auth.service.AuthService;
+import com.backend.domain.category.entity.Category;
 import com.backend.domain.place.dto.ResponsePlaceDto;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.review.dto.RecommendResponse;
@@ -80,29 +81,28 @@ public class ReviewController {
     }
 
     //추천리뷰 -> 평균 별점 상위 5개의 여행지를 추천
-    @GetMapping("/recommend")
+    @GetMapping("/recommend/{placeId}")
     public ApiResponse<List<RecommendResponse>> getRecommendedReviews(@PathVariable long placeId){
         List<RecommendResponse> recommendedPlaces = reviewService.recommendByPlace(placeId);
         return ApiResponse.success(recommendedPlaces);
     }
-//    //카테고리 - 호텔
-//    @GetMapping("/recommend/hotel")
-//    public ApiResponse<List<RecommendResponse>> recommendHotelReviews(){
-//        List<RecommendResponse> recommendedPlaces = reviewService.recommendHotel();
-//        return ApiResponse.success(recommendedPlaces);
-//    }
-//    //카테고리 - 맛집
-//    @GetMapping("/recommend/restaurant")
-//    public ApiResponse<List<RecommendResponse>> recommendRestaurantReviews(){
-//        List<RecommendResponse> recommendedPlaces = reviewService.recommendRestaurant(placeId);
-//        return ApiResponse.success(recommendedPlaces);
-//    }
-//    //카테고리 - 야경
-//    @GetMapping("/recommend/nightspot")
-//    public ApiResponse<List<RecommendResponse>> recommendNightspotReviews(){
-//        List<RecommendResponse> recommendedPlaces = reviewService.recommendNightSpot(placeId);
-//        return ApiResponse.success(recommendedPlaces);
-//    }
-    //
+    //카테고리 - 호텔
+    @GetMapping("/recommend/hotel")
+    public ApiResponse<List<RecommendResponse>> recommendHotelReviews(){
+        List<RecommendResponse> recommendedPlaces = reviewService.recommendHotel();
+        return ApiResponse.success(recommendedPlaces);
+    }
+    //카테고리 - 맛집
+    @GetMapping("/recommend/restaurant")
+    public ApiResponse<List<RecommendResponse>> recommendRestaurantReviews(){
+        List<RecommendResponse> recommendedPlaces = reviewService.recommendRestaurant();
+        return ApiResponse.success(recommendedPlaces);
+    }
+    //카테고리 - 야경
+    @GetMapping("/recommend/nightspot")
+    public ApiResponse<List<RecommendResponse>> recommendNightspotReviews(){
+        List<RecommendResponse> recommendedPlaces = reviewService.recommendNightSpot();
+        return ApiResponse.success(recommendedPlaces);
+    }
 
 }
