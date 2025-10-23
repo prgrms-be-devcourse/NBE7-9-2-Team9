@@ -4,6 +4,7 @@ import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.service.MemberService;
 import com.backend.domain.place.entity.Place;
 import com.backend.domain.place.repository.PlaceRepository;
+import com.backend.domain.place.service.PlaceService;
 import com.backend.domain.plan.detail.dto.PlanDetailRequestBody;
 import com.backend.domain.plan.detail.dto.PlanDetailResponseBody;
 import com.backend.domain.plan.detail.dto.PlanDetailsElementBody;
@@ -18,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -27,73 +30,78 @@ public class PlanDetailService {
     private final PlanService planService;
     private final PlanMemberService planMemberService;
     private final MemberService memberService;
+    private final PlaceService placeService;
 
-    //TODO 각자 서비스 객체가 만들어지면 레포지토리 말고 서비스에서 해당 객체를 가져오기? 아니 아이디만 있으면 되잖아?
-    private final PlaceRepository placeRepository;
     private final PlanDetailRepository planDetailRepository;
 
-
-    public PlanDetail addPlanDetail(PlanDetailRequestBody requestBody, String memberId) {
-
-
-        Member member = getAvailableMember(requestBody.planId(),  memberId);
+    @Transactional
+    public PlanDetail addPlanDetail(PlanDetailRequestBody requestBody, long memberPkId) {
+        Member member = getAvailableMember(requestBody.planId(),memberPkId);
         Plan plan = planService.getPlanById(requestBody.planId());
-        Place place = placeRepository.getPlaceById(requestBody.placeId());
+        Place place = placeService.findPlaceById(requestBody.placeId());
 
         PlanDetail planDetail = new PlanDetail(member, plan, place, requestBody);
         checkValidTime(requestBody, plan,planDetail);
-        this.planDetailRepository.save(planDetail);
-        return planDetail;
+        PlanDetail savedPlanDetail = this.planDetailRepository.save(planDetail);
+        return savedPlanDetail;
     }
 
 
-    public PlanDetailsElementBody getPlanDetailById(Long planDetailId, String memberId) {
+    public PlanDetailsElementBody getPlanDetailById(long planDetailId, long memberPkId) {
         PlanDetail planDetail = getPlanDetailById(planDetailId);
-        getAvailableMember(planDetail.getPlan().getId(), memberId);
+        getAvailableMember(planDetail.getPlan().getId(), memberPkId);
 
         return new PlanDetailsElementBody(planDetail);
     }
 
     @Transactional
-    public List<PlanDetailsElementBody> getPlanDetailsByPlanId(long planId, String memberId) {
-        getAvailableMember(planId, memberId);
+    public List<PlanDetailsElementBody> getPlanDetailsByPlanId(long planId, long memberPkId) {
+        getAvailableMember(planId, memberPkId);
 
-        List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlan_Id(planId);
+        List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlanId(planId);
 
-        List<PlanDetailsElementBody> planDetailList = planDetails.stream()
-                .map(
-                        (PlanDetail p) ->
-                                new PlanDetailsElementBody(p)
-                )
-                .toList();
+        List<PlanDetailsElementBody> planDetailList = planDetails.stream().map(PlanDetailsElementBody::new).toList();
 
         return planDetailList;
     }
 
-    public PlanDetailResponseBody updatePlanDetail(PlanDetailRequestBody planDetailRequestBody, String memberId, long planDetailId) {
-        getAvailableMember(planDetailRequestBody.planId(), memberId);
 
+    public List<PlanDetailsElementBody> getTodayPlanDetails(long planId ,long memberPkId) {
+        getAvailableMember(planId, memberPkId);
+        List<PlanDetail> planDetails = planDetailRepository.getPlanDetailsByPlanId(planId);
+        return planDetails.stream().filter(planDetail ->
+                planDetail.getEndTime().isAfter(LocalDateTime.now().toLocalDate().atStartOfDay()) && planDetail.getStartTime().isBefore(LocalDateTime.now().toLocalDate().atTime(LocalTime.MAX)
+            )
+        ).map(PlanDetailsElementBody::new).toList();
+    }
 
-        Place place = placeRepository.getPlaceById(planDetailRequestBody.placeId());
+    @Transactional
+    public PlanDetailResponseBody updatePlanDetail(PlanDetailRequestBody planDetailRequestBody, long memberPkId, long planDetailId) {
+        getAvailableMember(planDetailRequestBody.planId(), memberPkId);
+
+        Place place = placeService.findPlaceById(planDetailRequestBody.placeId());
         PlanDetail planDetail = getPlanDetailById(planDetailId);
-        checkValidTime(planDetailRequestBody, planService.getPlanById(planDetailId), planDetail);
+        checkValidTime(planDetailRequestBody, planService.getPlanById(planDetailRequestBody.planId()), planDetail);
         planDetail.updatePlanDetail(planDetailRequestBody, place);
         planDetailRepository.save(planDetail);
         return new PlanDetailResponseBody(planDetail);
     }
 
-    public void deletePlanDetail(long planDetailId, String memberId) {
-        getAvailableMember(planDetailId, memberId);
+    @Transactional
+    public void deletePlanDetail(long planDetailId, long memberPkId) {
+        getAvailableMember(planDetailId, memberPkId);
         planDetailRepository.deleteById(planDetailId);
     }
+
+
 
     private PlanDetail getPlanDetailById(long planDetailId) {
         return planDetailRepository.getPlanDetailById(planDetailId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_DETAIL_PLAN));
     }
 
 
-    private Member getAvailableMember(long planId, String memberId) {
-        Member member = memberService.findByMemberId(memberId);
+    private Member getAvailableMember(long planId, long memberPkId) {
+        Member member = memberService.findById(memberPkId);
         Plan plan = planService.getPlanById(planId);
         if (!planMemberService.isAvailablePlanMember(planId, member)) {
             throw new BusinessException(ErrorCode.NOT_ALLOWED_MEMBER);
@@ -109,10 +117,9 @@ public class PlanDetailService {
         }
 
         //계획 안의 시간인지
-        if(planDetailRequestBody.startTime().isBefore(plan.getStartDate()) || planDetailRequestBody.endTime().isBefore(plan.getEndDate())) {
+        if(planDetailRequestBody.startTime().isBefore(plan.getStartDate()) || planDetailRequestBody.endTime().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
-
         // 지금으로부터 10년 뒤 까지만 계획 설정 가능
         if (planDetailRequestBody.startTime().isAfter(LocalDateTime.now().plusYears(10))) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
