@@ -10,10 +10,10 @@ public record MemberAdminResponse(
 
         Long id,
 
-        @Email
+        String memberId,
+
         String email,
 
-        @NotBlank
         String nickname,
 
         String role
@@ -22,6 +22,7 @@ public record MemberAdminResponse(
     public static MemberAdminResponse from(Member member) {
         return new MemberAdminResponse(
                 member.getId(),
+                member.getMemberId(),
                 member.getEmail(),
                 member.getNickname(),
                 member.getRole().name()
