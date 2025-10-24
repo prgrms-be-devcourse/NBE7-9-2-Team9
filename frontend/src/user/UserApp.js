@@ -4,6 +4,7 @@ import "./UserApp.css";
 import PlanApp from "./plan/PlanApp";
 import MemberApp from "./member/MemberApp";
 import BookmarkApp from "./bookmark/BookmarkApp";
+import ReviewApp from "./pages/ReviewApp";
 
 const UserApp = () => {
   return (
