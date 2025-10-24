@@ -3,7 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import "./UserApp.css";
 import PlanApp from "./plan/PlanApp";
 import MemberApp from "./member/MemberApp";
-import ReviewApp from "./pages/ReviewApp";
+import BookmarkApp from "./bookmark/BookmarkApp";
+
 const UserApp = () => {
   return (
     <div className="user-app">
@@ -27,7 +28,7 @@ const UserApp = () => {
         <Route path="review/*" element={<ReviewApp />} />
         <Route
           path="/bookmark/*"
-          element={<div>북마크 페이지 (개발 예정)</div>}
+          element={<BookmarkApp />}
         />
        <Route path="member/*" element={<MemberApp />} />
       </Routes>
