@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { apiRequest } from "../../../utils/api";
 import './planListPage.css';
+import { apiRequest } from "../../../utils/api";
 
 // 여행 계획 목록 컴포넌트
 function PlanListPage({ onSelectPlan }) {
@@ -15,7 +15,6 @@ function PlanListPage({ onSelectPlan }) {
   const fetchPlans = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("accessToken");
       const response = await apiRequest('http://localhost:8080/api/plan/list');
       
       if (!response.ok) {
@@ -163,6 +162,7 @@ function PlanDetailPage({ planId, onBack }) {
   const [editLoadingPlaces, setEditLoadingPlaces] = useState(false);
 
   const categories = [
+    { value: 'bookmark', label: '내 북마크' },
     { value: 'hotel', label: '숙박' },
     { value: 'restaurant', label: '음식점' },
     { value: 'nightspot', label: '나이트스팟' }
@@ -217,7 +217,7 @@ function PlanDetailPage({ planId, onBack }) {
     try {
       const response = await apiRequest(`http://localhost:8080/api/plan/update/${planId}`, {
         method: 'PATCH',
-        body: JSON.stringify(editData)
+        body: JSON.stringify(editData),
       });
 
       if (!response.ok) {
@@ -263,10 +263,7 @@ function PlanDetailPage({ planId, onBack }) {
 
       const response = await apiRequest('http://localhost:8080/api/plan/detail/add', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -307,7 +304,7 @@ function PlanDetailPage({ planId, onBack }) {
   const handleUpdateDetail = async (detailId) => {
     try {
       const requestBody = {
-        planId: planId,
+        planId : planId,
         placeId: parseInt(editingDetailData.placeId),
         startTime: editingDetailData.startTime,
         endTime: editingDetailData.endTime,
@@ -317,7 +314,7 @@ function PlanDetailPage({ planId, onBack }) {
 
       const response = await apiRequest(`http://localhost:8080/api/plan/detail/update/${detailId}`, {
         method: 'PATCH',
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -368,14 +365,38 @@ function PlanDetailPage({ planId, onBack }) {
   const fetchRecommendedPlaces = async (category) => {
     try {
       setLoadingPlaces(true);
-      const response = await apiRequest(`http://localhost:8080/api/review/recommend/${encodeURIComponent(category)}`);
+      
+      let response;
+
+      if(category === '') {return};
+
+      if (category === 'bookmark') {
+        // 북마크 목록 가져오기
+        response = await apiRequest('http://localhost:8080/api/bookmarks');
+      } else {
+        // 추천 여행지 가져오기
+        response = await apiRequest(`http://localhost:8080/api/review/recommend/${encodeURIComponent(category)}`);
+      }
       
       if (!response.ok) {
-        throw new Error('추천 여행지를 불러오는데 실패했습니다.');
+        throw new Error('목록을 불러오는데 실패했습니다.');
       }
       
       const result = await response.json();
-      setRecommendedPlaces(result.data || []);
+      
+      // 북마크 데이터를 추천 여행지 형식으로 변환
+      if (category === 'bookmark') {
+        const bookmarkData = (result.data || []).map(bookmark => ({
+          id: bookmark.placeId,
+          placeName: bookmark.placeName,
+          address: bookmark.address,
+          averageRating: 0 // 북마크는 평점이 없으므로 0으로 설정
+        }));
+        setRecommendedPlaces(bookmarkData);
+      } else {
+        setRecommendedPlaces(result.data || []);
+      }
+      
       setShowPlaceList(true);
     } catch (err) {
       alert(err.message);
@@ -386,16 +407,52 @@ function PlanDetailPage({ planId, onBack }) {
   };
 
   const fetchEditRecommendedPlaces = async (category) => {
+    if (!category || category === '카테고리 선택') {
+      console.warn('유효하지 않은 카테고리 선택:', category);
+      setEditShowPlaceList(false);  // 리스트 숨김 처리
+      return; // API 호출 안 함
+    }
+    
     try {
       setEditLoadingPlaces(true);
-      const response = await apiRequest(`http://localhost:8080/api/review/recommend/${encodeURIComponent(category)}`);
+      
+      let response;
+      if (category === 'bookmark') {
+        // 북마크 목록 가져오기
+        response = await apiRequest('http://localhost:8080/api/bookmarks');
+      } else {
+        // 추천 여행지 가져오기
+        response = await apiRequest(`http://localhost:8080/api/review/recommend/${encodeURIComponent(category)}`);
+      }
       
       if (!response.ok) {
-        throw new Error('추천 여행지를 불러오는데 실패했습니다.');
+        throw new Error('목록을 불러오는데 실패했습니다.');
       }
       
       const result = await response.json();
-      setEditRecommendedPlaces(result.data || []);
+      
+      // 북마크 데이터를 추천 여행지 형식으로 변환
+      if (category === 'bookmark') {
+        const bookmarkData = (result.data || []).map(bookmark => ({
+          id: bookmark.placeId,
+          placeName: bookmark.placeName,
+          address: bookmark.address,
+          averageRating: 0 // 북마크는 평점이 없으므로 0으로 설정
+        }));
+
+        // ✅ 북마크 데이터가 비었을 경우 경고창 표시
+      if (!bookmarkData || bookmarkData.length === 0) {
+        alert('저장된 북마크가 없습니다.');
+        setEditRecommendedPlaces([]); // 비워두기
+        setEditShowPlaceList(false);  // 리스트 숨김 처리
+        return; // 이후 로직 중단
+      }
+
+        setEditRecommendedPlaces(bookmarkData);
+      } else {
+        setEditRecommendedPlaces(result.data || []);
+      }
+      
       setEditShowPlaceList(true);
     } catch (err) {
       alert(err.message);
@@ -635,7 +692,9 @@ function PlanDetailPage({ planId, onBack }) {
 
               {showPlaceList && recommendedPlaces.length > 0 && (
                 <div className="form-group">
-                  <label className="form-label">추천 여행지 선택</label>
+                  <label className="form-label">
+                    {selectedCategory === 'bookmark' ? '내 북마크 목록' : '추천 여행지 선택'}
+                  </label>
                   <div className="place-list">
                     {recommendedPlaces.map((place) => (
                       <div
@@ -644,7 +703,9 @@ function PlanDetailPage({ planId, onBack }) {
                         className={`place-item ${newDetail.placeId === place.id ? 'selected' : ''}`}
                       >
                         <div className="place-item-main">
-                          <span className="place-rating">[⭐ {place.averageRating.toFixed(1)}]</span>
+                          {selectedCategory !== 'bookmark' && (
+                            <span className="place-rating">[⭐ {place.averageRating.toFixed(1)}]</span>
+                          )}
                           <span className="place-name">{place.placeName}</span>
                         </div>
                         <div className="place-address">{place.address}</div>
@@ -777,7 +838,9 @@ function PlanDetailPage({ planId, onBack }) {
 
                         {editShowPlaceList && editRecommendedPlaces.length > 0 && (
                           <div className="form-group">
-                            <label className="form-label">추천 여행지 선택</label>
+                            <label className="form-label">
+                              {editSelectedCategory === 'bookmark' ? '내 북마크 목록' : '추천 여행지 선택'}
+                            </label>
                             <div className="place-list">
                               {editRecommendedPlaces.map((place) => (
                                 <div
@@ -786,7 +849,9 @@ function PlanDetailPage({ planId, onBack }) {
                                   className={`place-item ${editingDetailData.placeId === place.id ? 'selected' : ''}`}
                                 >
                                   <div className="place-item-main">
-                                    <span className="place-rating">[⭐ {place.averageRating.toFixed(1)}]</span>
+                                    {editSelectedCategory !== 'bookmark' && (
+                                      <span className="place-rating">[⭐ {place.averageRating.toFixed(1)}]</span>
+                                    )}
                                     <span className="place-name">{place.placeName}</span>
                                   </div>
                                   <div className="place-address">{place.address}</div>
