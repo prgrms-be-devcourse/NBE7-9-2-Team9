@@ -1,131 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { apiRequest } from "../../../utils/api";
 import './PlanListPage.css';
-
-// 여행 계획 목록 컴포넌트
-function PlanListPage({ onSelectPlan }) {
-  const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchPlans();
-  }, []);
-
-  const fetchPlans = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("accessToken");
-      const response = await apiRequest('http://localhost:8080/api/plan/list');
-      
-      if (!response.ok) {
-        throw new Error('계획 목록을 불러오는데 실패했습니다.');
-      }
-      
-      const result = await response.json();
-      setPlans(result.data || []);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatDateTime = (dateTime) => {
-    const date = new Date(dateTime);
-    return date.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  const truncateContent = (content, maxLength = 30) => {
-    if (!content) return '';
-    if (content.length <= maxLength) return content;
-    return content.substring(0, maxLength) + '...';
-  };
-
-  const handleHomeClick = () => {
-    window.location.href = 'http://localhost:3000/user/';
-  };
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <p>로딩 중...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="loading-container">
-        <div className="error-box">
-          <p className="error-text">{error}</p>
-          <button onClick={fetchPlans} className="retry-button">
-            다시 시도
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="container">
-      <div className="content">
-        <div className="header">
-          <button onClick={handleHomeClick} className="home-button">
-            🏠 여행 홈
-          </button>
-          
-          <h1 className="title">여행 계획 목록</h1>
-          <p className="subtitle">총 {plans.length}개의 여행 계획</p>
-        </div>
-
-        {plans.length === 0 ? (
-          <div className="empty-box">
-            <p className="empty-text">아직 등록된 여행 계획이 없습니다.</p>
-          </div>
-        ) : (
-          <div className="grid">
-            {plans.map((plan) => (
-              <div
-                key={plan.id}
-                onClick={() => onSelectPlan(plan.id)}
-                className="card"
-              >
-                <div className="card-content">
-                  <div className="card-section">
-                    <h3 className="card-label">제목</h3>
-                    <p className="card-title">{plan.title}</p>
-                  </div>
-
-                  <div className="card-section">
-                    <h3 className="card-label">내용</h3>
-                    <p className="card-text">{truncateContent(plan.content, 30)}</p>
-                  </div>
-
-                  <div className="card-section">
-                    <h3 className="card-label">기간</h3>
-                    <p className="card-date">
-                      {formatDateTime(plan.startDate)} ~ {formatDateTime(plan.endDate)}
-                    </p>
-                  </div>
-                </div>
-                <div className="card-border"></div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+import { apiRequest } from "../../../utils/api";
 
 // 여행 계획 상세 컴포넌트
-function PlanDetailPage({ planId, onBack }) {
+export default function PlanDetailPage({ planId, onBack }) {
   const [plan, setPlan] = useState(null);
   const [planDetails, setPlanDetails] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -216,8 +94,7 @@ function PlanDetailPage({ planId, onBack }) {
   const handleUpdate = async () => {
     try {
       const response = await apiRequest(`http://localhost:8080/api/plan/update/${planId}`, {
-        method: 'PATCH',
-        body: JSON.stringify(editData)
+        method: 'PUT'
       });
 
       if (!response.ok) {
@@ -263,9 +140,6 @@ function PlanDetailPage({ planId, onBack }) {
 
       const response = await apiRequest('http://localhost:8080/api/plan/detail/add', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(requestBody)
       });
 
@@ -307,7 +181,6 @@ function PlanDetailPage({ planId, onBack }) {
   const handleUpdateDetail = async (detailId) => {
     try {
       const requestBody = {
-        planId: planId,
         placeId: parseInt(editingDetailData.placeId),
         startTime: editingDetailData.startTime,
         endTime: editingDetailData.endTime,
@@ -315,7 +188,7 @@ function PlanDetailPage({ planId, onBack }) {
         content: editingDetailData.content
       };
 
-      const response = await apiRequest(`http://localhost:8080/api/plan/detail/update/${detailId}`, {
+      const response = await apiRequest(`http://localhost:8080/api/plan/detail/${detailId}/update`, {
         method: 'PATCH',
         body: JSON.stringify(requestBody)
       });
@@ -904,20 +777,4 @@ function PlanDetailPage({ planId, onBack }) {
       )}
     </div>
   );
-}
-
-// 메인 앱 컴포넌트
-export default function App() {
-  const [selectedPlanId, setSelectedPlanId] = useState(null);
-
-  if (selectedPlanId) {
-    return (
-      <PlanDetailPage
-        planId={selectedPlanId}
-        onBack={() => setSelectedPlanId(null)}
-      />
-    );
-  }
-
-  return <PlanListPage onSelectPlan={setSelectedPlanId} />;
 }
