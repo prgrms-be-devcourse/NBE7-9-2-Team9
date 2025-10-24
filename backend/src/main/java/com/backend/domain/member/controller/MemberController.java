@@ -21,7 +21,7 @@ public class MemberController {
     @PostMapping("/signup")
     public ApiResponse<MemberResponse> signup(@Valid @RequestBody MemberSignupRequest request) {
         MemberResponse response = memberService.signup(request);
-        return ApiResponse.success(response, "회원가입이 완료되었습니다");
+        return ApiResponse.created(response);
     }
 
     @GetMapping("/me")
