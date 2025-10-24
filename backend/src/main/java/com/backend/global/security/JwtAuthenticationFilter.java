@@ -60,6 +60,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             switch (status) {
                 case VALID -> {
+
+                    String tokenType = jwtTokenProvider.getTokenType(token);
+                    if (!"access".equals(tokenType)) {
+                        log.warn("[JWT] Refresh Token으로 접근 시도 차단: {}", requestURI);
+                        jwtErrorResponseWriter.write(response, ErrorCode.INVALID_ACCESS_TOKEN);
+                        return;
+                    }
+
                     Authentication authentication = jwtTokenProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     log.debug("[JWT] 유효한 토큰으로 인증 완료: {}", requestURI);
