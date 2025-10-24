@@ -1,40 +1,198 @@
 .user-app {
-    min-height: 100vh;
-    background-color: #f5f5f5;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #87ceeb 0%, #b0e0e6 50%, #e0f6ff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-app::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="clouds" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="15" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="30" r="20" fill="rgba(255,255,255,0.08)"/><circle cx="40" cy="70" r="18" fill="rgba(255,255,255,0.06)"/></pattern></defs><rect width="100" height="100" fill="url(%23clouds)"/></svg>');
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
   }
-  
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.user-home {
+  padding: 3rem 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-home h1 {
+  color: #2c5282;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  font-size: 3rem;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #2c5282, #4299e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  from {
+    filter: drop-shadow(0 0 5px rgba(44, 82, 130, 0.3));
+  }
+  to {
+    filter: drop-shadow(0 0 15px rgba(66, 153, 225, 0.5));
+  }
+}
+
+.user-home p {
+  color: #4a5568;
+  margin-bottom: 3rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.feature-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 1rem;
+  justify-items: center;
+}
+
+.feature-links a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #2c5282;
+  text-decoration: none;
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 0 auto;
+}
+
+.feature-links a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.feature-links a:hover::before {
+  left: 100%;
+}
+
+.feature-links a:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 1);
+}
+
+.feature-links a::after {
+  content: "";
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.feature-links a[href="/user/plan"]::after {
+  content: "🗺️";
+}
+
+.feature-links a[href="/user/places"]::after {
+  content: "🏛️";
+}
+
+.feature-links a[href="/user/review"]::after {
+  content: "⭐";
+}
+
+.feature-links a[href="/user/bookmark"]::after {
+  content: "📌";
+}
+
+.feature-links a[href="/user/member/login/member/mypage"]::after {
+  content: "👤";
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
   .user-home {
-    padding: 2rem;
-    text-align: center;
+    padding: 2rem 1rem;
   }
-  
+
   .user-home h1 {
-    color: #333;
-    margin-bottom: 1rem;
+    font-size: 2.5rem;
   }
-  
+
   .user-home p {
-    color: #666;
-    margin-bottom: 2rem;
+    font-size: 1.1rem;
   }
-  
+
   .feature-links {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 500px;
   }
-  
+
   .feature-links a {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    width: 150px;
+    height: 150px;
+    padding: 1.5rem 1rem;
+    font-size: 0.9rem;
   }
-  
-  .feature-links a:hover {
-    background-color: #0056b3;
+}
+
+@media (max-width: 480px) {
+  .feature-links {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 300px;
   }
+
+  .feature-links a {
+    width: 180px;
+    height: 180px;
+    padding: 2rem 1.5rem;
+    font-size: 1rem;
+  }
+}

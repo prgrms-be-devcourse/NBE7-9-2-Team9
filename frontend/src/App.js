@@ -1,43 +1,54 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import logo from "./logo.svg";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import "./App.css";
 import AdminApp from "./admin/AdminApp";
 import UserApp from "./user/UserApp";
+import Login from "./user/member/login/Login"; // 기존 로그인 컴포넌트 사용
 
 function App() {
+  // 토큰 존재 여부 확인 (기존 로그인 시스템과 호환)
+  const token = localStorage.getItem("accessToken");
+  const userRole = localStorage.getItem("role"); // 기존 시스템에서는 "role" 키 사용
+
+  // 디버깅을 위한 콘솔 출력
+  console.log("App.js - 현재 토큰:", token);
+  console.log("App.js - 현재 역할:", userRole);
+
   return (
     <Router>
       <div className="App">
         <Routes>
-          {/* 관리자 페이지 */}
-          <Route path="/admin/*" element={<AdminApp />} />
-
-          {/* 사용자 페이지 - 다른 팀원들이 작업할 공간 */}
-          <Route path="/user/*" element={<UserApp />} />
-
-          {/* 메인 페이지 - 팀원들이 협의하여 결정 */}
+          {/* 관리자 페이지 - 인증 필요 */}
           <Route
-            path="/"
+            path="/admin/*"
             element={
-              <div>
-                <header className="App-header">
-                  <img src={logo} className="App-logo" alt="logo" />
-                  <h1>여행지 관리 시스템</h1>
-                  <div
-                    style={{ display: "flex", gap: "20px", marginTop: "20px" }}
-                  >
-                    <a className="App-link" href="/user">
-                      사용자 페이지
-                    </a>
-                    <a className="App-link" href="/admin">
-                      관리자 페이지
-                    </a>
-                  </div>
-                </header>
-              </div>
+              token && userRole === "ADMIN" ? (
+                <AdminApp />
+              ) : (
+                <Navigate to="/" replace /> // 로그인 페이지로 리다이렉트
+              )
             }
           />
+
+          {/* 사용자 페이지 - 인증 필요 */}
+          <Route
+            path="/user/*"
+            element={
+              token && userRole === "USER" ? (
+                <UserApp />
+              ) : (
+                <Navigate to="/" replace /> // 로그인 페이지로 리다이렉트
+              )
+            }
+          />
+
+          {/* 메인 페이지 - 로그인 화면 */}
+          <Route path="/" element={<Login />} />
         </Routes>
       </div>
     </Router>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// API 기본 설정 (프록시 사용으로 빈 문자열)
-const API_BASE_URL = process.env.REACT_APP_API_URL || "";
+// API 기본 설정
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -13,7 +13,11 @@ const api = axios.create({
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
-    // 필요시 토큰 추가 로직
+    // 토큰 추가 로직
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {

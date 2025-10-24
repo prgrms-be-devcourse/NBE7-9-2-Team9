@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CategoryCard from "../components/molecules/CategoryCard";
 import {
   getCategories,
   getPlaceCountByCategory,
-} from "../services/categoryService";
+} from "../../services/categoryService";
 import "./CategoryListPage.css";
 
 const CategoryListPage = () => {
@@ -22,13 +21,6 @@ const CategoryListPage = () => {
       setLoading(true);
       const response = await getCategories();
 
-      // 디버깅을 위한 로그 출력
-      console.log("API 응답:", response);
-      console.log("응답 타입:", typeof response);
-      console.log("응답 구조:", Object.keys(response));
-
-      // 백엔드 응답 데이터를 프론트엔드 형태로 변환
-      // api.js에서 이미 response.data를 반환하므로 response.data.data가 실제 데이터
       const categoriesWithIcons = await Promise.all(
         response.data.map(async (category) => {
           const placeCount = await getPlaceCountByCategory(category.id);
@@ -44,70 +36,66 @@ const CategoryListPage = () => {
       setCategories(categoriesWithIcons);
       setError(null);
     } catch (err) {
+      console.error("카테고리 목록 조회 오류:", err);
       setError("카테고리 목록을 불러오는데 실패했습니다.");
-      console.error("오류 상세:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const getCategoryDescription = (name) => {
+  const getCategoryDescription = (categoryName) => {
     const descriptions = {
-      맛집: "레스토랑, 카페, 음식점 등",
-      NIGHTSPOT: "야경명소, 나이트클럽, 바 등",
-      HOTEL: "호텔, 펜션, 게스트하우스 등",
+      관광지: "서울의 대표적인 관광 명소들을 만나보세요",
+      맛집: "서울의 맛있는 음식점들을 추천드려요",
+      NIGHTSPOT: "서울의 야경 명소들을 감상해보세요",
+      HOTEL: "편안한 숙박을 위한 호텔 정보를 확인하세요",
     };
-    return descriptions[name] || "카테고리 설명";
+    return descriptions[categoryName] || "다양한 여행지를 만나보세요";
   };
 
-  const getCategoryIcon = (name) => {
+  const getCategoryIcon = (categoryName) => {
     const icons = {
+      관광지: "🏛️",
       맛집: "🍽️",
       NIGHTSPOT: "🌃",
       HOTEL: "🏨",
     };
-    return icons[name] || "📁";
+    return icons[categoryName] || "📍";
   };
 
-  const handleCategoryClick = (category) => {
-    navigate(`/admin/places/${category.id}`);
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/user/places/category/${categoryId}`);
   };
 
-  if (loading) {
-    return (
-      <div className="category-list-page">
-        <div className="loading">로딩 중...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="category-list-page">
-        <div className="error">{error}</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="loading">카테고리를 불러오는 중...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="category-list-page">
       <header className="page-header">
-        <button className="back-button" onClick={() => navigate("/admin")}>
+        <button className="back-button" onClick={() => navigate("/user")}>
           ← 뒤로가기
         </button>
         <div className="header-content">
-          <h1>관리자 페이지</h1>
-          <p>카테고리를 선택하여 여행지를 관리하세요</p>
+          <h1>서울 여행지</h1>
+          <p>카테고리를 선택하여 여행지를 둘러보세요</p>
         </div>
       </header>
 
       <div className="categories-grid">
         {categories.map((category) => (
-          <CategoryCard
+          <div
             key={category.id}
-            category={category}
-            onClick={handleCategoryClick}
-          />
+            className="category-card"
+            onClick={() => handleCategoryClick(category.id)}
+          >
+            <div className="category-icon">{category.icon}</div>
+            <h3 className="category-title">{category.name}</h3>
+            <p className="category-description">{category.description}</p>
+            <div className="category-count">
+              {category.placeCount}개의 여행지
+            </div>
+          </div>
         ))}
       </div>
     </div>

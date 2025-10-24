@@ -6,8 +6,8 @@ const AdminDashboardPage = () => {
   const navigate = useNavigate();
 
   const handleMemberManagement = () => {
-    // 팀원이 구현할 회원 관리 페이지로 이동
-    alert("회원 관리 기능은 개발 예정입니다.");
+    // 회원 관리 페이지로 이동
+    navigate("/admin/members");
   };
 
   const handlePlaceManagement = () => {
@@ -18,8 +18,13 @@ const AdminDashboardPage = () => {
   return (
     <div className="admin-dashboard-page">
       <header className="page-header">
-        <h1>관리자 대시보드</h1>
-        <p>관리할 영역을 선택하세요</p>
+        <button className="back-button" onClick={() => navigate("/")}>
+          ← 뒤로가기
+        </button>
+        <div className="header-content">
+          <h1>관리자 대시보드</h1>
+          <p>관리할 영역을 선택하세요</p>
+        </div>
       </header>
 
       <div className="dashboard-grid">
@@ -27,7 +32,7 @@ const AdminDashboardPage = () => {
           <div className="card-icon">👥</div>
           <h2>회원 관리</h2>
           <p>사용자 계정 및 권한을 관리합니다</p>
-          <div className="card-status">개발 예정</div>
+          <div className="card-status available">사용 가능</div>
         </div>
 
         <div className="dashboard-card" onClick={handlePlaceManagement}>
