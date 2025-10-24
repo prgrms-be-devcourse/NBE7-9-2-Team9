@@ -8,6 +8,6 @@ public record MemberUpdateRequest(
         @Email(message = "이메일 형식이 올바르지 않습니다.")
         String email,
 
-        @NotBlank
+        @NotBlank(message = "닉네임을 입력해주세요")
         String nickname
 ) { }
