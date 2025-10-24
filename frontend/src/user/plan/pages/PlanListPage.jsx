@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest } from "../../../utils/api";
-import './PlanListPage.css';
+import './planListPage.css';
 
 // 여행 계획 목록 컴포넌트
 function PlanListPage({ onSelectPlan }) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './PlanListPage.css';
+import './planListPage.css';
 import { apiRequest } from "../../../utils/api";
 
 // 여행 계획 상세 컴포넌트
