@@ -2,6 +2,7 @@ package com.backend.domain.review.entity;
 
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.place.entity.Place;
+import com.backend.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 @Table(name="review")
 @NoArgsConstructor
 @Getter
-public class Review {
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +26,11 @@ public class Review {
     private int rating;
 
 
-    @Column(nullable = false, name = "created_date")
-    private LocalDateTime createdDate;
-
-    @Column(nullable = false ,name = "modified_date")
-    private LocalDateTime modifiedDate;
+//    @Column(nullable = false, name = "created_date")
+//    private LocalDateTime createdDate;
+//
+//    @Column(nullable = false ,name = "modified_date")
+//    private LocalDateTime modifiedDate;
 
     @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)
@@ -39,21 +40,21 @@ public class Review {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public void onCreate() {
-        this.createdDate = LocalDateTime.now();
-        this.modifiedDate = LocalDateTime.now();
-    }
-
-    public void onUpdate() {
-        this.modifiedDate = LocalDateTime.now();
-    }
+//    public void onCreate() {
+//        this.createdDate = LocalDateTime.now();
+//        this.modifiedDate = LocalDateTime.now();
+//    }
+//
+//    public void onUpdate() {
+//        this.modifiedDate = LocalDateTime.now();
+//    }
 
 
     public Review(Place place, Member member, int rating) {
         this.place = place;
         this.member = member;
         this.rating = rating;
-        this.createdDate = LocalDateTime.now();
+//        this.createdDate = LocalDateTime.now();
     }
 
     public int setRating(int rating) {

@@ -26,7 +26,7 @@ public record ReviewResponseDto(
                 member.getMemberId(),
                 review.getId(),
                 review.getRating(),
-                review.getModifiedDate(),
+                review.getUpdatedAt(),
                 place.getCategory().getName(),
                 place.getPlaceName(),
                 place.getAddress(),

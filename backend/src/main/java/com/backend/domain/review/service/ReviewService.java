@@ -43,10 +43,10 @@ public class ReviewService {
             throw new BusinessException(ErrorCode.GIVEN_REVIEW);
         }
         Review review = new Review(place, member, reviewRequestDto.rating());
-        review.onCreate();
+        review.getCreatedAt();
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(member.getMemberId(), review.getId(), review.getRating(), review.getModifiedDate(), place.getCategory().getName(), place.getPlaceName(), place.getAddress(), place.getGu());
+        return new ReviewResponseDto(member.getMemberId(), review.getId(), review.getRating(), review.getUpdatedAt(), place.getCategory().getName(), place.getPlaceName(), place.getAddress(), place.getGu());
     }
 
     //리뷰 수정 메서드
@@ -58,7 +58,7 @@ public class ReviewService {
 //        );
         Review review = getReviewWithAuth(memberId);
         review.setRating(modifyRating);
-        review.onUpdate();
+        review.getUpdatedAt();
     }
 
     //리뷰 삭제 메서드
