@@ -6,6 +6,7 @@ import com.backend.domain.member.dto.response.MemberResponse;
 import com.backend.domain.member.service.MemberService;
 import com.backend.global.reponse.ApiResponse;
 import com.backend.global.security.CustomUserDetails;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ApiResponse<MemberResponse> signup(@RequestBody MemberSignupRequest request) {
+    public ApiResponse<MemberResponse> signup(@Valid @RequestBody MemberSignupRequest request) {
         MemberResponse response = memberService.signup(request);
         return ApiResponse.success(response, "회원가입이 완료되었습니다");
     }
@@ -32,7 +33,7 @@ public class MemberController {
     @PatchMapping("/me")
     public ApiResponse<MemberResponse> updateMember(
             @AuthenticationPrincipal CustomUserDetails member,
-            @RequestBody MemberUpdateRequest request
+            @Valid @RequestBody MemberUpdateRequest request
     ) {
         MemberResponse response = memberService.updateMember(member.getId(), request);
         return ApiResponse.success(response, "회원정보가 수정되었습니다");
