@@ -55,7 +55,11 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    // 설정 관련
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
+
+    // API 명세 관련
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 }
 
 tasks.withType<Test> {
