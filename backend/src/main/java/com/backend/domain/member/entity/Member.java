@@ -26,7 +26,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password; // 암호화된 비밀번호
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 200)
     private String email; // 중복 가입 방지
 
     @Column(nullable = false, unique = true, length = 20)
