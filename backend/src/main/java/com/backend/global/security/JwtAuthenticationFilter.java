@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-// ✅ 실무형 JWT 인증 필터
+// 실무형 JWT 인증 필터
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 case VALID -> {
                     Authentication authentication = jwtTokenProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    log.debug("[JWT]ㅍ유효한 토큰으로 인증 완료: {}", requestURI);
+                    log.debug("[JWT] 유효한 토큰으로 인증 완료: {}", requestURI);
                 }
 
                 case EXPIRED -> {
