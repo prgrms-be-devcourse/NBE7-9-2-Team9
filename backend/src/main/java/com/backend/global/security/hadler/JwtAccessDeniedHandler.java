@@ -2,9 +2,11 @@ package com.backend.global.security.hadler;
 
 import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
+import com.backend.global.security.JwtErrorResponseWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -17,13 +19,17 @@ import java.io.IOException;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+
+    private final JwtErrorResponseWriter jwtErrorResponseWriter;
+
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException)
             throws IOException, ServletException {
         log.warn("접근 권한이 없는 요청입니다. URI: {}", request.getRequestURI());
-        throw new BusinessException(ErrorCode.ACCESS_DENIED);
+        jwtErrorResponseWriter.write(response, ErrorCode.ACCESS_DENIED);
     }
 }

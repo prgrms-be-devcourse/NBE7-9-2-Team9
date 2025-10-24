@@ -9,22 +9,21 @@ import java.time.LocalDateTime;
 public record MemberAdminResponse(
 
         Long id,
-
-        @Email
+        String memberId,
         String email,
-
-        @NotBlank
         String nickname,
-
-        String role
+        String role,
+        String status
         // LocalDateTime createdAt
 ) {
     public static MemberAdminResponse from(Member member) {
         return new MemberAdminResponse(
                 member.getId(),
+                member.getMemberId(),
                 member.getEmail(),
                 member.getNickname(),
-                member.getRole().name()
+                member.getRole().name(),
+                member.getStatus().name()
                 // member.getCreatedAt()
         );
     }
