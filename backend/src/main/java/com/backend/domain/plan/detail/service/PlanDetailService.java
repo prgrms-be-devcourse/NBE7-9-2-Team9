@@ -89,7 +89,8 @@ public class PlanDetailService {
 
     @Transactional
     public void deletePlanDetail(long planDetailId, long memberPkId) {
-        getAvailableMember(planDetailId, memberPkId);
+        PlanDetail planDetail = getPlanDetailById(planDetailId);
+        getAvailableMember(planDetail.getPlan().getId(), memberPkId);
         planDetailRepository.deleteById(planDetailId);
     }
 

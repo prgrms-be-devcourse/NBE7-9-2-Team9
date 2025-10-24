@@ -90,13 +90,13 @@ public class PlanDetailController {
         );
     }
 
-    @DeleteMapping("/delete/{planDetailId}")
+    @DeleteMapping("/delete/{detailId}")
     public ApiResponse<Null> deletePlanDetail(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
-            @PathVariable long planDetailId
+            @NotNull @PathVariable long detailId
     ) {
         long memberPkId = authService.getMemberId(accessToken);
-        planDetailService.deletePlanDetail(planDetailId, memberPkId);
+        planDetailService.deletePlanDetail(detailId, memberPkId);
         return ApiResponse.success();
     }
 }
