@@ -182,9 +182,12 @@ public class ReviewService {
 
     public Review getReviewWithAuth(Long memberId){
         Member member = getMemberEntity(memberId);
-        return reviewRepository.findByMemberId(member.getId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
-        );
+        List<Review> reviews = reviewRepository.findAllByMemberId(member.getId());
+        if (reviews.isEmpty()) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_REVIEW);
+        }
+
+        return reviews.get(0);
     }
 
     public boolean validWithReviewId(Long memberId, Long reviewId){
