@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-// 실무형 JWT 인증 필터
 @Component
 @RequiredArgsConstructor
 @Slf4j
