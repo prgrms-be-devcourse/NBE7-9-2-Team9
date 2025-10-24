@@ -117,16 +117,7 @@ public class ReviewService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY)
         );
 
-        List<Place> findAllPlaces = placeRepository.findByCategory_Name(category.getName());
-        for (Place place : findAllPlaces) {
-            double averageRating = reviewRepository.findAverageRatingByPlaceId(place.getId());
-            placeAverageRatings.put(place.getId(), averageRating);
-        }
-
-        List<Map.Entry<Long, Double>> sortedList = placeAverageRatings.entrySet().stream()
-                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed()) // 값 기준 내림차순
-                .toList();
-
+        List<Map.Entry<Long, Double>> sortedList = getAllPlacesAndCalculate(category);
         List<RecommendResponse> recommendList = new ArrayList<>();
         for (long i = 0; i < 5 && i < sortedList.size(); i++) {       //여행지를 상위5개의 placeId를 가져와서 recommendList에 추가
             long recommendedPlaceId = sortedList.get((int) i).getKey();
@@ -202,16 +193,7 @@ public class ReviewService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY)
         );
 
-        List<Place> findAllPlaces = placeRepository.findByCategory_Name(category.getName());
-        for (Place place : findAllPlaces) {
-            double averageRating = reviewRepository.findAverageRatingByPlaceId(place.getId());
-            placeAverageRatings.put(place.getId(), averageRating);
-        }
-
-        List<Map.Entry<Long, Double>> sortedList = placeAverageRatings.entrySet().stream()
-                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed()) // 값 기준 내림차순
-                .toList();
-
+        List<Map.Entry<Long, Double>> sortedList = getAllPlacesAndCalculate(category);
         List<RecommendResponse> recommendList = new ArrayList<>();
         for (long i = 0; i < 5 && i < sortedList.size(); i++) {       //여행지를 상위5개의 placeId를 가져와서 recommendList에 추가
             long recommendedPlaceId = sortedList.get((int) i).getKey();
@@ -224,21 +206,94 @@ public class ReviewService {
 
     }
 
-    public List<RecommendResponse> recommendNightSpot() {
+    public List<Map.Entry<Long, Double>> getAllPlacesAndCalculate(Category category) {
+        Map<Long, Double> placeAverageRatings = new HashMap<>();
+        List<Place> findAllPlaces = placeRepository.findByCategory_Name(category.getName());
+        for(Place place : findAllPlaces){
+            double averageRating = reviewRepository.findAverageRatingByPlaceId(place.getId());
+            placeAverageRatings.put(place.getId(), averageRating);
+        }
+        List<Map.Entry<Long, Double>> sortedList = placeAverageRatings.entrySet().stream()
+                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed()) // 값 기준 내림차순
+                .toList();
+        return sortedList;
+    }
+
+    public List<RecommendResponse> sortAllHotelReviews() {
+        Map<Long, Double> placeAverageRatings = new HashMap<>();
+        Category category = categoryRepository.findByName("HOTEL").orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY)
+        );
+        List<Map.Entry<Long, Double>> sortedList = getAllPlacesAndCalculate(category);
+        List<RecommendResponse> responses = sortedList.stream()
+                .map(entry -> {
+                    Long placeId = entry.getKey();
+                    Double avgRating = entry.getValue();
+
+                    Place place = placeRepository.findById(placeId)
+                            .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
+
+                    return RecommendResponse.from(place, avgRating);
+                })
+                .toList();
+
+        return responses;
+    }
+    public List<RecommendResponse> sortAllNightSpotReviews() {
         Map<Long, Double> placeAverageRatings = new HashMap<>();
         Category category = categoryRepository.findByName("NIGHTSPOT").orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY)
         );
 
-        List<Place> findAllPlaces = placeRepository.findByCategory_Name(category.getName());
-        for (Place place : findAllPlaces) {
-            double averageRating = reviewRepository.findAverageRatingByPlaceId(place.getId());
-            placeAverageRatings.put(place.getId(), averageRating);
-        }
+        List<Map.Entry<Long, Double>> sortedList = getAllPlacesAndCalculate(category);
+        List<RecommendResponse> responses = sortedList.stream()
+                .map(entry -> {
+                    Long placeId = entry.getKey();
+                    Double avgRating = entry.getValue();
 
-        List<Map.Entry<Long, Double>> sortedList = placeAverageRatings.entrySet().stream()
-                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed()) // 값 기준 내림차순
+                    Place place = placeRepository.findById(placeId)
+                            .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
+
+                    return RecommendResponse.from(place, avgRating);
+                })
                 .toList();
+
+        return responses;
+
+
+    }
+    public List<RecommendResponse> sortAllRestaurantReviews() {
+        Map<Long, Double> placeAverageRatings = new HashMap<>();
+        Category category = categoryRepository.findByName("맛집").orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY)
+        );
+
+        List<Map.Entry<Long, Double>> sortedList = getAllPlacesAndCalculate(category);
+        List<RecommendResponse> responses = sortedList.stream()
+                .map(entry -> {
+                    Long placeId = entry.getKey();
+                    Double avgRating = entry.getValue();
+
+                    Place place = placeRepository.findById(placeId)
+                            .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PLACE));
+
+                    return RecommendResponse.from(place, avgRating);
+                })
+                .toList();
+
+        return responses;
+
+
+    }
+
+    public List<RecommendResponse> recommendNightSpot() {
+
+        Map<Long, Double> placeAverageRatings = new HashMap<>();
+        Category category = categoryRepository.findByName("NIGHTSPOT").orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY)
+        );
+
+        List<Map.Entry<Long, Double>> sortedList = getAllPlacesAndCalculate(category);
 
         List<RecommendResponse> recommendList = new ArrayList<>();
         for (long i = 0; i < 5 && i < sortedList.size(); i++) {       //여행지를 상위5개의 placeId를 가져와서 recommendList에 추가
@@ -248,7 +303,5 @@ public class ReviewService {
             recommendList.add(RecommendResponse.from(place, averageRating));
         }
         return recommendList;
-
-
     }
 }

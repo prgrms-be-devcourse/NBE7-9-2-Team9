@@ -63,13 +63,6 @@ public class SecurityConfig {
                                 "/h2-console/**"
                         ).permitAll()
 
-                        // 2. 인증이 필요한 API만 명시
-                        .requestMatchers(
-                                "/api/members/**",
-                                "/api/plan/**"
-                        ).authenticated()
-
-                        // 3. TODO: 관리자 전용 API (추후 적용)
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                         //TODO: 수정해야 함
@@ -84,7 +77,8 @@ public class SecurityConfig {
                                 "/v3/api-docs.yaml",
                                 "/webjars/**"
                         ).permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
+
                 )
                 // 4. 예외 처리 (401, 403)
                 .exceptionHandling(ex -> ex

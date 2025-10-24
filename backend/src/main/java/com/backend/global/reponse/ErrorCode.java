@@ -50,6 +50,9 @@ public enum ErrorCode {
     UNAUTHORIZED_REQUEST("A015", HttpStatus.UNAUTHORIZED, "인증되지 않은 요청입니다."),
     ACCESS_DENIED("A016", HttpStatus.FORBIDDEN, "인가되지 않은 요청입니다."),
 
+    INACTIVE_MEMBER("A017",HttpStatus.FORBIDDEN, "비활성화된 계정입니다. 로그인할 수 없습니다."),
+
+
     UNAUTHORIZED_MEMBER("A006", HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     LOGOUT_USER("A007", HttpStatus.UNAUTHORIZED, "로그아웃된 사용자입니다."),
     TOKEN_MALFORMED("A013", HttpStatus.BAD_REQUEST, "잘못된 형식의 JWT 토큰입니다."),
