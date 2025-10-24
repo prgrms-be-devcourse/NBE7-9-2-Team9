@@ -12,10 +12,10 @@ function App() {
         <Routes>
           {/* 관리자 페이지 */}
           <Route path="/admin/*" element={<AdminApp />} />
-          
+
           {/* 사용자 페이지 - 다른 팀원들이 작업할 공간 */}
           <Route path="/user/*" element={<UserApp />} />
-          
+
           {/* 메인 페이지 - 팀원들이 협의하여 결정 */}
           <Route
             path="/"
@@ -24,7 +24,9 @@ function App() {
                 <header className="App-header">
                   <img src={logo} className="App-logo" alt="logo" />
                   <h1>여행지 관리 시스템</h1>
-                  <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+                  <div
+                    style={{ display: "flex", gap: "20px", marginTop: "20px" }}
+                  >
                     <a className="App-link" href="/user">
                       사용자 페이지
                     </a>

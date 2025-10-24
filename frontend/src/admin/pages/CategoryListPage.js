@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryCard from "../components/molecules/CategoryCard";
-import { getCategories } from "../services/categoryService";
+import {
+  getCategories,
+  getPlaceCountByCategory,
+} from "../services/categoryService";
 import "./CategoryListPage.css";
 
 const CategoryListPage = () => {
@@ -26,12 +29,17 @@ const CategoryListPage = () => {
 
       // 백엔드 응답 데이터를 프론트엔드 형태로 변환
       // api.js에서 이미 response.data를 반환하므로 response.data.data가 실제 데이터
-      const categoriesWithIcons = response.data.map((category) => ({
-        ...category,
-        description: getCategoryDescription(category.name),
-        icon: getCategoryIcon(category.name),
-        placeCount: 0, // 추후 실제 카운트로 변경
-      }));
+      const categoriesWithIcons = await Promise.all(
+        response.data.map(async (category) => {
+          const placeCount = await getPlaceCountByCategory(category.id);
+          return {
+            ...category,
+            description: getCategoryDescription(category.name),
+            icon: getCategoryIcon(category.name),
+            placeCount: placeCount,
+          };
+        })
+      );
 
       setCategories(categoriesWithIcons);
       setError(null);
@@ -46,7 +54,7 @@ const CategoryListPage = () => {
   const getCategoryDescription = (name) => {
     const descriptions = {
       맛집: "레스토랑, 카페, 음식점 등",
-      NIGHTSPOT: "나이트클럽, 바, 클럽 등",
+      NIGHTSPOT: "야경명소, 나이트클럽, 바 등",
       HOTEL: "호텔, 펜션, 게스트하우스 등",
     };
     return descriptions[name] || "카테고리 설명";

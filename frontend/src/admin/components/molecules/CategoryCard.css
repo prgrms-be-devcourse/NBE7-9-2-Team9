@@ -1,11 +1,12 @@
 .category-card {
   text-align: center;
-  min-height: 200px;
+  min-height: 640px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
   border: 2px solid transparent;
+  padding: 40px 32px;
 }
 
 .category-card.selected {
@@ -14,29 +15,29 @@
 }
 
 .category-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
+  font-size: 200px;
+  margin-bottom: 32px;
 }
 
 .category-title {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
   color: #1f2937;
 }
 
 .category-description {
   color: #6b7280;
-  margin: 0 0 16px 0;
-  font-size: 14px;
+  margin: 0 0 20px 0;
+  font-size: 16px;
 }
 
 .category-count {
   background-color: #f3f4f6;
   color: #374151;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 16px;
+  font-size: 14px;
   font-weight: 500;
   display: inline-block;
 }

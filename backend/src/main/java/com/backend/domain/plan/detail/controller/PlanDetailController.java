@@ -1,5 +1,6 @@
 package com.backend.domain.plan.detail.controller;
 
+import com.backend.domain.auth.service.AuthService;
 import com.backend.domain.plan.detail.dto.PlanDetailRequestBody;
 import com.backend.domain.plan.detail.dto.PlanDetailResponseBody;
 import com.backend.domain.plan.detail.dto.PlanDetailsElementBody;
@@ -10,7 +11,9 @@ import com.backend.domain.plan.entity.Plan;
 import com.backend.global.reponse.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,26 +25,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlanDetailController {
     private final PlanDetailService planDetailService;
+    private final AuthService authService;
 
     @PostMapping("/add")
     public ApiResponse<PlanDetailResponseBody> addPlanDetail(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
-        String memberId = "dummy";
-        PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberId);
+        long memberPkId = authService.getMemberId(accessToken);
+        PlanDetail planDetail = planDetailService.addPlanDetail(planDetailRequestBody, memberPkId);
 
-        return ApiResponse.success(
+        return ApiResponse.created(
                 new PlanDetailResponseBody(planDetail)
         );
     }
 
     @GetMapping("/{planDetailId}")
     public ApiResponse<PlanDetailsElementBody> getPlanDetail(
-           @NotNull @PathVariable long planDetailId
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @NotNull @PathVariable long planDetailId
     ) {
-        String memberId = "dummy3";
+        long memberPkId = authService.getMemberId(accessToken);
 
-        PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberId);
+        PlanDetailsElementBody planDetailsElementBody = planDetailService.getPlanDetailById(planDetailId, memberPkId);
 
         return ApiResponse.success(
                 planDetailsElementBody
@@ -50,38 +56,47 @@ public class PlanDetailController {
 
     @GetMapping("/{planId}/list")
     public ApiResponse<List<PlanDetailsElementBody>> getAllPlanDetail(
-           @NotNull @PathVariable long planId
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @NotNull @PathVariable long planId
     ) {
-        String memberId = "dummy";
+        long memberPkId = authService.getMemberId(accessToken);
 
-        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId, memberId);
-        return
-                ApiResponse.success(
-                        planDetailsElementBodies
-                );
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getPlanDetailsByPlanId(planId, memberPkId);
+        return ApiResponse.success(planDetailsElementBodies);
     }
 
-    @PatchMapping("/{planDetailId}/update")
+    @GetMapping("/{planId}/todaylist")
+    public ApiResponse<List<PlanDetailsElementBody>> getTodayPlanDetail(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
+            @NotNull @PathVariable long planId
+    ) {
+        long memberPkId = authService.getMemberId(accessToken);
+        List<PlanDetailsElementBody> planDetailsElementBodies = planDetailService.getTodayPlanDetails(planId,memberPkId);
+        return ApiResponse.success(planDetailsElementBodies);
+    }
+
+
+    @PatchMapping("/update/{planDetailId}")
     public ApiResponse<PlanDetailResponseBody> updatePlanDetail(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @NotNull @PathVariable long planDetailId,
             @Valid @RequestBody PlanDetailRequestBody planDetailRequestBody
     ) {
-        String memberId = "dummy";
+        long memberPkId = authService.getMemberId(accessToken);
 
-        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberId, planDetailId);
+        PlanDetailResponseBody planDetailResponseBody = planDetailService.updatePlanDetail(planDetailRequestBody, memberPkId, planDetailId);
         return ApiResponse.success(
                 planDetailResponseBody
         );
     }
 
-    @DeleteMapping("/{planDetailId}/delete")
-    public ApiResponse<PlanDetailResponseBody> deletePlanDetail(
+    @DeleteMapping("/delete/{planDetailId}")
+    public ApiResponse<Null> deletePlanDetail(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @PathVariable long planDetailId
-    ){
-        String memberId = "dummy";
-        planDetailService.deletePlanDetail(planDetailId,memberId);
+    ) {
+        long memberPkId = authService.getMemberId(accessToken);
+        planDetailService.deletePlanDetail(planDetailId, memberPkId);
         return ApiResponse.success();
     }
-
-
 }

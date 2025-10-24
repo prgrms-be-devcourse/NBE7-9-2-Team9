@@ -2,6 +2,7 @@ package com.backend.domain.plan.service;
 
 import com.backend.domain.member.entity.Member;
 import com.backend.domain.member.service.MemberService;
+import com.backend.domain.plan.detail.repository.PlanDetailRepository;
 import com.backend.domain.plan.dto.PlanCreateRequestBody;
 import com.backend.domain.plan.dto.PlanResponseBody;
 import com.backend.domain.plan.dto.PlanUpdateRequestBody;
@@ -13,10 +14,10 @@ import com.backend.global.exception.BusinessException;
 import com.backend.global.reponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,43 +25,46 @@ public class PlanService {
     private final PlanRepository planRepository;
     private final PlanMemberRepository planMemberRepository;
     private final MemberService memberService;
+    private final PlanDetailRepository planDetailRepository;
     // TODO 회원 서비스 기반 처리 하기, JWT에서 멤버 ID 식별자 사용하면 더 편할것 같은데 보안상의 문제는 없는지?
 
-    public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, String memberId) {
-        Member member = memberService.findByMemberId(memberId);
-        Plan plan = new Plan(planCreateRequestBody, member);
+    @Transactional
+    public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, long memberPkId) {
+        Member member = Member.builder().id(memberPkId).build();
+        Plan plan = planCreateRequestBody.toEntity(member);
         hasValidPlan(plan);
-
         Plan savedPlan = planRepository.save(plan);
-        planMemberRepository.save(new PlanMember(member, plan).inviteAccept()); // 단순 저장이므로 레포지토리 사용.
-
+        planMemberRepository.save(PlanMember.builder().member(member).plan(plan).build().inviteAccept()); // 단순 저장이므로 레포지토리 사용.
         return savedPlan;
     }
 
 
-    public List<PlanResponseBody> getPlanList(String memberID) {
-        List<Plan> plans = planRepository.getPlansByMember_MemberId(memberID);
+    public List<PlanResponseBody> getPlanList(long memberPkId) {
+        List<Plan> plans = planRepository.getPlansByMember_Id(memberPkId);
         List<PlanResponseBody> planResponseBodies = plans.stream().map(PlanResponseBody::new).toList();
         return planResponseBodies;
     }
 
-    public PlanResponseBody updatePlan(long planId, PlanUpdateRequestBody planUpdateRequestBody, String memberId) {
-
-        Member member = memberService.findByMemberId(memberId);
-        Optional<Plan> optionalPlan = planRepository.findById(planId);
-
-        if (optionalPlan.isEmpty()) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
-        }
-
-        Plan plan = optionalPlan.get();
-
+    @Transactional
+    public PlanResponseBody updatePlan(long planId, PlanUpdateRequestBody planUpdateRequestBody, long memberPkId) {
+        Member member = Member.builder().id(memberPkId).build();
+        Plan plan = getPlanById(planId);
         isSameMember(plan, member);
         hasValidPlan(plan);
 
         plan.updatePlan(planUpdateRequestBody, member);
         planRepository.save(plan);
         return new PlanResponseBody(plan);
+    }
+
+    @Transactional
+    public void deletePlanById(long planId, long memberPkId) {
+        Plan plan = getPlanById(planId);
+        Member member = Member.builder().id(memberPkId).build();
+        isSameMember(plan, member);
+        planMemberRepository.deletePlanMembersByPlan(plan);
+        planDetailRepository.deletePlanDetailsByPlan(plan);
+        planRepository.deleteById(planId);
     }
 
     public PlanResponseBody getPlanResponseBodyById(long planId) {
@@ -73,17 +77,22 @@ public class PlanService {
         );
     }
 
+    public PlanResponseBody getTodayPlan(long memberPkId){
+        LocalDateTime todayStart = LocalDateTime.now().toLocalDate().atStartOfDay();
+        Plan plan = planRepository.getPlanByStartDateAndMemberId(todayStart, memberPkId);
+        return new PlanResponseBody(plan);
+    }
+
     private void hasValidPlan(Plan plan) {
         if (plan.getStartDate().isAfter(plan.getEndDate())) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
-        if (plan.getStartDate().isBefore(LocalDateTime.now())) {
+        if (plan.getStartDate().isBefore(LocalDateTime.now().toLocalDate().atStartOfDay().minusSeconds(1))) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
         if (plan.getEndDate().isAfter(LocalDateTime.now().plusYears(10))) {
             throw new BusinessException(ErrorCode.NOT_VALID_DATE);
         }
-
     }
 
     private void isSameMember(Plan plan, Member member) {
@@ -92,19 +101,5 @@ public class PlanService {
         }
     }
 
-    private void dateSetter(Plan plan) {
 
-    }
-
-    public void deletePlanById(long planId, String memberId) {
-        Optional<Plan> optionalPlan = planRepository.findById(planId);
-        Member member = memberService.findByMemberId(memberId);
-
-        if (optionalPlan.isEmpty()) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_PLAN);
-        }
-
-        Plan plan = optionalPlan.get();
-        planRepository.deleteById(planId);
-    }
 }
