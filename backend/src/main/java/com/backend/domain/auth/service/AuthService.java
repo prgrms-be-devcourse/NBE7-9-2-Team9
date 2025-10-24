@@ -4,6 +4,7 @@ import com.backend.domain.auth.dto.reponse.TokenResponse;
 import com.backend.domain.auth.entity.RefreshToken;
 import com.backend.domain.auth.repository.RefreshTokenRepository;
 import com.backend.domain.member.entity.Member;
+import com.backend.domain.member.entity.MemberStatus;
 import com.backend.domain.member.repository.MemberRepository;
 import com.backend.global.exception.BusinessException;
 import com.backend.global.jwt.JwtTokenProvider;
@@ -37,6 +38,10 @@ public class AuthService {
 
         Member member = memberRepository.findByMemberId(loginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (member.getStatus() != MemberStatus.ACTIVE) {
+            throw new BusinessException(ErrorCode.INACTIVE_MEMBER); // 새로운 에러 코드 추가
+        }
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD);
