@@ -65,7 +65,20 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
+                        //TODO: 수정해야 함
+
+                        // 4. 스웨거 관련 열어주기
+                        .requestMatchers(
+                                "/swagger-ui/",
+                                "/swagger-ui/index.html",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/webjars/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
+
                 )
                 // 4. 예외 처리 (401, 403)
                 .exceptionHandling(ex -> ex
