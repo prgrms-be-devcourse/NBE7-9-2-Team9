@@ -7,6 +7,8 @@ import com.backend.domain.plan.entity.Plan;
 import com.backend.domain.plan.service.PlanMemberService;
 import com.backend.domain.plan.service.PlanService;
 import com.backend.global.reponse.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -21,12 +23,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/plan")
+@Tag(name = "여행 계획 Api", description = "여행 계획을 생성하고 관리합니다.")
 public class PlanController {
     private final PlanService planService;
     private final PlanMemberService planMemberService;
     private final AuthService authService;
 
     @PostMapping("/create")
+    @Operation(summary = "여행 계획을 생성합니다.", description = "여행 계획을 생성합니다.")
     public ApiResponse<PlanResponseBody> create(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @Valid @RequestBody PlanCreateRequestBody planCreateRequestBody
