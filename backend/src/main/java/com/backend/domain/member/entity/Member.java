@@ -36,6 +36,11 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 10)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    @Builder.Default
+    private MemberStatus status = MemberStatus.ACTIVE;
+
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
@@ -44,6 +49,10 @@ public class Member extends BaseEntity {
     }
 
     public void delete() {
+        if (this.status == MemberStatus.DELETED) {
+            throw new IllegalStateException("이미 탈퇴한 회원입니다.");
+        }
+        this.status = MemberStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
     }
 

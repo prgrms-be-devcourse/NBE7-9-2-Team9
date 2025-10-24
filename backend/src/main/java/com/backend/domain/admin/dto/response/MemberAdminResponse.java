@@ -12,7 +12,8 @@ public record MemberAdminResponse(
         String memberId,
         String email,
         String nickname,
-        String role
+        String role,
+        String status
         // LocalDateTime createdAt
 ) {
     public static MemberAdminResponse from(Member member) {
@@ -21,7 +22,8 @@ public record MemberAdminResponse(
                 member.getMemberId(),
                 member.getEmail(),
                 member.getNickname(),
-                member.getRole().name()
+                member.getRole().name(),
+                member.getStatus().name()
                 // member.getCreatedAt()
         );
     }
