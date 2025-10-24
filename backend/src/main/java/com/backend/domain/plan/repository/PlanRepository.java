@@ -14,5 +14,5 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     List<Plan> getPlansByMember_Id(Long memberId);
 
-    Plan getPlanByStartDateAndMemberId(LocalDateTime startDate, Long memberId);
+    Optional<Plan> getPlanByStartDateAndMemberId(LocalDateTime startDate, Long memberId);
 }

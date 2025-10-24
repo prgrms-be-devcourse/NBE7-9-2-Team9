@@ -79,7 +79,9 @@ public class PlanService {
 
     public PlanResponseBody getTodayPlan(long memberPkId){
         LocalDateTime todayStart = LocalDateTime.now().toLocalDate().atStartOfDay();
-        Plan plan = planRepository.getPlanByStartDateAndMemberId(todayStart, memberPkId);
+        Plan plan = planRepository.getPlanByStartDateAndMemberId(todayStart, memberPkId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_PLAN)
+        );
         return new PlanResponseBody(plan);
     }
 

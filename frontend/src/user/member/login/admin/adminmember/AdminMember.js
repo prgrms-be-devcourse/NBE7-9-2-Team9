@@ -97,6 +97,7 @@ const AdminMember = () => {
               <th>Email</th>
               <th>Nickname</th>
               <th>Role</th>
+              <th>Status</th>
               <th>관리</th>
             </tr>
           </thead>
@@ -108,6 +109,7 @@ const AdminMember = () => {
                 <td>{member.email}</td>
                 <td>{member.nickname}</td>
                 <td>{member.role}</td>
+                <td>{member.status}</td>
                 <td>
                   <button
                     onClick={() => fetchMemberById(member.id)}

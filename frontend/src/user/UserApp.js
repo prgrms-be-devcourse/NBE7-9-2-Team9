@@ -25,7 +25,7 @@ const UserApp = () => {
           }
         />
         <Route path="plan/*" element={<PlanApp />} />
-        <Route path="/review/*" element={<div>리뷰 페이지 (개발 예정)</div>} />
+        <Route path="review/*" element={<ReviewApp />} />
         <Route
           path="/bookmark/*"
           element={<BookmarkApp />}
