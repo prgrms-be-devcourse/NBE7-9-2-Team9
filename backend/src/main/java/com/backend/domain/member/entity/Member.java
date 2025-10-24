@@ -26,7 +26,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password; // 암호화된 비밀번호
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 200)
     private String email; // 중복 가입 방지
 
     @Column(nullable = false, unique = true, length = 20)
@@ -36,6 +36,11 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 10)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    @Builder.Default
+    private MemberStatus status = MemberStatus.ACTIVE;
+
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
@@ -44,6 +49,10 @@ public class Member extends BaseEntity {
     }
 
     public void delete() {
+        if (this.status == MemberStatus.DELETED) {
+            throw new IllegalStateException("이미 탈퇴한 회원입니다.");
+        }
+        this.status = MemberStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
     }
 

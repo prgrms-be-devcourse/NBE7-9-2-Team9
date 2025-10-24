@@ -27,7 +27,7 @@ public class AuthController {
                 tokenResponse.refreshToken(),
                 tokenResponse.refreshTokenMaxAge()
         );
-        return ApiResponse.success(tokenResponse, "로그인 성공! 토큰 발급 완료");
+        return ApiResponse.created(tokenResponse);
     }
 
     //TODO: 토큰을 헤더로 보낼지, 바디로 보낼지 결정
@@ -44,7 +44,7 @@ public class AuthController {
                 tokenResponse.refreshTokenMaxAge()
         );
 
-        return ApiResponse.success(tokenResponse, "AccessToken 재발급 완료");
+        return ApiResponse.created(tokenResponse);
     }
 
     @PostMapping("/logout")
@@ -54,6 +54,6 @@ public class AuthController {
     {
         authService.logout(accessToken);
         cookieManager.deleteRefreshTokenCookie(response);
-        return ApiResponse.success(null, "로그아웃 완료");
+        return ApiResponse.created(null);
     }
 }
