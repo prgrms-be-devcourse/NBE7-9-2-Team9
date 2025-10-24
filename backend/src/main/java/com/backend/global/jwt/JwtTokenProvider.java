@@ -46,16 +46,16 @@ public class JwtTokenProvider {
 
     // Access Token 생성 - 로그인 후 인증
     public String generateAccessToken(Long memberId, Role role) {
-        return generateToken(memberId, role, ACCESS_TOKEN_EXPIRE_TIME);
+        return generateToken(memberId, role, ACCESS_TOKEN_EXPIRE_TIME, "access");
     }
 
     // Refresh Token 생성 - Access 만료 시 재발급
     public String generateRefreshToken(Long memberId, Role role) {
-        return generateToken(memberId, role, REFRESH_TOKEN_EXPIRE_TIME);
+        return generateToken(memberId, role, REFRESH_TOKEN_EXPIRE_TIME, "refresh");
     }
 
     // 공통 토큰 생성 로직
-    private String generateToken(Long memberId, Role role, long expireTime) {
+    private String generateToken(Long memberId, Role role, long expireTime, String type) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expireTime);
 
@@ -64,6 +64,7 @@ public class JwtTokenProvider {
                 .issuedAt(now)
                 .expiration(expiry)
                 .claim("role", role.name())
+                .claim("type", type)
                 .signWith(key)
                 .compact();
     }
@@ -123,6 +124,11 @@ public class JwtTokenProvider {
         );
     }
 
+    // type 조회용 메서드 추가
+    public String getTokenType(String token) {
+        Object type = parseClaims(token).get("type");
+        return type != null ? type.toString() : "unknown";
+    }
 
     /** 토큰 만료시간 조회 (쿠키 설정 등에서 사용) */
 
