@@ -9,13 +9,9 @@ import java.time.LocalDateTime;
 public record MemberAdminResponse(
 
         Long id,
-
         String memberId,
-
         String email,
-
         String nickname,
-
         String role
         // LocalDateTime createdAt
 ) {
