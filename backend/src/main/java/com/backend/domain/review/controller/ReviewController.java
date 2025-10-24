@@ -42,7 +42,7 @@ public class ReviewController {
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
             @PathVariable long memberId, @RequestParam int modifyRating) {
         Long authMemberId = authService.getMemberId(accessToken);
-        reviewService.modifyReview(memberId, modifyRating);
+        reviewService.modifyReview(authMemberId, modifyRating);
         return ApiResponse.success();
     }
 
