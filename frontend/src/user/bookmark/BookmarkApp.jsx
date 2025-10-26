@@ -60,7 +60,7 @@ export default function BookmarkApp() {
       ) : bookmarks.length === 0 ? (
         <div className="text-gray-500">저장된 북마크가 없습니다.</div>
       ) : (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12 }}>
           {bookmarks.map((b) => (
             <li key={b.bookmarkId} className="border rounded p-2 bg-white shadow-sm">
               <div className="font-semibold">{b.placeName ?? b.title}</div>
