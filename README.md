@@ -145,3 +145,5 @@ com.backend
 
 
 ## 6. ERD
+<img width="1252" height="810" alt="travel _plan (1)" src="https://github.com/user-attachments/assets/7ae0463e-07b3-405e-9b32-a7cd51c884f8" />
+
