@@ -1,86 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { apiRequest } from "../../utils/api.js";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { apiRequest, showErrorToast } from '../../utils/api.js';
+import PlanDetailModal from './PlanDetailModal.jsx';
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
-// ---------------------
-// Backend calls (apiRequest 사용)
-// ---------------------
-async function fetchBookmarks() {
-  const res = await apiRequest(`${API_BASE}/api/bookmarks`, { method: "GET" });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(text || "북마크 목록 불러오기 실패");
-  }
-  const json = await res.json().catch(() => null);
-  // ApiResponse 패턴: { data: [...] } 또는 원본 배열
-  return (json && (json.data ?? json)) ?? [];
-}
-
-async function deleteBookmark(bookmarkId) {
-  const res = await apiRequest(`${API_BASE}/api/bookmarks/${bookmarkId}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(text || "북마크 삭제 실패");
-  }
-  const json = await res.json().catch(() => null);
-  return (json && (json.data ?? json)) ?? null;
-}
-
-// ----------------------------------------
-// BookmarkFeature
-// ----------------------------------------
-export default function BookmarkFeature() {
+export default function BookmarkApp() {
   const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [busyIds, setBusyIds] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBookmark, setSelectedBookmark] = useState(null);
 
+  // --- 북마크 불러오기 ---
   useEffect(() => {
-    let mounted = true;
     setLoading(true);
-    setError(null);
-    fetchBookmarks()
-      .then((data) => {
-        if (!mounted) return;
-        // data might be array or { items: [...] }
-        const list = Array.isArray(data) ? data : data.items ?? data;
-        setBookmarks(list || []);
+    apiRequest(`${API_BASE}/api/bookmarks`, { method: 'GET' })
+      .then(async (res) => {
+        if (!res.ok) throw res;
+        const data = await res.json();
+        setBookmarks(data.data ?? data);
       })
-      .catch((err) => {
-        if (!mounted) return;
-        setError(err.message || "목록을 불러올 수 없습니다.");
-      })
-      .finally(() => mounted && setLoading(false));
-    return () => {
-      mounted = false;
-    };
+      .catch(async (err) => await showErrorToast(err, toast))
+      .finally(() => setLoading(false));
   }, []);
 
+  // --- 북마크 삭제 ---
   const handleDelete = async (bookmark) => {
     const bookmarkId = bookmark.bookmarkId;
-    if (!bookmarkId) {
-      toast.error("삭제할 북마크 ID가 없습니다.");
-      return;
-    }
-    if (busyIds[bookmarkId]) return;
+    if (!bookmarkId || busyIds[bookmarkId]) return;
 
     setBusyIds((s) => ({ ...s, [bookmarkId]: true }));
     const prev = bookmarks;
     setBookmarks((list) => list.filter((b) => b.bookmarkId !== bookmarkId));
 
     try {
-      await deleteBookmark(bookmarkId);
-      toast.success("북마크가 삭제되었습니다.");
+      const res = await apiRequest(`${API_BASE}/api/bookmarks/${bookmarkId}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(await res.text());
+      toast.success('북마크가 삭제되었습니다.');
     } catch (err) {
       setBookmarks(prev);
-      toast.error(err.message || "삭제에 실패했습니다.");
+      await showErrorToast(err,toast);
     } finally {
       setBusyIds((s) => {
         const n = { ...s };
@@ -96,57 +60,14 @@ export default function BookmarkFeature() {
         ← 뒤로가기
       </button>
       <ToastContainer position="top-right" autoClose={2500} />
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 16,
-        }}
-      >
-        <h2 style={{ fontSize: 20, fontWeight: 600 }}>내 북마크</h2>
-        <div style={{ fontSize: 13, color: "#6b7280" }}>
-          총 {bookmarks.length}개
-        </div>
-      </div>
+      <h2 className="text-lg font-semibold mb-4">내 북마크</h2>
 
       {loading ? (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(1, 1fr)",
-            gap: 12,
-          }}
-        >
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              style={{
-                padding: 12,
-                borderRadius: 8,
-                background: "#f3f4f6",
-                height: 112,
-              }}
-            />
-          ))}
-        </div>
+        <div>로딩 중...</div>
       ) : error ? (
-        <div
-          style={{
-            padding: 16,
-            border: "1px solid #fee2e2",
-            borderRadius: 8,
-            color: "#b91c1c",
-          }}
-        >
-          에러: {error}
-        </div>
+        <div className="text-red-600">{error}</div>
       ) : bookmarks.length === 0 ? (
-        <div style={{ padding: 32, textAlign: "center", color: "#6b7280" }}>
-          아직 저장한 장소가 없습니다. 여행지를 보며 마음에 드는 곳을
-          저장해보세요!
-        </div>
+        <div className="text-gray-500">저장된 북마크가 없습니다.</div>
       ) : (
         <ul
           style={{
@@ -156,68 +77,34 @@ export default function BookmarkFeature() {
           }}
         >
           {bookmarks.map((b) => (
-            <li
-              key={b.bookmarkId}
-              style={{
-                border: "1px solid #e5e7eb",
-                borderRadius: 8,
-                padding: 12,
-                background: "#fff",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-              }}
-            >
-              <div style={{ fontWeight: 600, marginBottom: 6 }}>
-                {b.placeName ?? b.title}
-              </div>
-              {b.address && (
-                <div
-                  style={{ fontSize: 12, color: "#6b7280", marginBottom: 8 }}
-                >
-                  {b.address}
-                </div>
-              )}
-              {b.description && (
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#6b7280",
-                    marginBottom: 8,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {b.description}
-                </div>
-              )}
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  marginTop: 8,
-                }}
-              >
+            <li key={b.bookmarkId} className="border rounded p-2 bg-white shadow-sm">
+              <div className="font-semibold">{b.placeName ?? b.title}</div>
+              {b.address && <div className="text-sm text-gray-500">{b.address}</div>}
+              <div className="flex justify-end mt-2 space-x-2">
                 <button
                   onClick={() => handleDelete(b)}
                   disabled={!!busyIds[b.bookmarkId]}
-                  title="북마크 삭제"
-                  style={{
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                    border: "1px solid #e5e7eb",
-                    background: busyIds[b.bookmarkId] ? "#f3f4f6" : "#fff",
-                    cursor: busyIds[b.bookmarkId] ? "not-allowed" : "pointer",
-                    fontSize: 12,
-                  }}
+                  className="px-2 py-1 border rounded text-sm"
                 >
                   {busyIds[b.bookmarkId] ? "삭제중..." : "삭제"}
+                </button>
+                <button
+                  onClick={() => { setSelectedBookmark(b); setShowModal(true); }}
+                  className="px-2 py-1 border rounded text-sm bg-blue-100"
+                >
+                  추가하기
                 </button>
               </div>
             </li>
           ))}
         </ul>
+      )}
+
+      {showModal && selectedBookmark && (
+        <PlanDetailModal
+          bookmark={selectedBookmark}
+          onClose={() => { setShowModal(false); setSelectedBookmark(null); }}
+        />
       )}
     </div>
   );

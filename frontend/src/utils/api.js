@@ -50,3 +50,17 @@ export async function apiRequest(url, options = {}) {
 
   return response;
 }
+
+
+// 토스트로 메세지 띄우기 
+export const showErrorToast = async (err, toast) => {
+  try {
+    // err가 Response 객체일 수 있음
+    const text = await (err.text ? err.text() : Promise.resolve(JSON.stringify(err)));
+    const json = JSON.parse(text);
+    toast.error(json.message || '예기치 못한 오류가 발생했습니다.');
+  } catch {
+    // JSON 파싱 실패 시 일반 에러 메시지
+    toast.error(err.message || '예기치 못한 오류가 발생했습니다.');
+  }
+};
