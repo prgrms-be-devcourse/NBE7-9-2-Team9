@@ -4,202 +4,496 @@
 
 .member-container {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #87ceeb 0%, #b0e0e6 50%, #e0f6ff 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.member-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="clouds" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="15" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="30" r="20" fill="rgba(255,255,255,0.08)"/><circle cx="40" cy="70" r="18" fill="rgba(255,255,255,0.06)"/></pattern></defs><rect width="100" height="100" fill="url(%23clouds)"/></svg>');
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.main-title {
+  color: #2c5282;
+  font-weight: 800;
+  font-size: 2.5rem;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #2c5282, #4299e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  from {
+    filter: drop-shadow(0 0 5px rgba(44, 82, 130, 0.3));
+  }
+  to {
+    filter: drop-shadow(0 0 15px rgba(66, 153, 225, 0.5));
+  }
+}
+
+.airplane-decoration {
+  font-size: 4rem;
+  animation: fly 4s ease-in-out infinite;
+  transform: rotate(-15deg);
+  display: inline-block;
+  margin-top: 1rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes fly {
+  0%,
+  100% {
+    transform: rotate(-15deg) translateX(0px) translateY(0px);
+  }
+  25% {
+    transform: rotate(-10deg) translateX(10px) translateY(-5px);
+  }
+  50% {
+    transform: rotate(-20deg) translateX(-5px) translateY(-10px);
+  }
+  75% {
+    transform: rotate(-10deg) translateX(5px) translateY(-5px);
+  }
 }
 
 /* ✅ 제목 */
 .member-container h2 {
-  color: #333;
+  color: #2c5282;
   margin-bottom: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   text-align: center;
+  font-size: 1.8rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
 }
 
-/* ✅ 부제목 */
 .member-container p {
-  color: #666;
+  color: #4a5568;
   margin-bottom: 1rem;
   text-align: center;
   line-height: 1.5;
+  font-size: 1.1rem;
+  position: relative;
+  z-index: 1;
 }
 
-/* =========================================
-   ✏️ 입력 폼
-========================================= */
+/* ✅ 폼 */
 .member-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 100%;
-  max-width: 420px;
-  background: #fff;
-  padding: 2.5rem 2.8rem; /* ✅ 여백 넉넉하게 */
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 3rem 3.5rem;
+  border-radius: 25px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-sizing: border-box;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
-/* ✅ 입력 필드 */
 .member-form input[type="text"],
 .member-form input[type="password"],
 .member-form input[type="email"] {
   width: 100%;
-  box-sizing: border-box; /* ✅ padding 포함하여 계산 */
-  padding: 0.95rem 1.1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 0.95rem;
+  box-sizing: border-box;
+  padding: 1.2rem 1.5rem;
+  border: 2px solid rgba(135, 206, 235, 0.3);
+  border-radius: 15px;
+  font-size: 1.1rem;
   outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  background-color: #fafafa;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
 }
 
-.member-form input:focus {
-  border-color: #007bff;
-  background-color: #fff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+.member-form input[type="text"]:focus,
+.member-form input[type="password"]:focus,
+.member-form input[type="email"]:focus {
+  border-color: rgba(135, 206, 235, 0.6);
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.1);
 }
 
-/* =========================================
-   🔘 체크박스
-========================================= */
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  align-self: flex-start;
-}
-
-.checkbox-group input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: #007bff;
-  cursor: pointer;
-}
-
-.checkbox-group label {
-  font-size: 0.9rem;
-  color: #555;
-}
-
-/* =========================================
-   🔵 버튼
-========================================= */
 .member-button {
   display: inline-block;
   text-align: center;
   width: 100%;
-  padding: 0.9rem 1.2rem;
-  background-color: #007bff;
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(135deg, #87ceeb 0%, #4682b4 100%);
   color: white !important;
   border: none;
-  border-radius: 6px;
+  border-radius: 15px;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
   text-decoration: none;
+  box-shadow: 0 6px 20px rgba(135, 206, 235, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .member-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #4682b4 0%, #2c5282 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(135, 206, 235, 0.4);
 }
 
-/* 회색 보조 버튼 */
-.member-button.secondary {
-  background-color: #6c757d;
+.member-button:active {
+  transform: translateY(0);
 }
 
-.member-button.secondary:hover {
-  background-color: #555;
+/* 회원가입 버튼 스타일 */
+.signup-button {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  font-size: 1rem;
+  padding: 1rem 0.8rem;
 }
 
-/* 빨간 버튼 (탈퇴 등 위험 동작용) */
-.member-button.danger {
-  background-color: #dc3545;
+.signup-button:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
 }
 
-.member-button.danger:hover {
-  background-color: #a71d2a;
+/* 로그인 링크 버튼 스타일 */
+.login-link-button {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  font-size: 1rem;
+  padding: 1rem 1.5rem;
 }
 
-/* =========================================
-   ✅ 메시지
-========================================= */
-.error-text {
-  color: #dc3545;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.success-text {
-  color: #28a745;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-/* =========================================
-   링크 & 구분선
-========================================= */
-.divider {
-  width: 100%;
-  max-width: 420px;
-  height: 1px;
-  background-color: #ddd;
-  margin: 1.8rem 0;
+.login-link-button:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
 .member-link {
-  color: #007bff;
+  color: #2c5282;
   text-decoration: none;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
-
-.member-link:hover {
-  color: #0056b3;
-  text-decoration: underline;
-}
-
-/* ==============================
-   🧩 MyPage 전용 추가 스타일
-============================== */
-
-/* 프로필 정보 */
-.profile-info {
-  width: 100%;
-  text-align: left;
-  color: #333;
-  line-height: 1.8;
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
-}
-
-.profile-info p strong {
-  color: #000;
-}
-
-/* 수정 폼 */
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  width: 100%;
-}
-
-/* 제목(h3) 스타일 */
-.member-form h3 {
-  margin-bottom: 1rem;
-  color: #222;
   font-weight: 600;
   font-size: 1.1rem;
   text-align: center;
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* 뒤로가기 버튼 공통 스타일 */
+.back-button {
+  background: linear-gradient(135deg, #87ceeb 0%, #4682b4 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(135, 206, 235, 0.3);
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, #4682b4 0%, #2c5282 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(135, 206, 235, 0.4);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+   👥 관리자 회원 관리 페이지 스타일
+========================================= */
+.admin-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 2rem;
+  position: relative;
+}
+
+.admin-container h2 {
+  color: #2c3e50;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-container p {
+  color: #7f8c8d;
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-container .back-button {
+  background: #34495e;
+  position: relative;
+  z-index: 2;
+}
+
+.admin-container .back-button:hover {
+  background: #2c3e50;
+}
+
+/* 관리자 테이블 스타일 */
+.admin-table {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.admin-table thead {
+  background: #34495e;
+  color: white;
+}
+
+.admin-table thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.admin-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.admin-table tbody td {
+  padding: 1rem;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+/* 관리자 버튼 스타일 */
+.admin-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.admin-button:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.admin-button.secondary {
+  background: #e74c3c;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.admin-button.secondary:hover {
+  background: #c0392b;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+/* 관리자 작은 버튼 스타일 */
+.admin-small-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  margin-right: 0.5rem;
+  box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+}
+
+.admin-small-btn:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4);
+}
+
+.admin-small-btn.danger {
+  background: #e74c3c;
+  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+}
+
+.admin-small-btn.danger:hover {
+  background: #c0392b;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+}
+
+.admin-small-btn.secondary {
+  background: #95a5a6;
+  box-shadow: 0 2px 6px rgba(149, 165, 166, 0.3);
+}
+
+.admin-small-btn.secondary:hover {
+  background: #7f8c8d;
+  box-shadow: 0 4px 10px rgba(149, 165, 166, 0.4);
+}
+
+/* 관리자 상세 정보 박스 */
+.admin-detail-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.admin-detail-box h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #bdc3c7;
+}
+
+.admin-detail-box p {
+  color: #34495e;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.admin-detail-box p:last-of-type {
+  border-bottom: none;
+  margin-bottom: 1.5rem;
+}
+
+.admin-detail-box strong {
+  color: #3498db;
+  font-weight: 600;
+}
+
+/* 에러 텍스트 */
+.admin-container .error-text {
+  background: rgba(255, 255, 255, 0.9);
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 1rem;
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 2rem;
+  }
+
+  .airplane-decoration {
+    font-size: 3rem;
+  }
+
+  .member-form {
+    max-width: 90%;
+    padding: 2rem 2.5rem;
+  }
+
+  .member-form input[type="text"],
+  .member-form input[type="password"],
+  .member-form input[type="email"] {
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+  }
+
+  .member-button {
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+  }
+
+  .back-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .admin-container {
+    padding: 1rem;
+  }
+
+  .admin-container h2 {
+    font-size: 2rem;
+  }
+
+  .admin-container p {
+    font-size: 1rem;
+  }
 }

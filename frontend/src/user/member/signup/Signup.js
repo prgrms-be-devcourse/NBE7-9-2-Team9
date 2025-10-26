@@ -45,6 +45,12 @@ const Signup = () => {
 
   return (
     <div className="member-container">
+      <button
+        className="back-button"
+        onClick={() => navigate("/user/member/login")}
+      >
+        ← 뒤로가기
+      </button>
       <h2>회원가입</h2>
 
       <form className="member-form" onSubmit={handleSubmit}>
@@ -95,18 +101,12 @@ const Signup = () => {
       </form>
 
       {/* ✅ 로그인 페이지 이동 */}
-      <a href="/user/member/login" className="member-link">
-        이미 계정이 있으신가요? 로그인하기
-      </a>
-
-      {/* ✅ 회원 홈으로 돌아가기 버튼 */}
       <button
         type="button"
-        onClick={() => navigate("/user/member")}
-        className="member-button secondary"
-        style={{ marginTop: "1rem" }}
+        onClick={() => navigate("/user/member/login")}
+        className="member-button login-link-button"
       >
-        ← 회원 홈으로 돌아가기
+        이미 계정이 있으신가요? 로그인하기
       </button>
     </div>
   );
