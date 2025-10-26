@@ -29,3 +29,6 @@ custom:
       expire-time: 1800000              # 30분 (ms)
     refresh-token:
       expire-time: 604800000            # 7일 (ms)
+
+springdoc:
+  default-produces-media-type: application/json
