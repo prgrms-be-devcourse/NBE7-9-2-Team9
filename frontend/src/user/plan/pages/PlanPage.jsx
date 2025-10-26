@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../../../utils/api";
 import "./PlanPage.css";
 
 export default function TravelPlanMain() {
+  const navigate = useNavigate();
   const [todayPlan, setTodayPlan] = useState(null);
   const [planDetails, setPlanDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,9 @@ export default function TravelPlanMain() {
   const fetchTodayPlan = async () => {
     try {
       setLoading(true);
-      const planResponse = await apiRequest("http://localhost:8080/api/plan/todayPlan");
+      const planResponse = await apiRequest(
+        "http://localhost:8080/api/plan/todayPlan"
+      );
       if (!planResponse.ok) {
         if (planResponse.status === 404) {
           setTodayPlan(null);
@@ -29,7 +33,9 @@ export default function TravelPlanMain() {
       const planData = await planResponse.json();
       setTodayPlan(planData);
 
-      const detailResponse = await apiRequest("http://localhost:8080/api/plan/detail/{planData.data.id}/");
+      const detailResponse = await apiRequest(
+        "http://localhost:8080/api/plan/detail/{planData.data.id}/"
+      );
       if (detailResponse.ok) {
         const detailData = await detailResponse.json();
         setPlanDetails(detailData);
@@ -63,11 +69,13 @@ export default function TravelPlanMain() {
   };
 
   const handleCreatePlan = () => {
-    window.location.href = "http://localhost:3000/user/plan/create";
+    console.log("handleCreatePlan called");
+    navigate("/user/plan/create");
   };
 
   const handleViewPlans = () => {
-    window.location.href = "http://localhost:3000/user/plan/list";
+    console.log("handleViewPlans called");
+    navigate("/user/plan/list");
   };
 
   return (
@@ -112,7 +120,9 @@ export default function TravelPlanMain() {
             <div>
               <div className="today-card">
                 <h3>{todayPlan.data.title}</h3>
-                {todayPlan.data.content && <p className="content">{todayPlan.content}</p>}
+                {todayPlan.data.content && (
+                  <p className="content">{todayPlan.content}</p>
+                )}
                 <div className="date">
                   <span>🕐 {formatDateTime(todayPlan.data.startDate)}</span>
                   <span>~</span>
@@ -128,13 +138,16 @@ export default function TravelPlanMain() {
                       <div className="detail-header">
                         <h5>{detail.title}</h5>
                         <span className="time">
-                          🕐 {formatTime(detail.startTime)} - {formatTime(detail.endTime)}
+                          🕐 {formatTime(detail.startTime)} -{" "}
+                          {formatTime(detail.endTime)}
                         </span>
                       </div>
                       <div className="place">
                         📍 <span>{detail.placeName}</span>
                       </div>
-                      {detail.content && <p className="detail-content">{detail.content}</p>}
+                      {detail.content && (
+                        <p className="detail-content">{detail.content}</p>
+                      )}
                     </div>
                   ))}
                 </div>
