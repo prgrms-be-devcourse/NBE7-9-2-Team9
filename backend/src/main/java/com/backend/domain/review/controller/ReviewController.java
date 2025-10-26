@@ -105,4 +105,22 @@ public class ReviewController {
         return ApiResponse.success(recommendedPlaces);
     }
 
+    //카테고리 - 호텔
+    @GetMapping("/recommend/allHotel")
+    public ApiResponse<List<RecommendResponse>> sortAllHotelReviews(){
+        List<RecommendResponse> recommendedPlaces = reviewService.sortAllHotelReviews();
+        return ApiResponse.success(recommendedPlaces);
+    }
+    //카테고리 - 맛집
+    @GetMapping("/recommend/allRestaurant")
+    public ApiResponse<List<RecommendResponse>> sortAllRestaurantReviews(){
+        List<RecommendResponse> recommendedPlaces = reviewService.sortAllRestaurantReviews();
+        return ApiResponse.success(recommendedPlaces);
+    }
+    //카테고리 - 야경
+    @GetMapping("/recommend/allNightspot")
+    public ApiResponse<List<RecommendResponse>> sortAllNightspotReviews(){
+        List<RecommendResponse> recommendedPlaces = reviewService.sortAllNightSpotReviews();
+        return ApiResponse.success(recommendedPlaces);
+    }
 }
