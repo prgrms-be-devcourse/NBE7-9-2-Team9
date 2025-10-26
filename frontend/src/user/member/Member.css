@@ -249,6 +249,210 @@
   transform: translateY(0);
 }
 
+/* =========================================
+   👥 관리자 회원 관리 페이지 스타일
+========================================= */
+.admin-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 2rem;
+  position: relative;
+}
+
+.admin-container h2 {
+  color: #2c3e50;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-container p {
+  color: #7f8c8d;
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-container .back-button {
+  background: #34495e;
+  position: relative;
+  z-index: 2;
+}
+
+.admin-container .back-button:hover {
+  background: #2c3e50;
+}
+
+/* 관리자 테이블 스타일 */
+.admin-table {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.admin-table thead {
+  background: #34495e;
+  color: white;
+}
+
+.admin-table thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.admin-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.admin-table tbody td {
+  padding: 1rem;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+/* 관리자 버튼 스타일 */
+.admin-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.admin-button:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.admin-button.secondary {
+  background: #e74c3c;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.admin-button.secondary:hover {
+  background: #c0392b;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+/* 관리자 작은 버튼 스타일 */
+.admin-small-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  margin-right: 0.5rem;
+  box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+}
+
+.admin-small-btn:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4);
+}
+
+.admin-small-btn.danger {
+  background: #e74c3c;
+  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+}
+
+.admin-small-btn.danger:hover {
+  background: #c0392b;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+}
+
+.admin-small-btn.secondary {
+  background: #95a5a6;
+  box-shadow: 0 2px 6px rgba(149, 165, 166, 0.3);
+}
+
+.admin-small-btn.secondary:hover {
+  background: #7f8c8d;
+  box-shadow: 0 4px 10px rgba(149, 165, 166, 0.4);
+}
+
+/* 관리자 상세 정보 박스 */
+.admin-detail-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.admin-detail-box h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #bdc3c7;
+}
+
+.admin-detail-box p {
+  color: #34495e;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.admin-detail-box p:last-of-type {
+  border-bottom: none;
+  margin-bottom: 1.5rem;
+}
+
+.admin-detail-box strong {
+  color: #3498db;
+  font-weight: 600;
+}
+
+/* 에러 텍스트 */
+.admin-container .error-text {
+  background: rgba(255, 255, 255, 0.9);
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 1rem;
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+}
+
 /* 모바일 반응형 */
 @media (max-width: 768px) {
   .main-title {
@@ -279,5 +483,17 @@
   .back-button {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
+  }
+
+  .admin-container {
+    padding: 1rem;
+  }
+
+  .admin-container h2 {
+    font-size: 2rem;
+  }
+
+  .admin-container p {
+    font-size: 1rem;
   }
 }

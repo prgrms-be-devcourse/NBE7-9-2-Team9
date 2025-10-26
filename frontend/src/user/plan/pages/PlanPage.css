@@ -10,6 +10,7 @@ body {
   padding: 60px 20px;
   position: relative;
   z-index: 2;
+  background: linear-gradient(135deg, #eef3ff, #f9f6ff);
 }
 
 .main-container {

@@ -1,38 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { apiRequest } from "../../../utils/api";
 
 export default function PlanCreateForm() {
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    placeId: '',
-    startDate: '',
-    endDate: ''
+    title: "",
+    content: "",
+    placeId: "",
+    startDate: "",
+    endDate: "",
   });
-  
+
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 오늘 날짜와 10년 후 날짜 계산
   const today = new Date();
   today.setHours(0, 0, 0, 1);
-  const minDate = today.toISOString().split('T')[0];
-  
+  const minDate = today.toISOString().split("T")[0];
+
   const maxDate = new Date();
   maxDate.setFullYear(maxDate.getFullYear() + 10);
-  const maxDateStr = maxDate.toISOString().split('T')[0];
+  const maxDateStr = maxDate.toISOString().split("T")[0];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
+
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
@@ -41,24 +41,23 @@ export default function PlanCreateForm() {
     const newErrors = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = '계획 제목을 입력해주세요.';
+      newErrors.title = "계획 제목을 입력해주세요.";
     }
 
-
     if (!formData.startDate) {
-      newErrors.startDate = '시작 날짜를 선택해주세요.';
+      newErrors.startDate = "시작 날짜를 선택해주세요.";
     }
 
     if (!formData.endDate) {
-      newErrors.endDate = '종료 날짜를 선택해주세요.';
+      newErrors.endDate = "종료 날짜를 선택해주세요.";
     }
 
     if (formData.startDate && formData.endDate) {
       const start = new Date(formData.startDate);
       const end = new Date(formData.endDate);
-      
+
       if (start > end) {
-        newErrors.endDate = '종료 날짜는 시작 날짜 이후여야 합니다.';
+        newErrors.endDate = "종료 날짜는 시작 날짜 이후여야 합니다.";
       }
     }
 
@@ -83,24 +82,27 @@ export default function PlanCreateForm() {
         title: formData.title,
         content: formData.content,
         startDate: startDateTime,
-        endDate: endDateTime
+        endDate: endDateTime,
       };
 
-      const response = await apiRequest('http://localhost:8080/api/plan/create', {
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-        credentials: 'include'
-      });
+      const response = await apiRequest(
+        "http://localhost:8080/api/plan/create",
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+          credentials: "include",
+        }
+      );
 
       if (response.status === 200) {
-        alert('작성 성공');
-        window.location.href = 'http://localhost:3000/user/plan/list';
+        alert("작성 성공");
+        window.location.href = "http://localhost:3000/user/plan/list";
       } else {
-        alert('오류가 발생했습니다');
+        alert("오류가 발생했습니다");
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('오류가 발생했습니다');
+      console.error("Error:", error);
+      alert("오류가 발생했습니다");
     } finally {
       setIsSubmitting(false);
     }
@@ -108,109 +110,110 @@ export default function PlanCreateForm() {
 
   const styles = {
     container: {
-      minHeight: '100vh',
-      background: 'linear-gradient(to bottom right, #eff6ff, #e0e7ff)',
-      padding: '48px 16px',
+      minHeight: "100vh",
+      background: "linear-gradient(to bottom right, #eff6ff, #e0e7ff)",
+      padding: "48px 16px",
     },
     wrapper: {
-      maxWidth: '672px',
-      margin: '0 auto',
+      maxWidth: "672px",
+      margin: "0 auto",
     },
     card: {
-      backgroundColor: 'white',
-      borderRadius: '16px',
-      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-      padding: '32px',
+      backgroundColor: "white",
+      borderRadius: "16px",
+      boxShadow:
+        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+      padding: "32px",
     },
     header: {
-      marginBottom: '32px',
+      marginBottom: "32px",
     },
     title: {
-      fontSize: '30px',
-      fontWeight: 'bold',
-      color: '#1f2937',
-      marginBottom: '8px',
+      fontSize: "30px",
+      fontWeight: "bold",
+      color: "#1f2937",
+      marginBottom: "8px",
     },
     subtitle: {
-      color: '#4b5563',
+      color: "#4b5563",
     },
     formGroup: {
-      marginBottom: '24px',
+      marginBottom: "24px",
     },
     label: {
-      display: 'block',
-      fontSize: '14px',
-      fontWeight: '600',
-      color: '#374151',
-      marginBottom: '8px',
+      display: "block",
+      fontSize: "14px",
+      fontWeight: "600",
+      color: "#374151",
+      marginBottom: "8px",
     },
     input: {
-      width: '100%',
-      padding: '12px 16px',
-      border: '1px solid #d1d5db',
-      borderRadius: '8px',
-      fontSize: '16px',
-      transition: 'all 0.2s',
-      boxSizing: 'border-box',
+      width: "100%",
+      padding: "12px 16px",
+      border: "1px solid #d1d5db",
+      borderRadius: "8px",
+      fontSize: "16px",
+      transition: "all 0.2s",
+      boxSizing: "border-box",
     },
     inputFocus: {
-      outline: 'none',
-      borderColor: '#3b82f6',
-      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
+      outline: "none",
+      borderColor: "#3b82f6",
+      boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
     },
     textarea: {
-      width: '100%',
-      padding: '12px 16px',
-      border: '1px solid #d1d5db',
-      borderRadius: '8px',
-      fontSize: '16px',
-      resize: 'none',
-      fontFamily: 'inherit',
-      transition: 'all 0.2s',
-      boxSizing: 'border-box',
+      width: "100%",
+      padding: "12px 16px",
+      border: "1px solid #d1d5db",
+      borderRadius: "8px",
+      fontSize: "16px",
+      resize: "none",
+      fontFamily: "inherit",
+      transition: "all 0.2s",
+      boxSizing: "border-box",
     },
     error: {
-      marginTop: '4px',
-      fontSize: '14px',
-      color: '#dc2626',
+      marginTop: "4px",
+      fontSize: "14px",
+      color: "#dc2626",
     },
     hint: {
-      marginTop: '4px',
-      fontSize: '12px',
-      color: '#6b7280',
+      marginTop: "4px",
+      fontSize: "12px",
+      color: "#6b7280",
     },
     dateGrid: {
-      display: 'grid',
-      gridTemplateColumns: '1fr',
-      gap: '16px',
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gap: "16px",
     },
     buttonGroup: {
-      display: 'flex',
-      gap: '12px',
-      paddingTop: '16px',
+      display: "flex",
+      gap: "12px",
+      paddingTop: "16px",
     },
     button: {
       flex: 1,
-      padding: '12px 24px',
-      borderRadius: '8px',
-      fontSize: '16px',
-      fontWeight: '600',
-      cursor: 'pointer',
-      transition: 'all 0.2s',
-      border: 'none',
+      padding: "12px 24px",
+      borderRadius: "8px",
+      fontSize: "16px",
+      fontWeight: "600",
+      cursor: "pointer",
+      transition: "all 0.2s",
+      border: "none",
     },
     cancelButton: {
-      backgroundColor: 'white',
-      color: '#374151',
-      border: '1px solid #d1d5db',
+      backgroundColor: "white",
+      color: "#374151",
+      border: "1px solid #d1d5db",
     },
     submitButton: {
-      backgroundColor: '#2563eb',
-      color: 'white',
+      backgroundColor: "#2563eb",
+      color: "white",
     },
     submitButtonDisabled: {
-      backgroundColor: '#9ca3af',
-      cursor: 'not-allowed',
+      backgroundColor: "#9ca3af",
+      cursor: "not-allowed",
     },
   };
 
@@ -226,9 +229,7 @@ export default function PlanCreateForm() {
           <div>
             {/* 계획 제목 */}
             <div style={styles.formGroup}>
-              <label style={styles.label}>
-                📝 계획 제목
-              </label>
+              <label style={styles.label}>📝 계획 제목</label>
               <input
                 type="text"
                 name="title"
@@ -236,24 +237,21 @@ export default function PlanCreateForm() {
                 onChange={handleChange}
                 placeholder="예: 제주도 가족 여행"
                 style={styles.input}
-                onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                onFocus={(e) =>
+                  Object.assign(e.target.style, styles.inputFocus)
+                }
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#d1d5db';
-                  e.target.style.boxShadow = 'none';
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "none";
                 }}
               />
-              {errors.title && (
-                <p style={styles.error}>{errors.title}</p>
-              )}
+              {errors.title && <p style={styles.error}>{errors.title}</p>}
             </div>
-  
 
             {/* 날짜 선택 */}
             <div style={styles.dateGrid}>
               <div style={styles.formGroup}>
-                <label style={styles.label}>
-                  📅 시작 날짜
-                </label>
+                <label style={styles.label}>📅 시작 날짜</label>
                 <input
                   type="date"
                   name="startDate"
@@ -262,10 +260,12 @@ export default function PlanCreateForm() {
                   min={minDate}
                   max={maxDateStr}
                   style={styles.input}
-                  onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                  onFocus={(e) =>
+                    Object.assign(e.target.style, styles.inputFocus)
+                  }
                   onBlur={(e) => {
-                    e.target.style.borderColor = '#d1d5db';
-                    e.target.style.boxShadow = 'none';
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "none";
                   }}
                 />
                 {errors.startDate && (
@@ -274,9 +274,7 @@ export default function PlanCreateForm() {
               </div>
 
               <div style={styles.formGroup}>
-                <label style={styles.label}>
-                  ⏰ 종료 날짜
-                </label>
+                <label style={styles.label}>⏰ 종료 날짜</label>
                 <input
                   type="date"
                   name="endDate"
@@ -285,15 +283,15 @@ export default function PlanCreateForm() {
                   min={formData.startDate || minDate}
                   max={maxDateStr}
                   style={styles.input}
-                  onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                  onFocus={(e) =>
+                    Object.assign(e.target.style, styles.inputFocus)
+                  }
                   onBlur={(e) => {
-                    e.target.style.borderColor = '#d1d5db';
-                    e.target.style.boxShadow = 'none';
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "none";
                   }}
                 />
-                {errors.endDate && (
-                  <p style={styles.error}>{errors.endDate}</p>
-                )}
+                {errors.endDate && <p style={styles.error}>{errors.endDate}</p>}
               </div>
             </div>
 
@@ -303,9 +301,7 @@ export default function PlanCreateForm() {
 
             {/* 내용 */}
             <div style={styles.formGroup}>
-              <label style={styles.label}>
-                📄 내용 (선택사항)
-              </label>
+              <label style={styles.label}>📄 내용 (선택사항)</label>
               <textarea
                 name="content"
                 value={formData.content}
@@ -313,10 +309,12 @@ export default function PlanCreateForm() {
                 placeholder="여행 계획에 대한 설명을 입력해주세요"
                 rows="5"
                 style={styles.textarea}
-                onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                onFocus={(e) =>
+                  Object.assign(e.target.style, styles.inputFocus)
+                }
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#d1d5db';
-                  e.target.style.boxShadow = 'none';
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "none";
                 }}
               />
             </div>
@@ -326,9 +324,11 @@ export default function PlanCreateForm() {
               <button
                 type="button"
                 onClick={() => window.history.back()}
-                style={{...styles.button, ...styles.cancelButton}}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#f9fafb'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                style={{ ...styles.button, ...styles.cancelButton }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "#f9fafb")
+                }
+                onMouseLeave={(e) => (e.target.style.backgroundColor = "white")}
               >
                 취소
               </button>
@@ -339,22 +339,22 @@ export default function PlanCreateForm() {
                 style={{
                   ...styles.button,
                   ...styles.submitButton,
-                  ...(isSubmitting ? styles.submitButtonDisabled : {})
+                  ...(isSubmitting ? styles.submitButtonDisabled : {}),
                 }}
                 onMouseEnter={(e) => {
-                  if (!isSubmitting) e.target.style.backgroundColor = '#1d4ed8';
+                  if (!isSubmitting) e.target.style.backgroundColor = "#1d4ed8";
                 }}
                 onMouseLeave={(e) => {
-                  if (!isSubmitting) e.target.style.backgroundColor = '#2563eb';
+                  if (!isSubmitting) e.target.style.backgroundColor = "#2563eb";
                 }}
               >
-                {isSubmitting ? '작성 중...' : '계획 작성'}
+                {isSubmitting ? "작성 중..." : "계획 작성"}
               </button>
             </div>
           </div>
         </div>
       </div>
-      
+
       <style>{`
         @media (min-width: 768px) {
           .date-grid {
