@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   output:
     ansi:
       enabled: always
@@ -21,6 +21,7 @@ spring:
   h2:
     console:
       enabled: true
+
 
 custom:
   jwt:

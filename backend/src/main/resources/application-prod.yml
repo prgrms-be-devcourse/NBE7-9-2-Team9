@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: ${DB_DRIVER_CLASS_NAME}
+    url: "jdbc:mysql://34.50.51.78:3306/travel?serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+    username: "root"
+    password: "Qwer1234!"
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
 
   jpa:
     hibernate:
@@ -12,3 +12,17 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+
+  config:
+    import:
+      - optional:classpath:districts.yml
+      - optional:file:./config/districts.yml
+seoul:
+   api:
+      key: ${SEOUL_API_KEY}
+      base-url: http://openapi.seoul.go.kr:8088
+
+modelrestaurant:
+    districts: ydp,yangcheon,ddm,dongjak
+
+
