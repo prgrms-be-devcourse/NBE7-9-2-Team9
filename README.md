@@ -110,6 +110,9 @@
 ---
 
 ## 5. 아키텍처 구조 (Backend)
+<img width="610" height="196" alt="image" src="https://github.com/user-attachments/assets/084e2566-336b-4de8-97ff-50f3f3019b1f" />
+
+
 ```
 com.backend
 ├── domain — 주요 비즈니스 도메인 계층
