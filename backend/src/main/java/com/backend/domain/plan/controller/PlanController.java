@@ -65,7 +65,6 @@ public class PlanController {
             @Valid @RequestBody PlanUpdateRequestBody planUpdateRequestBody,
             @PathVariable long planId
     ) {
-        //TODO JWT 토큰에서 멤버 아이디 정보 가져오기
         long memberPkId = authService.getMemberId(accessToken);
 
         PlanResponseBody planResponseBody = planService.updatePlan(planId, planUpdateRequestBody, memberPkId);

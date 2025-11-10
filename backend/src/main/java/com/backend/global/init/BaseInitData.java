@@ -77,7 +77,7 @@ public class BaseInitData {
                         .modifyDate(LocalDateTime.now())
                         .startDate(LocalDateTime.now().plusDays(2L))
                         .endDate(LocalDateTime.now().plusDays(4L))
-                        .title("초기 일정 데이터1")
+                        .title("초기 일정 데이터2")
                         .content("초기 일정 데이터 내용")
                         .build();
                 plan2.timeSet();
@@ -88,14 +88,16 @@ public class BaseInitData {
                         .modifyDate(LocalDateTime.now())
                         .startDate(LocalDateTime.now().plusDays(3L))
                         .endDate(LocalDateTime.now().plusDays(5L))
-                        .title("초기 일정 데이터1")
-                        .content("초기 일정 데이터 내용")
+                        .title("초기 일정 데이터2")
+                        .content("초기 일정 데이터 내용2")
                         .build();
                 plan3.timeSet();
 
                 planRepository.saveAll(List.of(plan1, plan2, plan3));
                 log.info("초기 plan 데이터 세팅 완료: ");
             }
+
+
         };
     }
 }
