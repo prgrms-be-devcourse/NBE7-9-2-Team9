@@ -25,6 +25,8 @@ public class BaseInitData {
 
     private final PlanRepository planRepository;
 
+
+
     @Bean
     public ApplicationRunner InitData() {
         return args -> {
@@ -96,6 +98,8 @@ public class BaseInitData {
                 planRepository.saveAll(List.of(plan1, plan2, plan3));
                 log.info("초기 plan 데이터 세팅 완료: ");
             }
+
+
 
 
         };

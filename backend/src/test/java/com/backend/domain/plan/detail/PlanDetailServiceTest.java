@@ -35,5 +35,7 @@ public class PlanDetailServiceTest {
     private MemberRepository memberRepository;
 
     @Test
-    void t1(){}
+    void t1(){
+
+    }
 }
