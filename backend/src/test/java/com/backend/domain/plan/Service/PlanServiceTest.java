@@ -104,6 +104,10 @@ public class PlanServiceTest {
         assertThat(planList2).size().isEqualTo(planList1.size() -1);
     }
 
+    @Test
+    @DisplayName("6. 오늘 계획 조회")
+    void t6(){
 
+    }
 
 }
