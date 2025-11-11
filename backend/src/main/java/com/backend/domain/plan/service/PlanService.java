@@ -77,6 +77,7 @@ public class PlanService {
         );
     }
 
+    // Todo 계획의 범위가 오늘 내로 들어 있다면 반환하게 만들기
     public PlanResponseBody getTodayPlan(long memberPkId){
         LocalDateTime todayStart = LocalDateTime.now().toLocalDate().atStartOfDay();
         Plan plan = planRepository.getPlanByStartDateAndMemberId(todayStart, memberPkId).orElseThrow(
