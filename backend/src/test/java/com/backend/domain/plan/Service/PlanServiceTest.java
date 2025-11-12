@@ -109,7 +109,7 @@ public class PlanServiceTest {
     @DisplayName("6. 오늘 계획 조회")
     void t6(){
         PlanResponseBody planResponseBody = planService.getTodayPlan(1L);
-        Plan plan = planRepository.getPlanByStartDateBeforeAndEndDateAfter( LocalDateTime.now().toLocalDate().atStartOfDay().plusSeconds(1),LocalDateTime.now().toLocalDate().atTime(LocalTime.MAX).minusSeconds(1));
+        Plan plan = planRepository.getPlanByStartDateBeforeAndEndDateAfter(LocalDateTime.now().toLocalDate().atStartOfDay().plusSeconds(1),LocalDateTime.now().toLocalDate().atTime(LocalTime.MAX).minusSeconds(1));
 
         PlanResponseBody toBePlanResponseBody =  new PlanResponseBody(plan);
 
