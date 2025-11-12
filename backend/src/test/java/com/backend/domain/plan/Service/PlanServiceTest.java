@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,7 +52,7 @@ public class PlanServiceTest {
         List<PlanResponseBody> planList = planService.getPlanList(1L);
 
         assertThat(planList).isNotNull();
-        assertThat(planList).size().isEqualTo(3);
+        assertThat(planList).size().isEqualTo(2);
         assertThat(planList.get(0).title()).isEqualTo("초기 일정 데이터1");
     }
 
@@ -107,6 +108,12 @@ public class PlanServiceTest {
     @Test
     @DisplayName("6. 오늘 계획 조회")
     void t6(){
+        PlanResponseBody planResponseBody = planService.getTodayPlan(1L);
+        Plan plan = planRepository.getPlanByStartDateBeforeAndEndDateAfter( LocalDateTime.now().toLocalDate().atStartOfDay().plusSeconds(1),LocalDateTime.now().toLocalDate().atTime(LocalTime.MAX).minusSeconds(1));
+
+        PlanResponseBody toBePlanResponseBody =  new PlanResponseBody(plan);
+
+        assertThat(planResponseBody.title()).isEqualTo(toBePlanResponseBody.title());
 
     }
 

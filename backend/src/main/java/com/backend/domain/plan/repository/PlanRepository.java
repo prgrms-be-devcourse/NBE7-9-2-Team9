@@ -17,4 +17,6 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
     Optional<Plan> getPlanByStartDateAndMemberId(LocalDateTime startDate, Long memberId);
 
     Plan getPlanByTitle(String title);
+
+    Plan getPlanByStartDateBeforeAndEndDateAfter(LocalDateTime startDateBefore, LocalDateTime endDateAfter);
 }
