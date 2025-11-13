@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -26,7 +27,6 @@ public class PlanService {
     private final PlanMemberRepository planMemberRepository;
     private final MemberService memberService;
     private final PlanDetailRepository planDetailRepository;
-    // TODO 회원 서비스 기반 처리 하기, JWT에서 멤버 ID 식별자 사용하면 더 편할것 같은데 보안상의 문제는 없는지?
 
     @Transactional
     public Plan createPlan(PlanCreateRequestBody planCreateRequestBody, long memberPkId) {
@@ -41,6 +41,12 @@ public class PlanService {
 
     public List<PlanResponseBody> getPlanList(long memberPkId) {
         List<Plan> plans = planRepository.getPlansByMember_Id(memberPkId);
+        List<PlanResponseBody> planResponseBodies = plans.stream().map(PlanResponseBody::new).toList();
+        return planResponseBodies;
+    }
+
+    public List<PlanResponseBody> getInvitedPlanList(long memberPkId) {
+        List<Plan> plans = planRepository.getPlansInvitedListByMemberPkId(memberPkId);
         List<PlanResponseBody> planResponseBodies = plans.stream().map(PlanResponseBody::new).toList();
         return planResponseBodies;
     }
@@ -77,12 +83,15 @@ public class PlanService {
         );
     }
 
+    // Todo 계획의 범위가 오늘 내로 들어 있다면 반환하게 만들기
     public PlanResponseBody getTodayPlan(long memberPkId){
         LocalDateTime todayStart = LocalDateTime.now().toLocalDate().atStartOfDay();
+        List<Plan>  plans =planRepository.getPlanByStartDateBeforeAndEndDateAfterAndMemberId(LocalDateTime.now().toLocalDate().atStartOfDay().plusSeconds(1),LocalDateTime.now().toLocalDate().atTime(LocalTime.MAX).minusSeconds(1),memberPkId);
+
         Plan plan = planRepository.getPlanByStartDateAndMemberId(todayStart, memberPkId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_PLAN)
         );
-        return new PlanResponseBody(plan);
+        return new PlanResponseBody(plans.get(0));
     }
 
     private void hasValidPlan(Plan plan) {

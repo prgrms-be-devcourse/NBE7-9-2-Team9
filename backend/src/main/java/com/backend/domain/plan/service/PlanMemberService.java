@@ -46,7 +46,6 @@ public class PlanMemberService {
 
     public PlanMemberResponseBody DeletePlanMember(PlanMemberAddRequestBody requestBody, long memberPkId) {
         PlanMember planMember = isValidInvite(requestBody, memberPkId);
-
         planMemberRepository.delete(planMember);
         return new PlanMemberResponseBody(planMember);
     }
