@@ -1,8 +1,8 @@
 package com.backend.global.config;
 
 import com.backend.global.security.JwtAuthenticationFilter;
-import com.backend.global.security.hadler.JwtAccessDeniedHandler;
-import com.backend.global.security.hadler.JwtAuthenticationEntryPoint;
+import com.backend.global.security.handler.JwtAccessDeniedHandler;
+import com.backend.global.security.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
