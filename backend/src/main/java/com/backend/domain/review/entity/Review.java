@@ -31,6 +31,9 @@ public class Review {
     @Column(nullable = false ,name = "modified_date")
     private LocalDateTime modifiedDate;
 
+    @Column(nullable = false)
+    private String content;
+
     @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)
     private Place place;
@@ -49,16 +52,21 @@ public class Review {
     }
 
 
-    public Review(Place place, Member member, int rating) {
+    public Review(Place place, Member member, int rating, String content) {
         this.place = place;
         this.member = member;
         this.rating = rating;
+        this.content = content;
         this.createdDate = LocalDateTime.now();
     }
 
     public int setRating(int rating) {
         this.rating = rating;
         return rating;
+    }
+    public String setContent(String content){
+        this.content = content;
+        return content;
     }
 
 }

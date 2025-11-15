@@ -1,6 +1,7 @@
 package com.backend.global.exception;
 
 import com.backend.global.response.ErrorCode;
+import com.backend.global.response.ErrorCode;
 import lombok.Getter;
 
 @Getter
@@ -11,4 +12,5 @@ public class BusinessException extends RuntimeException {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
+
 }

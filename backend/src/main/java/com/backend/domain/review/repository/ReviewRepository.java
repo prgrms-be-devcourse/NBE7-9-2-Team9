@@ -21,4 +21,5 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     )
     double findAverageRatingByPlaceId(@Param("placeId") long placeId);
 
+    Optional<Object> findByMemberIdAndId(Long memberId, Long reviewId);
 }

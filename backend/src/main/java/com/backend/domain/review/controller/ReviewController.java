@@ -33,12 +33,12 @@ public class ReviewController {
     }
 
     //리뷰 수정
-    @PatchMapping("/modify/{memberId}")
+    @PatchMapping("/modify/{reviewId}")
     public ApiResponse<Void> modifyReview(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken,
-            @PathVariable long memberId, @RequestParam int modifyRating) {
+            @PathVariable long reviewId, @RequestParam int modifyRating, @RequestParam String modifyContent) {
         Long authMemberId = authService.getMemberId(accessToken);
-        reviewService.modifyReview(authMemberId, modifyRating);
+        reviewService.modifyReview(authMemberId, reviewId, modifyRating, modifyContent);
         return ApiResponse.success();
     }
 

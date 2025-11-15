@@ -40,23 +40,28 @@ public class ReviewService {
         if(check.isPresent()){
             throw new BusinessException(ErrorCode.GIVEN_REVIEW);
         }
-        Review review = new Review(place, member, reviewRequestDto.rating());
+        Review review = new Review(place, member, reviewRequestDto.rating(), reviewRequestDto.content());
         review.onCreate();
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(member.getMemberId(), review.getId(), review.getRating(), review.getModifiedDate(), place.getCategory().getName(), place.getPlaceName(), place.getAddress(), place.getGu());
+        return new ReviewResponseDto(member.getMemberId(), review.getId(), review.getRating(), review.getContent(), review.getModifiedDate(), place.getCategory().getName(), place.getPlaceName(), place.getAddress(), place.getGu());
     }
 
     //리뷰 수정 메서드
     @Transactional
-    public void modifyReview(Long memberId, int modifyRating){
+    public void modifyReview(Long memberId, Long reviewId, int modifyRating, String content){
 //        Member member = getMemberEntity(memberId);
 //        Review review = reviewRepository.findByMemberId(member.getId()).orElseThrow(
 //                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
 //        );
-        Review review = getReviewWithAuth(memberId);
+        Review review = (Review) reviewRepository.findByMemberIdAndId(memberId, reviewId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW)
+        );
+
         review.setRating(modifyRating);
+        review.setContent(content);
         review.onUpdate();
+        reviewRepository.save(review);
     }
 
     //리뷰 삭제 메서드
