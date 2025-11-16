@@ -307,4 +307,11 @@ public class ReviewService {
         }
         return recommendList;
     }
+
+    public double getWeightByBayesian (double averageRating, double reviewCount, double globalAverageRating){
+            double threshold = 10; // 신뢰도 임계값 설정
+            double weight = (reviewCount / (reviewCount + threshold)) * averageRating + (threshold / (reviewCount + threshold)) * globalAverageRating;
+            return weight;
+    }
+
 }
