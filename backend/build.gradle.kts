@@ -60,6 +60,11 @@ dependencies {
 
     // API 명세 관련
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+
+    //Spring 캐시 관련
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+
 }
 
 tasks.withType<Test> {

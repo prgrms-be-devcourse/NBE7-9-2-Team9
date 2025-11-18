@@ -22,4 +22,12 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     double findAverageRatingByPlaceId(@Param("placeId") long placeId);
 
     Optional<Object> findByMemberIdAndId(Long memberId, Long reviewId);
+
+    @Query("SELECT AVG(r.rating) FROM Review r")
+    double findGlobalAverageRating();
+
+
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.place.id = :placeId")
+    double findAverageRating(@Param("placeId") Long placeId);
+
 }

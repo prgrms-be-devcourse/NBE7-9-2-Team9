@@ -76,48 +76,22 @@ public class ReviewController {
         return ApiResponse.success(reviews);
     }
 
-    //추천리뷰 -> 평균 별점 상위 5개의 여행지를 추천
-    @GetMapping("/recommend/{placeId}")
-    public ApiResponse<List<RecommendResponse>> getRecommendedReviews(@PathVariable long placeId){
-        List<RecommendResponse> recommendedPlaces = reviewService.recommendByPlace(placeId);
-        return ApiResponse.success(recommendedPlaces);
-    }
-    //카테고리 - 호텔
-    @GetMapping("/recommend/hotel")
-    public ApiResponse<List<RecommendResponse>> recommendHotelReviews(){
-        List<RecommendResponse> recommendedPlaces = reviewService.recommendHotel();
-        return ApiResponse.success(recommendedPlaces);
-    }
-    //카테고리 - 맛집
-    @GetMapping("/recommend/restaurant")
-    public ApiResponse<List<RecommendResponse>> recommendRestaurantReviews(){
-        List<RecommendResponse> recommendedPlaces = reviewService.recommendRestaurant();
-        return ApiResponse.success(recommendedPlaces);
-    }
-    //카테고리 - 야경
-    @GetMapping("/recommend/nightspot")
-    public ApiResponse<List<RecommendResponse>> recommendNightspotReviews(){
-        List<RecommendResponse> recommendedPlaces = reviewService.recommendNightSpot();
+
+    //카테고리별 추천
+    @GetMapping("/recommend/{category}")
+    public ApiResponse<List<RecommendResponse>> sortAllNightspotReviews(
+            @PathVariable String category
+    ){
+        List<RecommendResponse> recommendedPlaces = reviewService.recommendPlace(category);
         return ApiResponse.success(recommendedPlaces);
     }
 
-    //카테고리 - 호텔
-    @GetMapping("/recommend/allHotel")
-    public ApiResponse<List<RecommendResponse>> sortAllHotelReviews(){
-        List<RecommendResponse> recommendedPlaces = reviewService.sortAllHotelReviews();
+    //카테고리별 내림차순 정렬
+    @GetMapping("/recommend/sort/{category}")
+    public ApiResponse<List<RecommendResponse>> sortRecommendedPlacesByCategory(
+            @PathVariable String category
+    ) {
+        List<RecommendResponse> recommendedPlaces = reviewService.sortPlaces(category);
         return ApiResponse.success(recommendedPlaces);
     }
-    //카테고리 - 맛집
-    @GetMapping("/recommend/allRestaurant")
-    public ApiResponse<List<RecommendResponse>> sortAllRestaurantReviews(){
-        List<RecommendResponse> recommendedPlaces = reviewService.sortAllRestaurantReviews();
-        return ApiResponse.success(recommendedPlaces);
-    }
-    //카테고리 - 야경
-    @GetMapping("/recommend/allNightspot")
-    public ApiResponse<List<RecommendResponse>> sortAllNightspotReviews(){
-        List<RecommendResponse> recommendedPlaces = reviewService.sortAllNightSpotReviews();
-        return ApiResponse.success(recommendedPlaces);
-    }
-
 }

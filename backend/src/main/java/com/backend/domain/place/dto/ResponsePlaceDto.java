@@ -8,6 +8,7 @@ public record ResponsePlaceDto(
         String address,
         String gu,
         String category,
+        double ratingAvg,
         String description
 ) {
     public static ResponsePlaceDto from(Place place) {
@@ -17,6 +18,7 @@ public record ResponsePlaceDto(
                 place.getAddress(),
                 place.getGu(),
                 place.getCategory().getName(),
+                place.getRatingAvg(),
                 place.getDescription()
         );
     }
