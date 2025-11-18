@@ -12,11 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="review",
-        indexes = {
-                @Index(name = "idx_review_place_rating", columnList = "place_id, rating"),
-                @Index(name = "ux_review_member_place", columnList = "member_id, place_id", unique = true)
-        })
+@Table(name="review")
 @NoArgsConstructor
 @Getter
 public class Review {
